@@ -6,6 +6,7 @@ import { Clock, Layers, Maximize2 } from "lucide-react";
 import type { LessonSlide } from "@/pages/Index";
 import { useState } from "react";
 import { PresentationMode } from "./PresentationMode";
+import { ImageValidationWarning } from "./ImageValidationWarning";
 
 interface LessonPreviewProps {
   slides: LessonSlide[];
@@ -92,6 +93,15 @@ export const LessonPreview = ({ slides }: LessonPreviewProps) => {
                       {slide.content}
                     </p>
                   </div>
+
+                  {/* Image Validation Warning */}
+                  {slide.imageValidation && (
+                    <ImageValidationWarning
+                      validation={slide.imageValidation}
+                      slideNumber={slide.slideNumber}
+                      slideTitle={slide.title}
+                    />
+                  )}
 
                   {/* Visual Description */}
                   {slide.visualDescription && (
