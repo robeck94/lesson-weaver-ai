@@ -1,11 +1,13 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { LessonInputForm } from "@/components/LessonInputForm";
 import { LessonPreview } from "@/components/LessonPreview";
 import { TeacherGuide } from "@/components/TeacherGuide";
 import { ImageGenerator } from "@/components/ImageGenerator";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Sparkles, BookOpen } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Sparkles, BookOpen, Gamepad2 } from "lucide-react";
 
 export interface LessonSlide {
   slideNumber: number;
@@ -144,9 +146,17 @@ const Index = () => {
               <p className="text-xs text-muted-foreground">AI-Powered Slide Creator</p>
             </div>
           </div>
-          <div className="flex items-center gap-2 text-sm">
-            <Sparkles className="w-4 h-4 text-accent" />
-            <span className="text-muted-foreground hidden sm:inline">Powered by AI</span>
+          <div className="flex items-center gap-3">
+            <Link to="/game-templates">
+              <Button variant="outline" size="sm" className="gap-2">
+                <Gamepad2 className="w-4 h-4" />
+                <span className="hidden sm:inline">Game Templates</span>
+              </Button>
+            </Link>
+            <div className="flex items-center gap-2 text-sm">
+              <Sparkles className="w-4 h-4 text-accent" />
+              <span className="text-muted-foreground hidden sm:inline">Powered by AI</span>
+            </div>
           </div>
         </div>
       </header>
