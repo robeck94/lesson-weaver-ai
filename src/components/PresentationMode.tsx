@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { X, ChevronLeft, ChevronRight, Play } from "lucide-react";
 import type { LessonSlide } from "@/pages/Index";
+import { QuizSlide } from "./QuizSlide";
 
 interface PresentationModeProps {
   slides: LessonSlide[];
@@ -95,6 +96,51 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
   const slide = slides[currentSlide];
   const contentParts = slide.content.split('\n').filter(part => part.trim());
 
+  // Detect if this is a quiz slide
+  const isQuizSlide = slide.title.toLowerCase().includes('quiz') || 
+                      slide.activityInstructions?.toLowerCase().includes('quiz') ||
+                      contentParts.some(part => part.match(/^[a-d]\)/i));
+
+  // Parse quiz content if it's a quiz slide
+  const parseQuizContent = () => {
+    const questions: Array<{ question: string; options: string[]; correctAnswer: number }> = [];
+    let currentQuestion = "";
+    let currentOptions: string[] = [];
+    
+    contentParts.forEach((part, idx) => {
+      // Check if it's a numbered question
+      if (part.match(/^\d+\./)) {
+        // Save previous question if exists
+        if (currentQuestion && currentOptions.length > 0) {
+          questions.push({
+            question: currentQuestion,
+            options: currentOptions,
+            correctAnswer: 1 // Default to second option, can be enhanced
+          });
+        }
+        currentQuestion = part.replace(/^\d+\.\s*/, '');
+        currentOptions = [];
+      }
+      // Check if it's an option
+      else if (part.match(/^[a-d]\)/i)) {
+        currentOptions.push(part.replace(/^[a-d]\)\s*/i, ''));
+      }
+    });
+    
+    // Save last question
+    if (currentQuestion && currentOptions.length > 0) {
+      questions.push({
+        question: currentQuestion,
+        options: currentOptions,
+        correctAnswer: 1
+      });
+    }
+    
+    return questions;
+  };
+
+  const quizQuestions = isQuizSlide ? parseQuizContent() : [];
+
   const getStageColor = (stage: string) => {
     const colors: Record<string, string> = {
       "Lead-in": "from-accent/20 to-accent/5 border-accent/30",
@@ -147,18 +193,26 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
             isAnimating ? "animate-fade-in" : ""
           }`}
         >
-          {/* Slide Card */}
-          <div className="h-full bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl shadow-2xl p-8 flex flex-col">
-            {/* Title */}
-            <div className="mb-6 animate-slide-in-right">
-              <h1 className="text-5xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent mb-2">
-                {slide.title}
-              </h1>
-              <div className="h-1 w-24 bg-gradient-to-r from-primary to-secondary rounded-full" />
-            </div>
+          {isQuizSlide && quizQuestions.length > 0 ? (
+            /* Quiz Slide Layout */
+            <QuizSlide
+              title={slide.title}
+              imageUrl={slide.imageUrl}
+              questions={quizQuestions}
+            />
+          ) : (
+            /* Regular Slide Layout */
+            <div className="h-full bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl shadow-2xl p-8 flex flex-col">
+              {/* Title */}
+              <div className="mb-6 animate-slide-in-right">
+                <h1 className="text-5xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent mb-2">
+                  {slide.title}
+                </h1>
+                <div className="h-1 w-24 bg-gradient-to-r from-primary to-secondary rounded-full" />
+              </div>
 
-            {/* Content Area */}
-            <div className="flex-1 flex gap-6 overflow-auto min-h-0">
+              {/* Content Area */}
+              <div className="flex-1 flex gap-6 overflow-auto min-h-0">
               {/* Image Section - Large and Prominent */}
               {slide.imageUrl && (
                 <div className="w-[45%] flex-shrink-0 animate-fade-in">
@@ -223,6 +277,7 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
               </div>
             )}
           </div>
+          )}
         </div>
       </div>
 
