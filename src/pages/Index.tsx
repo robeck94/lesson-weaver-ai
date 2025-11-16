@@ -2,6 +2,7 @@ import { useState } from "react";
 import { LessonInputForm } from "@/components/LessonInputForm";
 import { LessonPreview } from "@/components/LessonPreview";
 import { TeacherGuide } from "@/components/TeacherGuide";
+import { ImageGenerator } from "@/components/ImageGenerator";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Sparkles, BookOpen } from "lucide-react";
@@ -15,6 +16,7 @@ export interface LessonSlide {
   animationNotes?: string;
   activityInstructions?: string;
   timing?: string;
+  imageUrl?: string;
 }
 
 export interface GeneratedLesson {
@@ -171,12 +173,20 @@ const Index = () => {
                   {generatedLesson.lessonType} • {generatedLesson.cefrLevel} • {generatedLesson.totalSlides} slides
                 </p>
               </div>
-              <button
-                onClick={() => setGeneratedLesson(null)}
-                className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
-              >
-                New Lesson
-              </button>
+              <div className="flex items-center gap-3">
+                <ImageGenerator 
+                  slides={generatedLesson.slides}
+                  onImagesGenerated={(slidesWithImages) => {
+                    setGeneratedLesson({ ...generatedLesson, slides: slidesWithImages });
+                  }}
+                />
+                <button
+                  onClick={() => setGeneratedLesson(null)}
+                  className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
+                >
+                  New Lesson
+                </button>
+              </div>
             </div>
 
             <div className="grid lg:grid-cols-3 gap-6">
