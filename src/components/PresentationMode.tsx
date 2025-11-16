@@ -16,7 +16,18 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "ArrowRight" || e.key === " ") {
+      if (e.key === " ") {
+        e.preventDefault();
+        const slide = slides[currentSlide];
+        const contentParts = slide.content.split('\n').filter(part => part.trim());
+        const nextUnrevealed = contentParts.findIndex((_, i) => !revealedElements.has(i));
+        
+        if (nextUnrevealed !== -1) {
+          revealElement(nextUnrevealed);
+        } else {
+          nextSlide();
+        }
+      } else if (e.key === "ArrowRight") {
         e.preventDefault();
         nextSlide();
       } else if (e.key === "ArrowLeft") {
@@ -29,7 +40,7 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentSlide]);
+  }, [currentSlide, revealedElements]);
 
   useEffect(() => {
     // Enter fullscreen
@@ -64,7 +75,21 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
   };
 
   const revealElement = (index: number) => {
-    setRevealedElements(prev => new Set([...prev, index]));
+    setRevealedElements(prev => {
+      const newSet = new Set([...prev]);
+      newSet.add(index);
+      return newSet;
+    });
+  };
+
+  const handleCardClick = (index: number) => {
+    // Allow clicking any card, but reveal in order up to that point
+    for (let i = 0; i <= index; i++) {
+      if (!revealedElements.has(i)) {
+        revealElement(i);
+        break; // Reveal one at a time
+      }
+    }
   };
 
   const slide = slides[currentSlide];
@@ -134,26 +159,40 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
 
             {/* Content Area */}
             <div className="flex-1 space-y-6 overflow-auto">
-              {contentParts.map((part, index) => (
-                <div
-                  key={index}
-                  className={`transition-all duration-500 ${
-                    revealedElements.has(index)
-                      ? "opacity-100 translate-y-0"
-                      : "opacity-0 translate-y-4"
-                  }`}
-                  style={{ transitionDelay: `${index * 150}ms` }}
-                >
-                  <div 
-                    className="bg-gradient-to-r from-muted/50 to-muted/30 backdrop-blur-sm rounded-xl p-6 border border-border/50 hover:shadow-lg transition-shadow cursor-pointer hover-scale"
-                    onClick={() => revealElement(index)}
+              {contentParts.map((part, index) => {
+                const isRevealed = revealedElements.has(index);
+                const isNext = !isRevealed && contentParts.slice(0, index).every((_, i) => revealedElements.has(i));
+                
+                return (
+                  <div
+                    key={index}
+                    className={`transition-all duration-700 ease-out ${
+                      isRevealed
+                        ? "opacity-100 translate-y-0 scale-100"
+                        : "opacity-0 translate-y-8 scale-95"
+                    }`}
                   >
-                    <p className="text-2xl text-foreground leading-relaxed">
-                      {part}
-                    </p>
+                    <div 
+                      className={`bg-gradient-to-r from-muted/50 to-muted/30 backdrop-blur-sm rounded-xl p-6 border transition-all duration-300 cursor-pointer ${
+                        isNext 
+                          ? "border-primary/50 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 hover-scale ring-2 ring-primary/30" 
+                          : "border-border/50 hover:shadow-md"
+                      }`}
+                      onClick={() => handleCardClick(index)}
+                    >
+                      {isNext && (
+                        <div className="flex items-center gap-2 text-primary text-sm font-medium mb-2 animate-pulse">
+                          <span className="w-2 h-2 bg-primary rounded-full"></span>
+                          Press SPACE or click to reveal
+                        </div>
+                      )}
+                      <p className="text-2xl text-foreground leading-relaxed">
+                        {part}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
 
               {/* Visual Description */}
               {slide.visualDescription && (
@@ -233,7 +272,7 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
 
         {/* Keyboard Hints */}
         <div className="text-center mt-4 text-sm text-muted-foreground">
-          Use arrow keys or space to navigate • ESC to exit • Click content cards to reveal
+          SPACE to reveal next • Arrow keys to navigate • ESC to exit
         </div>
       </div>
     </div>
