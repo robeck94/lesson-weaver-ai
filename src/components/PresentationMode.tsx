@@ -96,6 +96,47 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
   const slide = slides[currentSlide];
   const contentParts = slide.content.split('\n').filter(part => part.trim());
 
+  // Dynamic font sizing based on content length
+  const totalChars = slide.content.length;
+  const lineCount = contentParts.length;
+  const avgLineLength = totalChars / Math.max(lineCount, 1);
+  
+  // Calculate appropriate text sizes
+  const getTitleSize = () => {
+    if (slide.title.length > 80) return "text-2xl md:text-3xl lg:text-4xl";
+    if (slide.title.length > 50) return "text-3xl md:text-4xl lg:text-5xl";
+    return "text-3xl md:text-4xl lg:text-5xl xl:text-6xl";
+  };
+
+  const getContentSize = () => {
+    // Very dense content (lots of text)
+    if (totalChars > 600 || lineCount > 10) return "text-sm md:text-base lg:text-lg";
+    // Dense content
+    if (totalChars > 400 || lineCount > 7) return "text-base md:text-lg lg:text-xl";
+    // Medium content
+    if (totalChars > 250 || lineCount > 5) return "text-lg md:text-xl lg:text-2xl";
+    // Light content - can be bigger
+    return "text-xl md:text-2xl lg:text-3xl";
+  };
+
+  const getLineSpacing = () => {
+    if (lineCount > 8) return "leading-snug";
+    if (lineCount > 5) return "leading-relaxed";
+    return "leading-loose";
+  };
+
+  const getCardPadding = () => {
+    if (lineCount > 8) return "p-3 md:p-4";
+    if (lineCount > 5) return "p-4 md:p-5";
+    return "p-4 md:p-5 lg:p-6";
+  };
+
+  const getSpacing = () => {
+    if (lineCount > 8) return "space-y-2";
+    if (lineCount > 5) return "space-y-2 md:space-y-3";
+    return "space-y-3 md:space-y-4";
+  };
+
   // Detect if this is a quiz slide
   const isQuizSlide = slide.title.toLowerCase().includes('quiz') || 
                       slide.activityInstructions?.toLowerCase().includes('quiz') ||
@@ -205,7 +246,7 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
             <div className="h-full bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl shadow-2xl p-3 md:p-4 flex flex-col overflow-hidden">
               {/* Title */}
               <div className="mb-2 md:mb-3 flex-shrink-0 animate-slide-in-right">
-                <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent mb-1 md:mb-2">
+                <h1 className={`${getTitleSize()} font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent mb-1 md:mb-2 break-words`}>
                   {slide.title}
                 </h1>
                 <div className="h-1 w-24 bg-gradient-to-r from-primary to-secondary rounded-full" />
@@ -225,7 +266,7 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
               )}
               
               {/* Text Content Section */}
-              <div className={`flex-1 overflow-y-auto space-y-3 pr-2 ${slide.imageUrl ? '' : 'max-w-6xl mx-auto'}`}>
+              <div className={`flex-1 overflow-y-auto ${getSpacing()} pr-2 ${slide.imageUrl ? '' : 'max-w-6xl mx-auto'}`}>
                 {contentParts.map((part, index) => {
                   const isRevealed = revealedElements.has(index);
                   const isNext = !isRevealed && contentParts.slice(0, index).every((_, i) => revealedElements.has(i));
@@ -240,7 +281,7 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
                       }`}
                     >
                       <div 
-                        className={`bg-gradient-to-br from-card via-card/95 to-card/90 backdrop-blur-md rounded-lg p-4 md:p-5 border-2 transition-all duration-300 cursor-pointer ${
+                        className={`bg-gradient-to-br from-card via-card/95 to-card/90 backdrop-blur-md rounded-lg ${getCardPadding()} border-2 transition-all duration-300 cursor-pointer ${
                           isNext 
                             ? "border-primary shadow-2xl shadow-primary/40 hover:shadow-3xl hover:shadow-primary/50 hover-scale ring-4 ring-primary/40" 
                             : "border-border/50 hover:shadow-xl hover:border-primary/30"
@@ -254,7 +295,7 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
                             Press SPACE or click to reveal
                           </div>
                         )}
-                        <p className="text-base md:text-lg lg:text-xl xl:text-2xl text-foreground leading-relaxed font-medium whitespace-pre-wrap break-words">
+                        <p className={`${getContentSize()} ${getLineSpacing()} text-foreground font-medium whitespace-pre-wrap break-words`}>
                           {part}
                         </p>
                       </div>
