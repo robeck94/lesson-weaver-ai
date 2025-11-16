@@ -1,8 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Clock, Layers } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Clock, Layers, Maximize2 } from "lucide-react";
 import type { LessonSlide } from "@/pages/Index";
+import { useState } from "react";
+import { PresentationMode } from "./PresentationMode";
 
 interface LessonPreviewProps {
   slides: LessonSlide[];
@@ -18,13 +21,34 @@ const STAGE_COLORS: Record<string, string> = {
 };
 
 export const LessonPreview = ({ slides }: LessonPreviewProps) => {
+  const [isPresentationMode, setIsPresentationMode] = useState(false);
+
+  if (isPresentationMode) {
+    return (
+      <PresentationMode 
+        slides={slides} 
+        onClose={() => setIsPresentationMode(false)} 
+      />
+    );
+  }
+
   return (
     <Card className="shadow-medium border-border/50">
       <CardHeader className="gradient-card border-b border-border/50">
-        <CardTitle className="flex items-center gap-2 text-foreground">
-          <Layers className="w-5 h-5 text-primary" />
-          Lesson Slides ({slides.length})
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="flex items-center gap-2 text-foreground">
+            <Layers className="w-5 h-5 text-primary" />
+            Lesson Slides ({slides.length})
+          </CardTitle>
+          <Button
+            onClick={() => setIsPresentationMode(true)}
+            className="bg-primary hover:bg-primary/90 text-primary-foreground"
+            size="sm"
+          >
+            <Maximize2 className="w-4 h-4 mr-2" />
+            Present
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="p-0">
         <ScrollArea className="h-[600px]">
