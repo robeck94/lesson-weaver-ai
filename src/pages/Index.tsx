@@ -17,10 +17,12 @@ export interface LessonSlide {
   activityInstructions?: string;
   timing?: string;
   imageUrl?: string;
+  interactionPattern?: string;
 }
 
 export interface GeneratedLesson {
   lessonType: string;
+  framework?: string;
   topic: string;
   cefrLevel: string;
   totalSlides: number;
@@ -236,6 +238,9 @@ const Index = () => {
                 <TeacherGuide 
                   slides={generatedLesson.slides} 
                   teacherNotes={generatedLesson.teacherNotes}
+                  lessonType={generatedLesson.lessonType}
+                  framework={generatedLesson.framework}
+                  stages={generatedLesson.stages}
                 />
               </div>
             </div>

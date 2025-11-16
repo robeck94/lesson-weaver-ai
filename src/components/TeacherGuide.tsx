@@ -8,9 +8,12 @@ import type { LessonSlide } from "@/pages/Index";
 interface TeacherGuideProps {
   slides: LessonSlide[];
   teacherNotes: string;
+  lessonType?: string;
+  framework?: string;
+  stages?: string[];
 }
 
-export const TeacherGuide = ({ slides, teacherNotes }: TeacherGuideProps) => {
+export const TeacherGuide = ({ slides, teacherNotes, lessonType, framework, stages }: TeacherGuideProps) => {
   const { toast } = useToast();
 
   const handleExportPDF = () => {
@@ -31,6 +34,29 @@ export const TeacherGuide = ({ slides, teacherNotes }: TeacherGuideProps) => {
       <CardContent className="p-0">
         <ScrollArea className="h-[520px]">
           <div className="p-6 space-y-6">
+            {/* Framework Information */}
+            {(lessonType || framework) && (
+              <div className="space-y-2">
+                <div className="flex flex-wrap gap-2">
+                  {lessonType && (
+                    <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">
+                      {lessonType} Lesson
+                    </span>
+                  )}
+                  {framework && (
+                    <span className="px-3 py-1 bg-secondary/10 text-secondary rounded-full text-xs font-medium">
+                      Framework: {framework}
+                    </span>
+                  )}
+                </div>
+                {stages && stages.length > 0 && (
+                  <div className="text-xs text-muted-foreground">
+                    Stages: {stages.join(' → ')}
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Overall Notes */}
             <div className="space-y-3">
               <h3 className="font-semibold text-foreground flex items-center gap-2">
@@ -58,6 +84,11 @@ export const TeacherGuide = ({ slides, teacherNotes }: TeacherGuideProps) => {
                         {slide.slideNumber}
                       </span>
                       <h4 className="text-sm font-semibold text-foreground">{slide.title}</h4>
+                      {slide.interactionPattern && (
+                        <span className="ml-auto px-2 py-0.5 bg-accent/10 text-accent rounded text-xs">
+                          {slide.interactionPattern}
+                        </span>
+                      )}
                     </div>
                     
                     {slide.activityInstructions && (
