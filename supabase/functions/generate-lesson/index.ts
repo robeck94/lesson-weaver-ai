@@ -399,6 +399,7 @@ CONTENT GENERATION RULES:
 - Topics must be exciting and relevant to students
 - DO NOT use markdown formatting (no **, __, ##, *, etc.) - use plain text only. For emphasis, use CAPS or line breaks
 - Format vocabulary entries as: "Word (part of speech): Definition" followed by "Example: [sentence]" on next line
+- **CRITICAL JSON FORMATTING**: Use only escaped newlines (\\n) in strings. Never use literal tab characters or control characters. All newlines must be \\n, not actual line breaks within JSON string values.
 - Return ONLY the JSON object, no additional text or markdown formatting`;
 
     const userPrompt = `Create a complete ESL lesson for:
@@ -622,13 +623,40 @@ Generate a pedagogically sound lesson using the CORRECT framework for this lesso
     // Parse the JSON response
     let lesson;
     try {
-      // Remove markdown code blocks if present
-      const cleanedText = generatedText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      // Step 1: Remove markdown code blocks if present
+      let cleanedText = generatedText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      
+      // Step 2: Sanitize control characters that break JSON parsing
+      // Replace literal tab characters with escaped version
+      cleanedText = cleanedText.replace(/\t/g, '\\t');
+      // Replace literal carriage returns
+      cleanedText = cleanedText.replace(/\r/g, '\\r');
+      // Fix any unescaped newlines within strings (but not between JSON properties)
+      // This is tricky - we need to escape newlines that appear inside quoted strings
+      
+      // Step 3: Try to parse
       lesson = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error('Failed to parse AI response:', parseError);
-      console.error('Raw response:', generatedText);
-      throw new Error('Failed to parse lesson data from AI response');
+      console.error('Raw response:', generatedText.substring(0, 1000) + '...[truncated]');
+      
+      // Try one more aggressive cleanup attempt
+      try {
+        let aggressiveClean = generatedText
+          .replace(/```json\n?/g, '')
+          .replace(/```\n?/g, '')
+          .trim()
+          // Remove all control characters except newlines that are already escaped
+          .replace(/[\x00-\x09\x0B-\x0C\x0E-\x1F\x7F]/g, ' ')
+          // Normalize multiple spaces
+          .replace(/  +/g, ' ');
+        
+        lesson = JSON.parse(aggressiveClean);
+        console.log('Successfully parsed with aggressive cleanup');
+      } catch (secondError) {
+        console.error('Second parse attempt failed:', secondError);
+        throw new Error('Failed to parse lesson data from AI response');
+      }
     }
 
     console.log('Lesson generated successfully:', lesson.topic);
