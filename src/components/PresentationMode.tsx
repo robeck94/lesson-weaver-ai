@@ -1,8 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { X, ChevronLeft, ChevronRight, Play } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { X, ChevronLeft, ChevronRight, Play, Sparkles } from "lucide-react";
 import type { LessonSlide } from "@/pages/Index";
 import { QuizSlide } from "./QuizSlide";
+
+type TransitionEffect = "fade" | "slide" | "zoom";
 
 interface PresentationModeProps {
   slides: LessonSlide[];
@@ -13,6 +16,7 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [revealedElements, setRevealedElements] = useState<Set<number>>(new Set());
+  const [transitionEffect, setTransitionEffect] = useState<TransitionEffect>("fade");
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -193,6 +197,21 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
     return colors[stage] || "from-muted/20 to-muted/5 border-border";
   };
 
+  const getTransitionClass = () => {
+    if (!isAnimating) return "";
+    
+    switch (transitionEffect) {
+      case "fade":
+        return "animate-fade-in";
+      case "slide":
+        return "animate-slide-in-right";
+      case "zoom":
+        return "animate-scale-in";
+      default:
+        return "animate-fade-in";
+    }
+  };
+
   return (
     <div 
       ref={containerRef}
@@ -216,23 +235,45 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
               )}
             </div>
           </div>
-          <Button 
-            onClick={onClose} 
-            variant="ghost" 
-            size="icon"
-            className="hover:bg-destructive/20 hover:text-destructive"
-          >
-            <X className="w-5 h-5" />
-          </Button>
+          
+          <div className="flex items-center gap-3">
+            {/* Transition Effect Selector */}
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-muted-foreground" />
+              <Select value={transitionEffect} onValueChange={(value) => setTransitionEffect(value as TransitionEffect)}>
+                <SelectTrigger className="w-[120px] h-8 bg-card border-border shadow-sm hover:bg-accent/10 z-50">
+                  <SelectValue placeholder="Transition" />
+                </SelectTrigger>
+                <SelectContent className="bg-card border-border shadow-xl z-[100]">
+                  <SelectItem value="fade" className="cursor-pointer hover:bg-accent/10">
+                    Fade
+                  </SelectItem>
+                  <SelectItem value="slide" className="cursor-pointer hover:bg-accent/10">
+                    Slide
+                  </SelectItem>
+                  <SelectItem value="zoom" className="cursor-pointer hover:bg-accent/10">
+                    Zoom
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <Button 
+              onClick={onClose} 
+              variant="ghost" 
+              size="icon"
+              className="hover:bg-destructive/20 hover:text-destructive"
+            >
+              <X className="w-5 h-5" />
+            </Button>
+          </div>
         </div>
       </div>
 
       {/* Main Slide Content */}
       <div className="flex-1 flex items-center justify-center px-8 py-6">
         <div 
-          className={`w-full h-full max-w-[95vw] transition-all duration-500 ${
-            isAnimating ? "animate-fade-in" : ""
-          }`}
+          className={`w-full h-full max-w-[95vw] transition-all duration-500 ${getTransitionClass()}`}
         >
           {isQuizSlide && quizQuestions.length > 0 ? (
             /* Quiz Slide Layout */
