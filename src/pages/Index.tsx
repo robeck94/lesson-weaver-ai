@@ -39,6 +39,7 @@ const Index = () => {
     setGeneratedLesson(null);
 
     try {
+      // Step 1: Generate lesson content
       const { data, error } = await supabase.functions.invoke('generate-lesson', {
         body: { topic, cefrLevel }
       });
@@ -65,15 +66,53 @@ const Index = () => {
             variant: "destructive",
           });
         }
+        setIsGenerating(false);
         return;
       }
 
       if (data?.lesson) {
-        setGeneratedLesson(data.lesson);
+        const lesson = data.lesson;
+        setGeneratedLesson(lesson);
+        
         toast({
           title: "Lesson Generated!",
-          description: `Created a ${data.lesson.totalSlides}-slide ${data.lesson.lessonType} lesson.`,
+          description: `Created a ${lesson.totalSlides}-slide ${lesson.lessonType} lesson. Generating images...`,
         });
+
+        // Step 2: Generate images for slides with visual descriptions
+        const slidesWithImages = [...lesson.slides];
+        let imagesGenerated = 0;
+
+        for (let i = 0; i < lesson.slides.length; i++) {
+          const slide = lesson.slides[i];
+          
+          if (slide.visualDescription) {
+            try {
+              const { data: imageData, error: imageError } = await supabase.functions.invoke('generate-slide-image', {
+                body: {
+                  visualDescription: slide.visualDescription,
+                  slideTitle: slide.title
+                }
+              });
+
+              if (!imageError && imageData?.imageUrl) {
+                slidesWithImages[i] = { ...slide, imageUrl: imageData.imageUrl };
+                imagesGenerated++;
+                // Update lesson with newly generated image
+                setGeneratedLesson({ ...lesson, slides: [...slidesWithImages] });
+              }
+            } catch (err) {
+              console.error(`Error generating image for slide ${i + 1}:`, err);
+            }
+          }
+        }
+
+        if (imagesGenerated > 0) {
+          toast({
+            title: "Images Generated!",
+            description: `Successfully generated ${imagesGenerated} slide illustrations.`,
+          });
+        }
       }
     } catch (err) {
       console.error('Unexpected error:', err);
