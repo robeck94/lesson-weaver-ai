@@ -94,6 +94,7 @@ const Index = () => {
         // Step 2: Generate images for slides with visual descriptions
         const slidesWithImages = [...lesson.slides];
         let imagesGenerated = 0;
+        const MAX_RETRIES = 2;
 
         for (let i = 0; i < lesson.slides.length; i++) {
           const slide = lesson.slides[i];
@@ -103,7 +104,9 @@ const Index = () => {
               const { data: imageData, error: imageError } = await supabase.functions.invoke('generate-slide-image', {
                 body: {
                   visualDescription: slide.visualDescription,
-                  slideTitle: slide.title
+                  slideTitle: slide.title,
+                  slideContent: slide.content,
+                  retryAttempt: 0
                 }
               });
 
@@ -119,12 +122,14 @@ const Index = () => {
           }
         }
 
-        // Step 3: Validate generated images
+        // Step 3: Validate generated images and auto-fix low-confidence ones
         if (imagesGenerated > 0) {
           toast({
             title: "Validating Images...",
             description: "Checking if images match the lesson content",
           });
+
+          const slidesToRetry: number[] = [];
 
           for (let i = 0; i < slidesWithImages.length; i++) {
             const slide = slidesWithImages[i];
@@ -145,6 +150,12 @@ const Index = () => {
                     ...slide, 
                     imageValidation: validationData.validation 
                   };
+                  
+                  // Mark for retry if validation failed or confidence is low
+                  if (!validationData.validation.isValid || validationData.validation.confidence < 70) {
+                    slidesToRetry.push(i);
+                  }
+                  
                   // Update lesson with validation results
                   setGeneratedLesson({ ...lesson, slides: [...slidesWithImages] });
                 }
@@ -152,6 +163,98 @@ const Index = () => {
                 console.error(`Error validating image for slide ${i + 1}:`, err);
               }
             }
+          }
+
+          // Step 4: Auto-retry failed/low-confidence images
+          if (slidesToRetry.length > 0) {
+            toast({
+              title: "Auto-Fixing Images...",
+              description: `Regenerating ${slidesToRetry.length} image${slidesToRetry.length > 1 ? 's' : ''} with improved prompts`,
+            });
+
+            for (const slideIndex of slidesToRetry) {
+              const slide = slidesWithImages[slideIndex];
+              let retryAttempt = 1;
+              let bestImage = slide.imageUrl;
+              let bestValidation = slide.imageValidation;
+
+              while (retryAttempt <= MAX_RETRIES) {
+                try {
+                  console.log(`Retry attempt ${retryAttempt}/${MAX_RETRIES} for slide ${slideIndex + 1}`);
+                  
+                  // Regenerate with enhanced prompt including validation issues
+                  const { data: retryImageData, error: retryImageError } = await supabase.functions.invoke('generate-slide-image', {
+                    body: {
+                      visualDescription: slide.visualDescription,
+                      slideTitle: slide.title,
+                      slideContent: slide.content,
+                      validationIssues: slide.imageValidation?.issues || [],
+                      retryAttempt
+                    }
+                  });
+
+                  if (!retryImageError && retryImageData?.imageUrl) {
+                    // Validate the new image
+                    const { data: newValidationData, error: newValidationError } = await supabase.functions.invoke('validate-slide-image', {
+                      body: {
+                        imageUrl: retryImageData.imageUrl,
+                        slideContent: slide.content,
+                        visualDescription: slide.visualDescription,
+                        slideTitle: slide.title
+                      }
+                    });
+
+                    if (!newValidationError && newValidationData?.validation) {
+                      // Check if this is better than previous attempt
+                      const newConfidence = newValidationData.validation.confidence;
+                      const currentConfidence = bestValidation?.confidence || 0;
+
+                      if (newValidationData.validation.isValid || newConfidence > currentConfidence) {
+                        bestImage = retryImageData.imageUrl;
+                        bestValidation = newValidationData.validation;
+                        
+                        slidesWithImages[slideIndex] = {
+                          ...slide,
+                          imageUrl: bestImage,
+                          imageValidation: bestValidation
+                        };
+                        
+                        // Update immediately so user sees progress
+                        setGeneratedLesson({ ...lesson, slides: [...slidesWithImages] });
+
+                        // If we got a valid image or high confidence, stop retrying
+                        if (newValidationData.validation.isValid && newConfidence >= 70) {
+                          toast({
+                            title: "Image Fixed!",
+                            description: `Slide ${slideIndex + 1} successfully regenerated (confidence: ${newConfidence}%)`,
+                          });
+                          break;
+                        }
+                      }
+                    }
+                  }
+
+                  retryAttempt++;
+                  
+                  // If this was the last retry, notify user
+                  if (retryAttempt > MAX_RETRIES) {
+                    toast({
+                      title: "Retry Limit Reached",
+                      description: `Slide ${slideIndex + 1}: Used best attempt (confidence: ${bestValidation?.confidence || 0}%)`,
+                      variant: "default",
+                    });
+                  }
+                } catch (err) {
+                  console.error(`Error retrying image for slide ${slideIndex + 1}:`, err);
+                  break;
+                }
+              }
+            }
+
+            toast({
+              title: "Auto-Fix Complete",
+              description: `Processed ${slidesToRetry.length} image${slidesToRetry.length > 1 ? 's' : ''}`,
+            });
           }
         }
 

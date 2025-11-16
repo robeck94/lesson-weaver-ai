@@ -11,16 +11,45 @@ serve(async (req) => {
   }
 
   try {
-    const { visualDescription, slideTitle } = await req.json();
-    console.log('Generating image for:', { slideTitle, visualDescription });
+    const { visualDescription, slideTitle, slideContent, validationIssues, retryAttempt = 0 } = await req.json();
+    console.log('Generating image for:', { slideTitle, visualDescription, retryAttempt });
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    // Enhanced prompt for better educational illustrations
-    const imagePrompt = `Educational illustration for ESL lesson slide: ${slideTitle}. ${visualDescription}. Style: Clean, colorful, professional, suitable for classroom presentation. Flat design, friendly, engaging for students.`;
+    // Enhanced prompt with validation feedback for retries
+    let imagePrompt = `Educational illustration for ESL lesson slide: ${slideTitle}. ${visualDescription}. Style: Clean, colorful, professional, suitable for classroom presentation. Flat design, friendly, engaging for students.`;
+    
+    // If this is a retry with validation issues, enhance the prompt
+    if (retryAttempt > 0 && validationIssues && validationIssues.length > 0) {
+      imagePrompt = `IMPORTANT - Previous image had issues, please fix them:
+${validationIssues.map((issue: string, idx: number) => `${idx + 1}. ${issue}`).join('\n')}
+
+Educational illustration for ESL lesson slide: ${slideTitle}
+
+EXACT CONTENT TO INCLUDE:
+${slideContent}
+
+VISUAL REQUIREMENTS:
+${visualDescription}
+
+CRITICAL: Include the EXACT words and vocabulary from the content above. For matching games, show both the words AND definitions exactly as listed in the content. Do not use generic examples.
+
+Style: Clean, colorful, professional, suitable for classroom presentation. Flat design, friendly, engaging for students.`;
+    } else if (slideContent) {
+      // Even for first attempt, include content context
+      imagePrompt = `Educational illustration for ESL lesson slide: ${slideTitle}
+
+CONTENT CONTEXT (include exact words if applicable):
+${slideContent}
+
+VISUAL REQUIREMENTS:
+${visualDescription}
+
+Style: Clean, colorful, professional, suitable for classroom presentation. Flat design, friendly, engaging for students.`;
+    }
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
