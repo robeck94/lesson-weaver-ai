@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, Sparkles } from "lucide-react";
 
@@ -11,112 +11,113 @@ interface LessonInputFormProps {
   isGenerating: boolean;
 }
 
-const PRESET_TOPICS = [
-  // Daily Life & Routines
-  "Daily Routines",
-  "Morning and Evening Habits",
-  "Shopping at the Supermarket",
-  "Cooking and Recipes",
-  "Food and Restaurants",
-  "Ordering Food and Drinks",
-  "At the Café",
-  "Healthy Eating",
-  
-  // Travel & Transportation
-  "Travel and Tourism",
-  "At the Airport",
-  "Booking Hotels and Accommodations",
-  "Public Transportation",
-  "Asking for Directions",
-  "Cultural Differences While Traveling",
-  "Adventure Sports",
-  
-  // Work & Professional
-  "Business English - Meetings",
-  "Job Interviews",
-  "Writing Professional Emails",
-  "Giving Presentations",
-  "Telephone Conversations",
-  "Negotiating and Dealing",
-  "Office Small Talk",
-  "Remote Work and Digital Nomads",
-  
-  // Technology & Modern Life
-  "Technology and Social Media",
-  "Online Shopping",
-  "Digital Privacy and Security",
-  "Artificial Intelligence",
-  "Smartphones and Apps",
-  "Gaming Culture",
-  "Cryptocurrency and Digital Money",
-  
-  // Health & Wellness
-  "Health and Fitness",
-  "Mental Health and Wellbeing",
-  "At the Doctor's Office",
-  "Sports and Exercise",
-  "Yoga and Meditation",
-  "Sleep and Relaxation",
-  
-  // Environment & Nature
-  "Environmental Issues",
-  "Climate Change",
-  "Recycling and Sustainability",
-  "Wildlife and Animals",
-  "Gardening and Plants",
-  "Natural Disasters",
-  
-  // Entertainment & Arts
-  "Movies and Cinema",
-  "Music and Concerts",
-  "Books and Reading",
-  "Photography",
-  "Museums and Art Galleries",
-  "Theater and Performing Arts",
-  "Podcasts and Audiobooks",
-  
-  // Social & Relationships
-  "Making Friends",
-  "Dating and Relationships",
-  "Family Gatherings",
-  "Celebrations and Parties",
-  "Wedding Traditions",
-  "Apologizing and Forgiving",
-  
-  // Education & Learning
-  "University Life",
-  "Online Learning",
-  "Study Tips and Techniques",
-  "Learning Languages",
-  "Public Speaking",
-  
-  // Hobbies & Interests
-  "Photography",
-  "Collecting Things",
-  "DIY and Crafts",
-  "Volunteering",
-  "Fashion and Style",
-  "Interior Design",
-  
-  // Grammar Topics
-  "Present Simple Tense",
-  "Past Simple Tense",
-  "Present Continuous",
-  "Future Forms",
-  "Modal Verbs",
-  "Conditional Sentences",
-  "Passive Voice",
-  "Reported Speech",
-  "Phrasal Verbs",
-  "Idioms and Expressions",
-  
-  // Current Issues
-  "Fake News and Media Literacy",
-  "Work-Life Balance",
-  "Generation Gap",
-  "Urban vs Rural Living",
-  "Minimalism and Decluttering",
-];
+const TOPIC_CATEGORIES = {
+  "Daily Life & Routines": [
+    "Daily Routines",
+    "Morning and Evening Habits",
+    "Shopping at the Supermarket",
+    "Cooking and Recipes",
+    "Food and Restaurants",
+    "Ordering Food and Drinks",
+    "At the Café",
+    "Healthy Eating",
+  ],
+  "Travel & Transportation": [
+    "Travel and Tourism",
+    "At the Airport",
+    "Booking Hotels and Accommodations",
+    "Public Transportation",
+    "Asking for Directions",
+    "Cultural Differences While Traveling",
+    "Adventure Sports",
+  ],
+  "Work & Professional": [
+    "Business English - Meetings",
+    "Job Interviews",
+    "Writing Professional Emails",
+    "Giving Presentations",
+    "Telephone Conversations",
+    "Negotiating and Dealing",
+    "Office Small Talk",
+    "Remote Work and Digital Nomads",
+  ],
+  "Technology & Modern Life": [
+    "Technology and Social Media",
+    "Online Shopping",
+    "Digital Privacy and Security",
+    "Artificial Intelligence",
+    "Smartphones and Apps",
+    "Gaming Culture",
+    "Cryptocurrency and Digital Money",
+  ],
+  "Health & Wellness": [
+    "Health and Fitness",
+    "Mental Health and Wellbeing",
+    "At the Doctor's Office",
+    "Sports and Exercise",
+    "Yoga and Meditation",
+    "Sleep and Relaxation",
+  ],
+  "Environment & Nature": [
+    "Environmental Issues",
+    "Climate Change",
+    "Recycling and Sustainability",
+    "Wildlife and Animals",
+    "Gardening and Plants",
+    "Natural Disasters",
+  ],
+  "Entertainment & Arts": [
+    "Movies and Cinema",
+    "Music and Concerts",
+    "Books and Reading",
+    "Photography",
+    "Museums and Art Galleries",
+    "Theater and Performing Arts",
+    "Podcasts and Audiobooks",
+  ],
+  "Social & Relationships": [
+    "Making Friends",
+    "Dating and Relationships",
+    "Family Gatherings",
+    "Celebrations and Parties",
+    "Wedding Traditions",
+    "Apologizing and Forgiving",
+  ],
+  "Education & Learning": [
+    "University Life",
+    "Online Learning",
+    "Study Tips and Techniques",
+    "Learning Languages",
+    "Public Speaking",
+  ],
+  "Hobbies & Interests": [
+    "Photography",
+    "Collecting Things",
+    "DIY and Crafts",
+    "Volunteering",
+    "Fashion and Style",
+    "Interior Design",
+  ],
+  "Grammar Topics": [
+    "Present Simple Tense",
+    "Past Simple Tense",
+    "Present Continuous",
+    "Future Forms",
+    "Modal Verbs",
+    "Conditional Sentences",
+    "Passive Voice",
+    "Reported Speech",
+    "Phrasal Verbs",
+    "Idioms and Expressions",
+  ],
+  "Current Issues": [
+    "Fake News and Media Literacy",
+    "Work-Life Balance",
+    "Generation Gap",
+    "Urban vs Rural Living",
+    "Minimalism and Decluttering",
+  ],
+};
 
 const CEFR_LEVELS = [
   { value: "A1", label: "A1 - Beginner" },
@@ -186,11 +187,18 @@ export const LessonInputForm = ({ onGenerate, isGenerating }: LessonInputFormPro
                 <SelectTrigger id="topic" className="bg-background">
                   <SelectValue placeholder="Select a topic..." />
                 </SelectTrigger>
-                <SelectContent>
-                  {PRESET_TOPICS.map((presetTopic) => (
-                    <SelectItem key={presetTopic} value={presetTopic}>
-                      {presetTopic}
-                    </SelectItem>
+                <SelectContent className="max-h-[400px]">
+                  {Object.entries(TOPIC_CATEGORIES).map(([category, topics]) => (
+                    <SelectGroup key={category}>
+                      <SelectLabel className="text-xs font-semibold text-muted-foreground px-2 py-1.5">
+                        {category}
+                      </SelectLabel>
+                      {topics.map((presetTopic) => (
+                        <SelectItem key={presetTopic} value={presetTopic}>
+                          {presetTopic}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
                   ))}
                 </SelectContent>
               </Select>
