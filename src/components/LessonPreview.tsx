@@ -1,0 +1,107 @@
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Clock, Layers } from "lucide-react";
+import type { LessonSlide } from "@/pages/Index";
+
+interface LessonPreviewProps {
+  slides: LessonSlide[];
+}
+
+const STAGE_COLORS: Record<string, string> = {
+  "Lead-in": "bg-primary/10 text-primary border-primary/20",
+  "Presentation": "bg-secondary/10 text-secondary border-secondary/20",
+  "Practice": "bg-accent/10 text-accent border-accent/20",
+  "Production": "bg-success/10 text-success border-success/20",
+  "Consolidation": "bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-900/20 dark:text-purple-300",
+  "Assessment": "bg-orange-100 text-orange-700 border-orange-200 dark:bg-orange-900/20 dark:text-orange-300",
+};
+
+export const LessonPreview = ({ slides }: LessonPreviewProps) => {
+  return (
+    <Card className="shadow-medium border-border/50">
+      <CardHeader className="gradient-card border-b border-border/50">
+        <CardTitle className="flex items-center gap-2 text-foreground">
+          <Layers className="w-5 h-5 text-primary" />
+          Lesson Slides ({slides.length})
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="p-0">
+        <ScrollArea className="h-[600px]">
+          <div className="p-6 space-y-4">
+            {slides.map((slide, index) => (
+              <div
+                key={index}
+                className="border border-border rounded-xl p-5 bg-card hover:shadow-soft transition-all duration-300 animate-slide-in"
+                style={{ animationDelay: `${index * 0.05}s` }}
+              >
+                {/* Slide Header */}
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg gradient-hero flex items-center justify-center text-white font-bold text-sm shadow-sm">
+                      {slide.slideNumber}
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-foreground">{slide.title}</h3>
+                      <div className="flex items-center gap-2 mt-1">
+                        <Badge 
+                          variant="outline" 
+                          className={`text-xs ${STAGE_COLORS[slide.stage] || "bg-muted"}`}
+                        >
+                          {slide.stage}
+                        </Badge>
+                        {slide.timing && (
+                          <span className="text-xs text-muted-foreground flex items-center gap-1">
+                            <Clock className="w-3 h-3" />
+                            {slide.timing}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Slide Content */}
+                <div className="space-y-3">
+                  <div className="bg-muted/50 rounded-lg p-4">
+                    <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
+                      {slide.content}
+                    </p>
+                  </div>
+
+                  {/* Visual Description */}
+                  {slide.visualDescription && (
+                    <div className="text-xs space-y-1">
+                      <p className="text-muted-foreground font-medium">Visual Design:</p>
+                      <p className="text-muted-foreground italic pl-2 border-l-2 border-primary/30">
+                        {slide.visualDescription}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Animation Notes */}
+                  {slide.animationNotes && (
+                    <div className="text-xs space-y-1">
+                      <p className="text-muted-foreground font-medium">Animations:</p>
+                      <p className="text-muted-foreground italic pl-2 border-l-2 border-secondary/30">
+                        {slide.animationNotes}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Activity Instructions */}
+                  {slide.activityInstructions && (
+                    <div className="bg-accent/5 border border-accent/20 rounded-lg p-3 text-xs">
+                      <p className="text-accent font-medium mb-1">Activity:</p>
+                      <p className="text-foreground">{slide.activityInstructions}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </ScrollArea>
+      </CardContent>
+    </Card>
+  );
+};
