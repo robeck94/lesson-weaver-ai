@@ -86,10 +86,11 @@ Return ONLY a valid JSON object with this exact structure:
 }
 
 CRITICAL RULES:
-- Each lesson must be **unique, engaging, and interactive**
+- Each lesson must be unique, engaging, and interactive
 - Balance visual engagement with pedagogical clarity
 - Avoid repeating the same visual or structural pattern
 - Topics must be exciting and relevant to students
+- DO NOT use markdown formatting (no **, __, ##, etc.) - use plain text only
 - Return ONLY the JSON object, no additional text or markdown formatting`;
 
     const userPrompt = `Create a complete ESL lesson for:
