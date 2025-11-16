@@ -75,9 +75,9 @@ Return ONLY a valid JSON object with this exact structure:
       "slideNumber": 1,
       "stage": "Lead-in",
       "title": "Slide title",
-      "content": "THE ACTUAL SLIDE CONTENT that students will see and read. Include: complete sentences, exercises, stories, dialogues, questions, vocabulary lists, grammar rules, reading passages - NOT descriptions of what should be there. For example: 'Yesterday, I ___ (go) to the park. I ___ (see) my friend' NOT 'A story with blanks for verbs'",
-      "visualDescription": "Brief description of visual styling, colors, icons to use",
-      "animationNotes": "How elements should animate in",
+      "content": "THE ACTUAL TEXT, QUESTIONS, AND MATERIAL STUDENTS WILL READ. Examples:\n- For discussion: 'Do you use technology every day? How many apps are on your phone? What are the benefits and drawbacks of technology in your life?'\n- For vocabulary: 'smartphone (noun) - a mobile phone with advanced features\nlaptop (noun) - a portable computer'\n- For grammar: 'Yesterday, I went to the park.\nLast week, she visited her grandmother.\nThey played football on Saturday.'\nNEVER write descriptions like 'A story with blanks' or 'Questions about technology' - write the ACTUAL questions and text",
+      "visualDescription": "INTERNAL NOTE: Suggest colors, icons, layout for designers/teachers - NOT shown to students",
+      "animationNotes": "INTERNAL NOTE: Animation instructions for presentation - NOT shown to students",
       "activityInstructions": "Teacher instructions for delivering this slide",
       "timing": "5 minutes"
     }
@@ -104,7 +104,18 @@ CRITICAL RULES:
 Topic: ${topic}
 CEFR Level: ${cefrLevel}
 
-Generate a pedagogically correct lesson with appropriate stages, engaging activities, and visual slide descriptions. Make it dynamic, interactive, and teacher-ready.`;
+CRITICAL REQUIREMENTS:
+1. The "content" field must contain ACTUAL text students will read - write complete questions, sentences, stories, vocabulary lists, NOT descriptions
+2. For discussion slides: Write 4-6 actual discussion questions
+3. For practice slides: Write 6-8 complete example sentences or exercises
+4. For vocabulary slides: Write actual word lists with definitions and example sentences
+5. For reading slides: Write the complete story or passage (100-200 words)
+6. For grammar slides: Write the rules AND 6-8 example sentences demonstrating the structure
+
+BAD Example (description): "Questions about technology use"
+GOOD Example (actual content): "How often do you use your smartphone? Do you prefer Instagram or TikTok? What apps do you use daily?"
+
+Generate a pedagogically correct lesson with appropriate stages, engaging activities, and REAL student-facing content. Make it dynamic, interactive, and teacher-ready.`;
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
