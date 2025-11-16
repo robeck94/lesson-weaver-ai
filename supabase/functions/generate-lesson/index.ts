@@ -160,12 +160,107 @@ Example stages: ["Lead-in", "Reading Input", "Language Focus", "Practice", "Spea
 - Time-efficient, goal-oriented, immediate applicability
 
 ### INTERACTION PATTERNS FOR MAXIMUM STT (Student Talking Time):
-- Aim for 70-80% Student Talking Time vs 20-30% Teacher Talking Time
-- Progression: Individual → Pair → Group → Whole Class
-- Practice Stage: Start with individual work, move to pairs, then small groups
-- Production Stage: Maximize pair/group work, minimize teacher-fronted activities
-- Include "Think-Pair-Share" activities to engage all learners
-- Specify when activities are: Solo / Pairs / Small Groups (3-4) / Whole Class
+
+**CRITICAL: AIM FOR 70-80% STT vs 20-30% TTT (Teacher Talking Time)**
+
+### INTERACTION PATTERN PROGRESSION:
+1. **Individual Work** (5-10% of activity time)
+   - Students think/prepare alone first
+   - Ensures everyone has something to say
+   - Lowers anxiety, allows processing time
+   - Examples: Read individually, write ideas, complete gap-fill
+
+2. **Pair Work** (40-50% of activity time) ⭐ MAXIMIZE THIS
+   - HIGHEST STT: Both students talking 50% of the time
+   - Partner A speaks, Partner B listens, then switch
+   - Lower stress than whole class speaking
+   - Everyone participates simultaneously
+   - Examples: Role-plays, information gaps, peer interviews, discuss and compare answers
+
+3. **Small Groups 3-4** (20-30% of activity time)
+   - Good for discussions, problem-solving, projects
+   - STT still high but slightly lower than pairs
+   - Appoint roles: Facilitator, Timekeeper, Scribe, Reporter
+   - Examples: Group discussions, collaborative writing, decision-making tasks
+
+4. **Whole Class** (10-20% of activity time) - MINIMIZE
+   - Lowest STT: Only one student talks at a time
+   - Use only for: Instructions, demonstrations, quick checks, presentations
+   - Avoid long whole-class discussions
+   - Open pairs/groups: Students share what they discussed (not re-discuss)
+
+### ACTIVITY STRUCTURES FOR MAXIMUM STT:
+
+**Information Gap Activities** (Pairs - 90%+ STT):
+- Partner A has info Partner B needs, and vice versa
+- Must communicate to complete task
+- Forces extended speaking and listening
+- Examples: Complete a form, spot the differences, jigsaw reading
+
+**Think-Pair-Share** (Individual → Pairs → Whole Class):
+- Think: 1 min solo (0% TTT)
+- Pair: 3 mins discuss with partner (5% TTT for monitoring)
+- Share: 1 min report key points (50% TTT)
+- Total: 11% TTT vs 89% STT ✅
+
+**Running Dictation** (Pairs - 85%+ STT):
+- Student A runs to read text on wall
+- Student A dictates to Student B who writes
+- Student B asks for repetition/clarification
+- High energy, lots of speaking/listening
+
+**Role-Play Chains** (Pairs → New Pairs → New Pairs):
+- Practice role-play with Partner 1 (3 mins)
+- Find new partner, practice again with improvements (3 mins)
+- Find another new partner, practice with more confidence (3 mins)
+- Each repetition improves fluency
+
+**Pyramid Discussions** (Individual → Pairs → Groups → Class):
+- Individual: Decide top 3 items (2 mins)
+- Pairs: Agree on top 3 together (4 mins)
+- Groups of 4: Agree on top 3 together (6 mins)
+- Class: Groups present their top 3 (2 mins per group)
+- Builds consensus, lots of negotiation language
+
+### MINIMIZING TEACHER TALKING TIME:
+
+**Instructions** (Keep under 2 minutes):
+- Use visual demonstrations instead of long explanations
+- Give instructions in chunks (explain → students do step 1 → explain step 2)
+- Use ICQs (Instruction Checking Questions): "Are you working alone or in pairs?" "How many minutes?"
+
+**Error Correction** (Don't interrupt STT):
+- During fluency activities: Note errors, don't correct immediately
+- Save error correction for dedicated feedback slot AFTER activity
+- Use peer correction: "Partner B, was that correct?"
+
+**Questioning Techniques** (Increase STT):
+- Avoid Yes/No questions: "Do you like pizza?" (Yes/No = 1 word)
+- Use Open questions: "Why do you like pizza?" (Requires explanation)
+- Use follow-up questions: "Tell me more" "Can you give an example?" "What else?"
+- Wait time: Ask question → Wait 5 seconds → Choose student (gives thinking time)
+
+**Monitoring Strategies** (Support without talking):
+- Walk around during pair/group work
+- Listen to multiple groups without interrupting
+- Note good language and errors for later feedback
+- Gesture/nod to encourage, don't interrupt with corrections
+
+### SPECIFY FOR EACH SLIDE:
+- **interactionPattern**: "Individual" | "Pairs" | "Small Groups" | "Whole Class"
+- **Expected STT%**: Estimate how much students vs teacher will talk
+  - Pairs = 80-90% STT
+  - Small Groups = 70-80% STT
+  - Whole Class = 20-40% STT
+  - Individual Work = 0% STT (but necessary for preparation)
+- **Transition Strategy**: How to move from one pattern to another smoothly
+
+### TARGET DISTRIBUTION FOR FULL LESSON:
+- **Individual Work**: 10% of lesson time
+- **Pair Work**: 50% of lesson time ⭐ PRIORITY
+- **Small Groups**: 20% of lesson time
+- **Whole Class**: 20% of lesson time (mostly for instructions and feedback)
+- **Result**: 70-80% overall STT ✅
 
 ---
 
@@ -210,7 +305,7 @@ Return ONLY a valid JSON object with this exact structure:
       "content": "THE ACTUAL TEXT, QUESTIONS, AND MATERIAL STUDENTS WILL READ. Examples:\n- For discussion: 'Do you use technology every day? How many apps are on your phone? What are the benefits and drawbacks of technology in your life?'\n- For vocabulary: 'smartphone (noun) - a mobile phone with advanced features\nlaptop (noun) - a portable computer'\n- For grammar: 'Yesterday, I went to the park.\nLast week, she visited her grandmother.\nThey played football on Saturday.'\nNEVER write descriptions like 'A story with blanks' or 'Questions about technology' - write the ACTUAL questions and text",
       "visualDescription": "CRITICAL - This determines what images are generated:\n- If content references images students must see ('Look at the images', 'Match the pictures'), specify EXACTLY what to generate: 'Generate these items in a grid: 1) modern smartphone with Instagram visible, 2) silver laptop, 3) tablet showing Netflix, 4) smartwatch'\n- If content is text-based discussion/grammar, describe supportive styling: 'Colorful background with tech icons, modern clean layout'\n- BE SPECIFIC about what objects/items to generate when students need to see them\n- AGE-APPROPRIATE: For young learners use cartoon style, for teens use modern/cool style, for adults use professional/realistic style",
       "animationNotes": "INTERNAL NOTE: Animation instructions for presentation - NOT shown to students",
-      "activityInstructions": "Teacher instructions for delivering this slide. Include: 1) Interaction pattern (Solo/Pairs/Groups/Whole Class), 2) Step-by-step delivery, 3) Time management tips, 4) Scaffolding suggestions for different CEFR levels, 5) Expected Student Talking Time %"
+      "activityInstructions": "DETAILED teacher instructions for delivering this slide. MUST include:\n1. INTERACTION PATTERN: Individual/Pairs/Small Groups/Whole Class\n2. EXPECTED STT%: Estimate 70-90% for pairs, 60-80% for groups, 20-40% for whole class\n3. STEP-BY-STEP PROCEDURE:\n   - Exact instructions to give students (keep under 30 seconds)\n   - ICQs (Instruction Checking Questions) to verify understanding\n   - Transition strategy from previous activity\n4. MAXIMIZING STT STRATEGIES:\n   - How to set up pair/group work to maximize talking time\n   - Example: 'Partner A speaks first for 2 mins, Partner B listens and asks follow-up questions, then switch roles'\n   - Specific activity structure (Think-Pair-Share, Running Dictation, Information Gap, etc.)\n5. MONITORING (Don't interrupt STT):\n   - How to monitor without talking (walk around, note errors, gesture)\n   - When/how to provide feedback (AFTER activity, not during)\n6. TIME BREAKDOWN:\n   - Instructions: 1 min (20% TTT)\n   - Activity: 4 mins (80% STT)\n   - Example timing that maximizes STT\n7. SCAFFOLDING for CEFR levels\n8. CONTINGENCY: What to do if students finish early/need more time"
     }
   ],
   "teacherNotes": "Overall lesson guidance including: 1) Lesson objectives (SMART goals), 2) Key teaching points and anticipated difficulties, 3) Differentiation strategies for mixed-ability classes, 4) Extension activities for fast finishers, 5) Assessment opportunities, 6) Tips for maximizing Student Talking Time, 7) Homework suggestions, 8) Materials needed, 9) Board plan suggestions, 10) Reflection questions for next lesson"
@@ -328,11 +423,86 @@ VISUAL DESCRIPTIONS:
 - Example GOOD: "Generate these specific items: 1) iPhone showing Instagram, 2) MacBook Pro, 3) iPad with YouTube, 4) Apple Watch, 5) Facebook icon, 6) TikTok icon"
 - Age-appropriate styling: Young learners (cartoon), Teens (modern/cool), Adults (realistic/professional)
 
-INTERACTION PATTERNS:
-- Specify interactionPattern for each slide: "Individual", "Pairs", "Small Groups", or "Whole Class"
-- Progression: Individual → Pairs → Small Groups → Whole Class
-- Aim for 70-80% Student Talking Time
-- Include STT expectations in activityInstructions
+INTERACTION PATTERNS & STT MAXIMIZATION (CRITICAL):
+
+### TARGET: 70-80% Student Talking Time Overall
+
+### LESSON-WIDE DISTRIBUTION:
+- **Pair Work**: 50% of lesson time ⭐ PRIORITY (80-90% STT per activity)
+- **Small Groups**: 20% of lesson time (70-80% STT per activity)
+- **Individual**: 10% of lesson time (preparation, no talking but necessary)
+- **Whole Class**: 20% of lesson time (20-40% STT, mostly instructions/feedback)
+
+### SPECIFY FOR EVERY SLIDE:
+1. **interactionPattern**: Choose most appropriate: "Individual" | "Pairs" | "Small Groups" | "Whole Class"
+2. **Expected STT%**: Calculate based on pattern chosen (see above percentages)
+
+### HIGH-STT ACTIVITY STRUCTURES TO USE:
+
+**Think-Pair-Share** (Individual 1min → Pairs 3mins → Share 1min):
+- Students think alone, discuss in pairs, then share with class
+- Example activityInstructions: "Think individually for 1 minute. Then discuss your ideas with your partner for 3 minutes - Partner A speaks first for 90 seconds, Partner B responds for 90 seconds. Finally, share one interesting idea with the class."
+- STT: 11% TTT vs 89% STT ✅
+
+**Information Gap** (Pairs):
+- Partner A has information Partner B needs, and vice versa
+- Must communicate to complete the task
+- Example: "Partner A: Look at Form A (don't show partner). Partner B: Look at Form B. Ask questions to complete your form."
+- STT: 90%+ ✅
+
+**Running Dictation** (Pairs):
+- Text on wall, one student runs to read/memorize, dictates to partner who writes
+- Example: "Partner A: Run to the text on the wall, read and memorize one sentence, run back and dictate to Partner B. Partner B: Write what Partner A says, ask for repetition if needed. After 3 sentences, switch roles."
+- STT: 85%+ ✅
+
+**Role-Play Chains** (Pairs, rotate partners):
+- Practice same role-play with 3 different partners
+- Example: "Role-play this conversation with your partner for 2 minutes. Then find a new partner and role-play again with improvements. Then find another partner for the final practice."
+- STT: 90%+ ✅
+
+**Jigsaw Reading/Listening** (Groups then regroup):
+- Expert groups read different texts, then teach others
+- Example: "Group A: Read Text 1 and become experts. Group B: Read Text 2. Then form new groups (one A student + one B student) and teach each other your text."
+- STT: 80%+ ✅
+
+**Find Someone Who...** (Mingle, whole class):
+- Students walk around asking questions to complete a grid
+- Example: "Walk around the class. Ask 'Have you ever traveled to Asia?' If yes, write their name. Find different people for each question."
+- STT: 80%+ ✅
+
+### MINIMIZE TTT STRATEGIES:
+
+**For Instructions** (Keep under 2 minutes):
+- Use demonstration instead of explanation
+- Example: "DON'T SAY: 'In this activity, you will work with a partner and discuss the questions on the board...'"
+- Example: "DO SAY: 'Work in pairs. Discuss these questions. You have 5 minutes. Go!' (Use ICQs: 'Are you working alone or in pairs?' 'How many minutes?')"
+
+**For Error Correction** (Don't interrupt fluency):
+- Note errors during monitoring, correct AFTER activity finishes
+- Example: "While students are speaking in pairs, walk around and listen. Write down 3-4 common errors on paper. When activity finishes, write errors on board and ask class to correct them together."
+
+**For Feedback** (Use delayed correction):
+- Content feedback during, language feedback after
+- Example: "During discussion: Nod, smile, gesture thumbs up. DON'T interrupt to correct grammar. After discussion: 'I heard some great ideas! I also heard some grammar we can improve...'"
+
+### IN activityInstructions, INCLUDE:
+- Exact wording for instructions (keep under 30 seconds)
+- ICQs to check understanding
+- Time breakdown showing STT%
+- Monitoring strategy (observe without interrupting)
+- How students will interact (A speaks, B listens, then switch)
+- Transition strategy to next activity
+
+Example activityInstructions format:
+"INTERACTION: Pairs (Expected STT: 85%)
+INSTRUCTIONS (30 seconds): 'Work in pairs. Partner A, you are a customer in a restaurant. Partner B, you are the waiter. Use the menu to order food. Then switch roles. You have 4 minutes. Go!'
+ICQS: 'Are you working alone or in pairs?' [Pairs] 'How many minutes?' [4]
+TIME BREAKDOWN: Instructions 30 sec (15% TTT), Activity 4 mins (85% STT)
+PROCEDURE: Give instructions → Check understanding with ICQs → Start timer → Students practice role-play, Partner A as customer for 2 mins → Partner B as customer for 2 mins
+MONITORING: Walk around listening to different pairs. Note good examples of ordering language and common errors. DON'T interrupt to correct.
+FEEDBACK: After 4 minutes, stop activity. Ask 'What phrases did you use to order?' Elicit from students. Then show 2-3 common errors on board for class to correct together."
+
+CRITICAL: Every slide must specify how to maximize STT. Avoid whole-class discussions. Use pairs and groups as much as possible!
 
 Generate a pedagogically sound lesson using the CORRECT framework for this lesson type, with appropriate stages, timing, scaffolding, and high Student Talking Time.`;
 
