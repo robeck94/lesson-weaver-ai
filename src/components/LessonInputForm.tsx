@@ -4,12 +4,28 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, Sparkles } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { Loader2, Sparkles, Coffee, Plane, Briefcase, Smartphone, Heart, Leaf, Film, Users, GraduationCap, Palette, BookText, TrendingUp } from "lucide-react";
 
 interface LessonInputFormProps {
   onGenerate: (topic: string, cefrLevel: string) => void;
   isGenerating: boolean;
 }
+
+const CATEGORY_ICONS = {
+  "Daily Life & Routines": Coffee,
+  "Travel & Transportation": Plane,
+  "Work & Professional": Briefcase,
+  "Technology & Modern Life": Smartphone,
+  "Health & Wellness": Heart,
+  "Environment & Nature": Leaf,
+  "Entertainment & Arts": Film,
+  "Social & Relationships": Users,
+  "Education & Learning": GraduationCap,
+  "Hobbies & Interests": Palette,
+  "Grammar Topics": BookText,
+  "Current Issues": TrendingUp,
+} as const;
 
 const TOPIC_CATEGORIES = {
   "Daily Life & Routines": [
@@ -188,18 +204,25 @@ export const LessonInputForm = ({ onGenerate, isGenerating }: LessonInputFormPro
                   <SelectValue placeholder="Select a topic..." />
                 </SelectTrigger>
                 <SelectContent className="max-h-[400px]">
-                  {Object.entries(TOPIC_CATEGORIES).map(([category, topics]) => (
-                    <SelectGroup key={category}>
-                      <SelectLabel className="text-xs font-semibold text-muted-foreground px-2 py-1.5">
-                        {category}
-                      </SelectLabel>
-                      {topics.map((presetTopic) => (
-                        <SelectItem key={presetTopic} value={presetTopic}>
-                          {presetTopic}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  ))}
+                  {Object.entries(TOPIC_CATEGORIES).map(([category, topics], index) => {
+                    const IconComponent = CATEGORY_ICONS[category as keyof typeof CATEGORY_ICONS];
+                    return (
+                      <div key={category}>
+                        {index > 0 && <Separator className="my-2" />}
+                        <SelectGroup>
+                          <SelectLabel className="flex items-center gap-2 text-xs font-semibold text-primary px-2 py-2">
+                            <IconComponent className="w-4 h-4" />
+                            {category}
+                          </SelectLabel>
+                          {topics.map((presetTopic) => (
+                            <SelectItem key={presetTopic} value={presetTopic} className="pl-8">
+                              {presetTopic}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </div>
+                    );
+                  })}
                 </SelectContent>
               </Select>
             ) : (
