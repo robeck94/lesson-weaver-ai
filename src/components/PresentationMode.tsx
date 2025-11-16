@@ -202,10 +202,10 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
             />
           ) : (
             /* Regular Slide Layout */
-            <div className="h-full bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl shadow-2xl p-4 md:p-6 flex flex-col overflow-hidden">
+            <div className="h-full bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl shadow-2xl p-3 md:p-4 flex flex-col overflow-hidden">
               {/* Title */}
-              <div className="mb-4 flex-shrink-0 animate-slide-in-right">
-                <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent mb-2">
+              <div className="mb-2 md:mb-3 flex-shrink-0 animate-slide-in-right">
+                <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent mb-1 md:mb-2">
                   {slide.title}
                 </h1>
                 <div className="h-1 w-24 bg-gradient-to-r from-primary to-secondary rounded-full" />
@@ -213,13 +213,13 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
 
               {/* Content Area */}
               <div className="flex-1 flex gap-4 overflow-hidden min-h-0">
-              {/* Image Section - Properly Constrained */}
+              {/* Image Section - Maximum Vertical Space */}
               {slide.imageUrl && (
-                <div className="w-[35%] md:w-[40%] flex-shrink-0 animate-fade-in flex items-center justify-center overflow-hidden">
+                <div className="w-[35%] md:w-[40%] flex-shrink-0 animate-fade-in flex items-start justify-center overflow-hidden">
                   <img 
                     src={slide.imageUrl} 
                     alt={slide.title}
-                    className="w-full h-full max-h-[calc(100vh-200px)] object-contain rounded-xl shadow-2xl border-2 border-primary/30"
+                    className="w-full h-auto max-h-[calc(100vh-140px)] object-contain rounded-xl shadow-2xl border-2 border-primary/30"
                   />
                 </div>
               )}

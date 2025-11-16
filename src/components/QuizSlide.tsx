@@ -38,21 +38,21 @@ export const QuizSlide = ({ title, imageUrl, questions }: QuizSlideProps) => {
   ).length;
 
   return (
-    <div className="h-full flex flex-col gap-4 overflow-hidden">
+    <div className="h-full flex flex-col gap-3 md:gap-4 overflow-hidden">
       {/* Header */}
       <div className="animate-slide-in-right flex-shrink-0">
-        <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent mb-2">
+        <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent mb-1 md:mb-2">
           {title}
         </h1>
         <div className="h-1 w-24 bg-gradient-to-r from-primary to-secondary rounded-full" />
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex gap-4 min-h-0 overflow-hidden">
+      <div className="flex-1 flex gap-3 md:gap-4 min-h-0 overflow-hidden">
         {/* Quiz Image */}
         {imageUrl && (
           <div className="w-[35%] md:w-[40%] flex-shrink-0 animate-fade-in">
-            <div className="h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10 rounded-xl border-2 border-primary/30 p-4 overflow-hidden">
+            <div className="h-full flex items-start justify-center bg-gradient-to-br from-primary/10 to-secondary/10 rounded-xl border-2 border-primary/30 p-3 md:p-4 overflow-hidden">
               <img
                 src={imageUrl}
                 alt={title}
