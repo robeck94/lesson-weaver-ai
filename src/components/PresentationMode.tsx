@@ -246,22 +246,24 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
             <div className="h-full bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl shadow-2xl p-3 md:p-4 flex flex-col overflow-hidden">
               {/* Title */}
               <div className="mb-2 md:mb-3 flex-shrink-0 animate-slide-in-right">
-                <h1 className={`${getTitleSize()} font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent mb-1 md:mb-2 break-words`}>
+                <h1 className={`${getTitleSize()} font-heading font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent mb-1 md:mb-2 break-words text-shadow-md`}>
                   {slide.title}
                 </h1>
-                <div className="h-1 w-24 bg-gradient-to-r from-primary to-secondary rounded-full" />
+                <div className="h-1.5 w-28 bg-gradient-to-r from-primary via-secondary to-accent rounded-full shadow-lg" />
               </div>
 
               {/* Content Area */}
               <div className="flex-1 flex gap-4 overflow-hidden min-h-0">
               {/* Image Section - Maximum Vertical Space */}
               {slide.imageUrl && (
-                <div className="w-[35%] md:w-[40%] flex-shrink-0 animate-fade-in flex items-start justify-center overflow-hidden">
-                  <img 
-                    src={slide.imageUrl} 
-                    alt={slide.title}
-                    className="w-full h-auto max-h-[calc(100vh-140px)] object-contain rounded-xl shadow-2xl border-2 border-primary/30"
-                  />
+                <div className="w-[35%] md:w-[40%] flex-shrink-0 animate-scale-in flex items-start justify-center overflow-hidden">
+                  <div className="w-full h-full bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 rounded-xl border-2 border-primary/20 p-3 shadow-xl backdrop-blur-sm flex items-center justify-center overflow-hidden">
+                    <img 
+                      src={slide.imageUrl} 
+                      alt={slide.title}
+                      className="max-w-full max-h-full object-contain rounded-lg shadow-2xl transform transition-transform duration-300 hover:scale-105"
+                    />
+                  </div>
                 </div>
               )}
               
@@ -276,26 +278,28 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
                       key={index}
                       className={`transition-all duration-700 ease-out ${
                         isRevealed
-                          ? "opacity-100 translate-y-0 scale-100"
-                          : "opacity-0 translate-y-8 scale-95"
+                          ? "opacity-100 translate-y-0 scale-100 blur-0"
+                          : "opacity-0 translate-y-8 scale-95 blur-sm"
                       }`}
                     >
                       <div 
-                        className={`bg-gradient-to-br from-card via-card/95 to-card/90 backdrop-blur-md rounded-lg ${getCardPadding()} border-2 transition-all duration-300 cursor-pointer ${
+                        className={`content-box ${getCardPadding()} ${getLineSpacing()} transition-all duration-300 cursor-pointer relative overflow-hidden ${
                           isNext 
-                            ? "border-primary shadow-2xl shadow-primary/40 hover:shadow-3xl hover:shadow-primary/50 hover-scale ring-4 ring-primary/40" 
-                            : "border-border/50 hover:shadow-xl hover:border-primary/30"
+                            ? "border-primary/40 shadow-2xl hover:shadow-[0_0_30px_rgba(59,130,246,0.3)] hover:scale-[1.02] animate-pulse before:absolute before:inset-0 before:bg-gradient-to-r before:from-primary/10 before:to-secondary/10 before:opacity-50" 
+                            : isRevealed 
+                            ? "border-border/50 shadow-lg hover:border-primary/40 hover:shadow-2xl hover:scale-[1.02] before:absolute before:inset-0 before:bg-gradient-to-r before:from-primary/0 before:to-secondary/0 before:opacity-0 hover:before:opacity-30 before:transition-opacity" 
+                            : "border-border/30"
                         }`}
                         onClick={() => handleCardClick(index)}
                       >
                         {isNext && (
-                          <div className="flex items-center gap-3 text-primary text-xs md:text-sm font-semibold mb-3 animate-pulse">
+                          <div className="flex items-center gap-3 text-primary text-xs md:text-sm font-bold mb-3 animate-pulse relative z-10 font-heading">
                             <span className="w-2.5 h-2.5 bg-primary rounded-full animate-ping"></span>
                             <span className="w-2.5 h-2.5 bg-primary rounded-full -ml-4"></span>
                             Press SPACE or click to reveal
                           </div>
                         )}
-                        <p className={`${getContentSize()} ${getLineSpacing()} text-foreground font-medium whitespace-pre-wrap break-words`}>
+                        <p className={`${getContentSize()} font-sans slide-content text-foreground break-words relative z-10`}>
                           {part}
                         </p>
                       </div>

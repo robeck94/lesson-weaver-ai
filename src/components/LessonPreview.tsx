@@ -87,8 +87,8 @@ export const LessonPreview = ({ slides }: LessonPreviewProps) => {
 
                 {/* Slide Content */}
                 <div className="space-y-3">
-                  <div className="bg-muted/50 rounded-lg p-4">
-                    <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
+                  <div className="content-box">
+                    <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap font-sans">
                       {slide.content}
                     </p>
                   </div>

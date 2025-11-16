@@ -41,22 +41,22 @@ export const QuizSlide = ({ title, imageUrl, questions }: QuizSlideProps) => {
     <div className="h-full flex flex-col gap-3 md:gap-4 overflow-hidden">
       {/* Header */}
       <div className="animate-slide-in-right flex-shrink-0">
-        <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent mb-1 md:mb-2">
+        <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-heading font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent mb-1 md:mb-2 text-shadow-md">
           {title}
         </h1>
-        <div className="h-1 w-24 bg-gradient-to-r from-primary to-secondary rounded-full" />
+        <div className="h-1.5 w-28 bg-gradient-to-r from-primary via-secondary to-accent rounded-full shadow-lg animate-scale-in" />
       </div>
 
       {/* Main Content */}
       <div className="flex-1 flex gap-3 md:gap-4 min-h-0 overflow-hidden">
         {/* Quiz Image */}
         {imageUrl && (
-          <div className="w-[35%] md:w-[40%] flex-shrink-0 animate-fade-in">
-            <div className="h-full flex items-start justify-center bg-gradient-to-br from-primary/10 to-secondary/10 rounded-xl border-2 border-primary/30 p-3 md:p-4 overflow-hidden">
+          <div className="w-[35%] md:w-[40%] flex-shrink-0 animate-scale-in">
+            <div className="h-full flex items-start justify-center bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 rounded-xl border-2 border-primary/20 p-3 md:p-4 overflow-hidden shadow-xl backdrop-blur-sm">
               <img
                 src={imageUrl}
                 alt={title}
-                className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+                className="max-w-full max-h-full object-contain rounded-lg shadow-2xl transform transition-transform duration-300 hover:scale-105"
               />
             </div>
           </div>
@@ -65,8 +65,8 @@ export const QuizSlide = ({ title, imageUrl, questions }: QuizSlideProps) => {
         {/* Questions Panel */}
         <div className="flex-1 flex flex-col gap-3 overflow-hidden">
           {/* Instruction */}
-          <div className="bg-gradient-to-r from-accent/20 to-accent/10 border-2 border-accent/30 rounded-lg p-3 flex-shrink-0">
-            <p className="text-sm md:text-base lg:text-lg font-semibold text-foreground">
+          <div className="bg-gradient-to-r from-accent/15 via-accent/10 to-accent/5 border-2 border-accent/20 rounded-lg p-3 flex-shrink-0 shadow-md backdrop-blur-sm">
+            <p className="text-sm md:text-base lg:text-lg font-semibold text-foreground font-heading">
               {showResults ? `Score: ${score}/${questions.length}` : "Choose the best answer for each question"}
             </p>
           </div>
@@ -93,10 +93,10 @@ export const QuizSlide = ({ title, imageUrl, questions }: QuizSlideProps) => {
                 >
                   {/* Question */}
                   <div className="flex items-start gap-2 md:gap-3 mb-3">
-                    <span className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-primary/20 text-primary font-bold flex items-center justify-center flex-shrink-0 text-sm md:text-base">
+                    <span className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-gradient-to-br from-primary to-secondary text-primary-foreground font-bold flex items-center justify-center flex-shrink-0 text-sm md:text-base shadow-md font-heading">
                       {qIdx + 1}
                     </span>
-                    <p className="text-sm md:text-base lg:text-lg xl:text-xl font-medium text-foreground pt-0.5 md:pt-1 break-words">{q.question}</p>
+                    <p className="text-sm md:text-base lg:text-lg xl:text-xl font-medium text-foreground pt-0.5 md:pt-1 break-words font-sans">{q.question}</p>
                   </div>
 
                   {/* Options */}
@@ -112,14 +112,14 @@ export const QuizSlide = ({ title, imageUrl, questions }: QuizSlideProps) => {
                           key={optIdx}
                           onClick={() => handleAnswerSelect(qIdx, optIdx)}
                           disabled={showResults}
-                          className={`w-full text-left p-3 rounded-lg border-2 transition-all duration-200 flex items-center gap-2 md:gap-3 ${
+                          className={`w-full text-left p-3 rounded-lg border-2 transition-all duration-300 flex items-center gap-2 md:gap-3 shadow-sm hover:shadow-md ${
                             showCorrect
-                              ? "border-green-500 bg-green-500/20 font-semibold"
+                              ? "border-green-500 bg-gradient-to-br from-green-500/20 to-green-600/20 font-semibold shadow-lg"
                               : showWrong
-                              ? "border-red-500 bg-red-500/20"
+                              ? "border-red-500 bg-gradient-to-br from-red-500/20 to-red-600/20 shadow-lg"
                               : isSelected
-                              ? "border-primary bg-primary/10 font-medium"
-                              : "border-border hover:border-primary/50 hover:bg-muted/50"
+                              ? "border-primary bg-gradient-to-br from-primary/10 to-primary/5 font-medium shadow-md"
+                              : "border-border bg-gradient-to-br from-card to-muted/30 hover:border-primary/50 hover:bg-accent/10 hover:scale-[1.02]"
                           } ${showResults ? "cursor-default" : "cursor-pointer"}`}
                         >
                           <div
