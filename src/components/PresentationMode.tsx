@@ -193,29 +193,6 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
                   </div>
                 );
               })}
-
-              {/* Visual Description */}
-              {slide.visualDescription && (
-                <div className="mt-8 animate-fade-in" style={{ animationDelay: "800ms", animationFillMode: "both" }}>
-                  <div className="bg-accent/10 border border-accent/20 rounded-xl p-6">
-                    <p className="text-lg text-muted-foreground italic flex items-center gap-2">
-                      <Play className="w-5 h-5 text-accent" />
-                      {slide.visualDescription}
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* Animation Notes */}
-              {slide.animationNotes && (
-                <div className="animate-fade-in" style={{ animationDelay: "1000ms", animationFillMode: "both" }}>
-                  <div className="bg-secondary/10 border border-secondary/20 rounded-xl p-6">
-                    <p className="text-lg text-muted-foreground flex items-center gap-2">
-                      ✨ {slide.animationNotes}
-                    </p>
-                  </div>
-                </div>
-              )}
             </div>
 
             {/* Activity Instructions */}
