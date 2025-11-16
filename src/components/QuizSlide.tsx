@@ -38,41 +38,41 @@ export const QuizSlide = ({ title, imageUrl, questions }: QuizSlideProps) => {
   ).length;
 
   return (
-    <div className="h-full flex flex-col gap-6">
+    <div className="h-full flex flex-col gap-4 overflow-hidden">
       {/* Header */}
-      <div className="animate-slide-in-right">
-        <h1 className="text-5xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent mb-2">
+      <div className="animate-slide-in-right flex-shrink-0">
+        <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent mb-2">
           {title}
         </h1>
         <div className="h-1 w-24 bg-gradient-to-r from-primary to-secondary rounded-full" />
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex gap-6 min-h-0">
+      <div className="flex-1 flex gap-4 min-h-0 overflow-hidden">
         {/* Quiz Image */}
         {imageUrl && (
-          <div className="w-[45%] flex-shrink-0 animate-fade-in">
-            <div className="h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10 rounded-2xl border-2 border-primary/30 p-6">
+          <div className="w-[35%] md:w-[40%] flex-shrink-0 animate-fade-in">
+            <div className="h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10 rounded-xl border-2 border-primary/30 p-4 overflow-hidden">
               <img
                 src={imageUrl}
                 alt={title}
-                className="max-w-full max-h-full object-contain rounded-xl shadow-2xl"
+                className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
               />
             </div>
           </div>
         )}
 
         {/* Questions Panel */}
-        <div className="flex-1 flex flex-col gap-4 overflow-auto">
+        <div className="flex-1 flex flex-col gap-3 overflow-hidden">
           {/* Instruction */}
-          <div className="bg-gradient-to-r from-accent/20 to-accent/10 border-2 border-accent/30 rounded-xl p-4">
-            <p className="text-lg font-semibold text-foreground">
+          <div className="bg-gradient-to-r from-accent/20 to-accent/10 border-2 border-accent/30 rounded-lg p-3 flex-shrink-0">
+            <p className="text-sm md:text-base lg:text-lg font-semibold text-foreground">
               {showResults ? `Score: ${score}/${questions.length}` : "Choose the best answer for each question"}
             </p>
           </div>
 
           {/* Questions */}
-          <div className="space-y-4 flex-1 overflow-auto">
+          <div className="space-y-3 flex-1 overflow-y-auto pr-2">
             {questions.map((q, qIdx) => {
               const isAnswered = selectedAnswers[qIdx] !== undefined;
               const isCorrect = showResults && q.correctAnswer === selectedAnswers[qIdx];
@@ -81,7 +81,7 @@ export const QuizSlide = ({ title, imageUrl, questions }: QuizSlideProps) => {
               return (
                 <div
                   key={qIdx}
-                  className={`bg-card border-2 rounded-xl p-5 transition-all duration-300 ${
+                  className={`bg-card border-2 rounded-lg p-4 transition-all duration-300 ${
                     showResults
                       ? isCorrect
                         ? "border-green-500/50 bg-green-500/10"
@@ -92,15 +92,15 @@ export const QuizSlide = ({ title, imageUrl, questions }: QuizSlideProps) => {
                   }`}
                 >
                   {/* Question */}
-                  <div className="flex items-start gap-3 mb-4">
-                    <span className="w-8 h-8 rounded-full bg-primary/20 text-primary font-bold flex items-center justify-center flex-shrink-0">
+                  <div className="flex items-start gap-2 md:gap-3 mb-3">
+                    <span className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-primary/20 text-primary font-bold flex items-center justify-center flex-shrink-0 text-sm md:text-base">
                       {qIdx + 1}
                     </span>
-                    <p className="text-xl font-medium text-foreground pt-1">{q.question}</p>
+                    <p className="text-sm md:text-base lg:text-lg xl:text-xl font-medium text-foreground pt-0.5 md:pt-1 break-words">{q.question}</p>
                   </div>
 
                   {/* Options */}
-                  <div className="space-y-2 ml-11">
+                  <div className="space-y-2 ml-8 md:ml-11">
                     {q.options.map((option, optIdx) => {
                       const isSelected = selectedAnswers[qIdx] === optIdx;
                       const isCorrectOption = showResults && q.correctAnswer === optIdx;
@@ -112,7 +112,7 @@ export const QuizSlide = ({ title, imageUrl, questions }: QuizSlideProps) => {
                           key={optIdx}
                           onClick={() => handleAnswerSelect(qIdx, optIdx)}
                           disabled={showResults}
-                          className={`w-full text-left p-4 rounded-lg border-2 transition-all duration-200 flex items-center gap-3 ${
+                          className={`w-full text-left p-3 rounded-lg border-2 transition-all duration-200 flex items-center gap-2 md:gap-3 ${
                             showCorrect
                               ? "border-green-500 bg-green-500/20 font-semibold"
                               : showWrong
@@ -123,17 +123,17 @@ export const QuizSlide = ({ title, imageUrl, questions }: QuizSlideProps) => {
                           } ${showResults ? "cursor-default" : "cursor-pointer"}`}
                         >
                           <div
-                            className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                            className={`w-4 h-4 md:w-5 md:h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
                               isSelected ? "border-primary bg-primary" : "border-muted-foreground"
                             }`}
                           >
-                            {isSelected && <div className="w-2 h-2 rounded-full bg-white" />}
+                            {isSelected && <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-white" />}
                           </div>
-                          <span className="text-lg flex-1">{option}</span>
+                          <span className="text-sm md:text-base lg:text-lg flex-1 break-words">{option}</span>
                           {showCorrect && (
-                            <Check className="w-6 h-6 text-green-600 flex-shrink-0" />
+                            <Check className="w-5 h-5 md:w-6 md:h-6 text-green-600 flex-shrink-0" />
                           )}
-                          {showWrong && <X className="w-6 h-6 text-red-600 flex-shrink-0" />}
+                          {showWrong && <X className="w-5 h-5 md:w-6 md:h-6 text-red-600 flex-shrink-0" />}
                         </button>
                       );
                     })}
@@ -144,19 +144,19 @@ export const QuizSlide = ({ title, imageUrl, questions }: QuizSlideProps) => {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-3 pt-2">
+          <div className="flex gap-3 pt-2 flex-shrink-0">
             {!showResults ? (
               <Button
                 onClick={checkAnswers}
                 disabled={Object.keys(selectedAnswers).length !== questions.length}
-                className="flex-1 h-14 text-lg font-semibold bg-gradient-to-r from-primary to-secondary hover:opacity-90"
+                className="flex-1 h-12 md:h-14 text-base md:text-lg font-semibold bg-gradient-to-r from-primary to-secondary hover:opacity-90"
               >
                 Check Answers
               </Button>
             ) : (
               <Button
                 onClick={resetQuiz}
-                className="flex-1 h-14 text-lg font-semibold bg-gradient-to-r from-accent to-secondary hover:opacity-90"
+                className="flex-1 h-12 md:h-14 text-base md:text-lg font-semibold bg-gradient-to-r from-accent to-secondary hover:opacity-90"
               >
                 Try Again
               </Button>
