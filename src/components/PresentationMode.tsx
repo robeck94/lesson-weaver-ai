@@ -141,39 +141,39 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
       </div>
 
       {/* Main Slide Content */}
-      <div className="flex-1 flex items-center justify-center p-20">
+      <div className="flex-1 flex items-center justify-center px-8 py-6">
         <div 
-          className={`w-full max-w-6xl h-full transition-all duration-500 ${
+          className={`w-full h-full max-w-[95vw] transition-all duration-500 ${
             isAnimating ? "animate-fade-in" : ""
           }`}
         >
           {/* Slide Card */}
-          <div className="h-full bg-card/50 backdrop-blur-sm border border-border/50 rounded-3xl shadow-2xl p-12 flex flex-col">
+          <div className="h-full bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl shadow-2xl p-8 flex flex-col">
             {/* Title */}
-            <div className="mb-8 animate-slide-in-right">
-              <h1 className="text-6xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent mb-2">
+            <div className="mb-6 animate-slide-in-right">
+              <h1 className="text-5xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent mb-2">
                 {slide.title}
               </h1>
-              <div className="h-1 w-32 bg-gradient-to-r from-primary to-secondary rounded-full" />
+              <div className="h-1 w-24 bg-gradient-to-r from-primary to-secondary rounded-full" />
             </div>
 
             {/* Content Area */}
-            <div className="flex-1 flex gap-8 overflow-auto">
+            <div className="flex-1 flex gap-6 overflow-auto min-h-0">
               {/* Image Section - Large and Prominent */}
               {slide.imageUrl && (
-                <div className="w-1/2 flex-shrink-0 animate-fade-in">
-                  <div className="sticky top-0">
+                <div className="w-[45%] flex-shrink-0 animate-fade-in">
+                  <div className="sticky top-0 h-full flex items-center">
                     <img 
                       src={slide.imageUrl} 
                       alt={slide.title}
-                      className="w-full h-auto rounded-3xl shadow-2xl border-2 border-primary/30 hover:scale-105 transition-transform duration-300"
+                      className="w-full h-auto max-h-[70vh] object-contain rounded-2xl shadow-2xl border-2 border-primary/30 hover:scale-[1.02] transition-transform duration-300"
                     />
                   </div>
                 </div>
               )}
               
               {/* Text Content Section */}
-              <div className={`flex-1 space-y-6 ${slide.imageUrl ? '' : 'max-w-5xl mx-auto'}`}>
+              <div className={`flex-1 space-y-4 ${slide.imageUrl ? '' : 'max-w-6xl mx-auto'}`}>
                 {contentParts.map((part, index) => {
                   const isRevealed = revealedElements.has(index);
                   const isNext = !isRevealed && contentParts.slice(0, index).every((_, i) => revealedElements.has(i));
@@ -188,7 +188,7 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
                       }`}
                     >
                       <div 
-                        className={`bg-gradient-to-br from-card via-card/95 to-card/90 backdrop-blur-md rounded-2xl p-8 border-2 transition-all duration-300 cursor-pointer ${
+                        className={`bg-gradient-to-br from-card via-card/95 to-card/90 backdrop-blur-md rounded-xl p-6 border-2 transition-all duration-300 cursor-pointer ${
                           isNext 
                             ? "border-primary shadow-2xl shadow-primary/40 hover:shadow-3xl hover:shadow-primary/50 hover-scale ring-4 ring-primary/40" 
                             : "border-border/50 hover:shadow-xl hover:border-primary/30"
@@ -196,13 +196,13 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
                         onClick={() => handleCardClick(index)}
                       >
                         {isNext && (
-                          <div className="flex items-center gap-3 text-primary text-base font-semibold mb-4 animate-pulse">
-                            <span className="w-3 h-3 bg-primary rounded-full animate-ping"></span>
-                            <span className="w-3 h-3 bg-primary rounded-full -ml-5"></span>
+                          <div className="flex items-center gap-3 text-primary text-sm font-semibold mb-3 animate-pulse">
+                            <span className="w-2.5 h-2.5 bg-primary rounded-full animate-ping"></span>
+                            <span className="w-2.5 h-2.5 bg-primary rounded-full -ml-4"></span>
                             Press SPACE or click to reveal
                           </div>
                         )}
-                        <p className="text-3xl text-foreground leading-relaxed font-medium whitespace-pre-wrap">
+                        <p className="text-2xl text-foreground leading-relaxed font-medium whitespace-pre-wrap">
                           {part}
                         </p>
                       </div>
@@ -214,12 +214,12 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
 
             {/* Activity Instructions */}
             {slide.activityInstructions && (
-              <div className="mt-8 bg-gradient-to-br from-primary/30 via-primary/20 to-primary/10 border-2 border-primary/40 rounded-2xl p-8 animate-scale-in shadow-xl">
-                <h3 className="text-2xl font-bold text-primary mb-3 flex items-center gap-2">
-                  <span className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-sm">✓</span>
+              <div className="mt-6 bg-gradient-to-br from-primary/30 via-primary/20 to-primary/10 border-2 border-primary/40 rounded-xl p-5 animate-scale-in shadow-xl">
+                <h3 className="text-lg font-bold text-primary mb-2 flex items-center gap-2">
+                  <span className="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-white text-xs">✓</span>
                   Activity
                 </h3>
-                <p className="text-xl text-foreground leading-relaxed">{slide.activityInstructions}</p>
+                <p className="text-base text-foreground leading-relaxed">{slide.activityInstructions}</p>
               </div>
             )}
           </div>
