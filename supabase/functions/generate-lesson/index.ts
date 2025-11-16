@@ -75,18 +75,25 @@ Return ONLY a valid JSON object with this exact structure:
       "slideNumber": 1,
       "stage": "Lead-in",
       "title": "Slide title",
-      "content": "Main slide content and text",
-      "visualDescription": "Description of visual elements, layout, colors, graphics",
-      "animationNotes": "Animation and transition suggestions",
-      "activityInstructions": "Teacher instructions for activities",
+      "content": "THE ACTUAL SLIDE CONTENT that students will see and read. Include: complete sentences, exercises, stories, dialogues, questions, vocabulary lists, grammar rules, reading passages - NOT descriptions of what should be there. For example: 'Yesterday, I ___ (go) to the park. I ___ (see) my friend' NOT 'A story with blanks for verbs'",
+      "visualDescription": "Brief description of visual styling, colors, icons to use",
+      "animationNotes": "How elements should animate in",
+      "activityInstructions": "Teacher instructions for delivering this slide",
       "timing": "5 minutes"
     }
   ],
   "teacherNotes": "Overall lesson guidance, objectives, key teaching points, tips, and full printable teacher guide summary"
 }
 
+CRITICAL: The 'content' field must contain the ACTUAL text, sentences, exercises, stories, dialogues, or material that appears on the slide - NOT a description of what should be there. Generate real, complete, ready-to-use content.
+
 CRITICAL RULES:
 - Each lesson must be unique, engaging, and interactive
+- The 'content' field MUST contain actual slide content (sentences, exercises, stories, dialogues, vocabulary, grammar rules) that students read - NOT descriptions
+- Generate complete, ready-to-use material: write the actual story, the actual sentences with blanks, the actual dialogue, the actual vocabulary list
+- For practice slides: include 5-8 complete example sentences or exercises with blanks where appropriate
+- For vocabulary slides: include the actual words with definitions and example sentences
+- For grammar slides: include the actual rules, structures, and 5-6 complete example sentences
 - Balance visual engagement with pedagogical clarity
 - Avoid repeating the same visual or structural pattern
 - Topics must be exciting and relevant to students
