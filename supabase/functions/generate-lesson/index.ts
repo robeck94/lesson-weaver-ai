@@ -36,12 +36,78 @@ STEP 1 — LESSON INPUT
 
 STEP 2 — PEDAGOGICALLY BALANCED LESSON STRUCTURE
 
-### PPP STAGE ALLOCATION (for 45-60 minute lessons):
+### LESSON TYPE-SPECIFIC FRAMEWORKS:
+
+**GRAMMAR & VOCABULARY LESSONS → PPP (Presentation-Practice-Production):**
+Stages: Lead-in → Presentation → Practice → Production → Consolidation
 - **Lead-in**: 5-10% (3-5 minutes) - Activate schema, generate interest, assess prior knowledge
 - **Presentation**: 20-25% (10-15 minutes) - Introduce new language clearly with examples
 - **Practice**: 40-50% (20-30 minutes) - LONGEST STAGE - controlled then freer practice activities
 - **Production**: 25-30% (12-18 minutes) - Authentic communication using new language
 - **Consolidation**: 5-10% (3-5 minutes) - Review, reflect, assign homework
+Best for: Introducing new grammar structures, vocabulary sets, or language patterns
+
+**FUNCTIONAL LANGUAGE LESSONS → TTT (Test-Teach-Test):**
+Stages: Lead-in → Test 1 (Diagnostic Task) → Teach (Language Focus) → Test 2 (Practice Task) → Production → Consolidation
+- **Lead-in**: 5% (3 minutes) - Set context for the function (e.g., making complaints, giving directions)
+- **Test 1 (Diagnostic)**: 20% (10 minutes) - Students attempt the task to reveal gaps (e.g., role-play making a complaint)
+- **Teach (Language Focus)**: 25% (12 minutes) - Teach the functional phrases/expressions students need (based on Test 1 errors)
+- **Test 2 (Practice)**: 30% (15 minutes) - Repeat similar task with new language support
+- **Production**: 15% (8 minutes) - Authentic task using the function in a new context
+- **Consolidation**: 5% (3 minutes) - Review useful phrases, self-assessment
+Best for: Making requests, complaints, suggestions, giving advice, apologizing, persuading, negotiating
+Example stages: ["Lead-in", "Test 1", "Language Focus", "Test 2", "Production", "Consolidation"]
+
+**READING LESSONS → Pre-While-Post:**
+Stages: Lead-in (Pre-Reading) → While-Reading (Skimming) → While-Reading (Scanning/Detail) → Post-Reading (Response) → Consolidation
+- **Lead-in/Pre-Reading**: 15% (8 minutes) - Activate background knowledge, predict content, pre-teach key vocabulary
+- **While-Reading (Gist/Skimming)**: 20% (10 minutes) - Read for main idea, general understanding
+- **While-Reading (Detail/Scanning)**: 30% (15 minutes) - Read for specific information, comprehension questions
+- **Post-Reading (Response)**: 25% (12 minutes) - Discussion, personal response, critical thinking about the text
+- **Consolidation**: 10% (5 minutes) - Summary, language focus from text, follow-up task
+Best for: Text comprehension, intensive reading, extensive reading
+Example stages: ["Pre-Reading", "While-Reading: Gist", "While-Reading: Detail", "Post-Reading", "Consolidation"]
+
+**LISTENING LESSONS → Pre-While-Post:**
+Stages: Lead-in (Pre-Listening) → While-Listening (Gist) → While-Listening (Detail) → Post-Listening (Response) → Consolidation
+- **Lead-in/Pre-Listening**: 15% (8 minutes) - Predict content, activate vocabulary, set purpose for listening
+- **While-Listening (Gist)**: 20% (10 minutes) - Listen for main idea (play once)
+- **While-Listening (Detail)**: 30% (15 minutes) - Listen for specific information (play 2-3 times)
+- **Post-Listening (Response)**: 25% (12 minutes) - Discussion, personal response, role-play based on listening
+- **Consolidation**: 10% (5 minutes) - Summary, language focus from audio, pronunciation practice
+Best for: Listening comprehension, note-taking, following instructions
+Example stages: ["Pre-Listening", "While-Listening: Gist", "While-Listening: Detail", "Post-Listening", "Consolidation"]
+
+**SPEAKING LESSONS → Fluency-Focused:**
+Stages: Lead-in → Model/Input → Preparation → Speaking Task → Feedback & Language Focus → Repeat Task
+- **Lead-in**: 10% (5 minutes) - Introduce topic, activate vocabulary
+- **Model/Input**: 15% (8 minutes) - Show example of target task, analyze good speaking features
+- **Preparation**: 15% (8 minutes) - Students prepare ideas, useful language (pairs/individual)
+- **Speaking Task**: 30% (15 minutes) - Main speaking activity (discussions, presentations, debates, role-plays)
+- **Feedback & Language Focus**: 20% (10 minutes) - Error correction, useful phrases, pronunciation work
+- **Repeat Task**: 10% (5 minutes) - Repeat speaking task with improvements
+Best for: Fluency development, discussions, debates, presentations, storytelling
+Example stages: ["Lead-in", "Model", "Preparation", "Speaking Task", "Language Focus", "Repeat Task"]
+
+**WRITING LESSONS → Process Approach:**
+Stages: Lead-in → Model Analysis → Planning → Drafting → Peer Review → Revising → Publishing
+- **Lead-in**: 10% (5 minutes) - Introduce writing genre/purpose, set context
+- **Model Analysis**: 20% (10 minutes) - Analyze model text for structure, language features
+- **Planning/Brainstorming**: 15% (8 minutes) - Organize ideas, create outline, mind map
+- **Drafting**: 25% (12 minutes) - Write first draft (focus on content, not perfection)
+- **Peer Review/Feedback**: 15% (8 minutes) - Exchange drafts, give constructive feedback
+- **Revising**: 10% (5 minutes) - Improve draft based on feedback
+- **Publishing/Consolidation**: 5% (3 minutes) - Share final version, reflect on learning
+Best for: Essay writing, emails, reports, creative writing, formal letters
+Example stages: ["Lead-in", "Model Analysis", "Planning", "Drafting", "Peer Review", "Revising", "Publishing"]
+
+**MIXED SKILLS LESSONS → Integrated Approach:**
+Use a combination of frameworks above, but ensure:
+- Clear focus on one primary skill with supporting skills
+- Logical flow: Input → Practice → Output
+- Balance: Don't try to do too much in one lesson
+Example: Reading (input) → Grammar focus (language analysis) → Speaking (output)
+Example stages: ["Lead-in", "Reading Input", "Language Focus", "Practice", "Speaking Output", "Consolidation"]
 
 ### CEFR-SPECIFIC SCAFFOLDING:
 **A1-A2 (Beginner-Elementary):**
@@ -129,14 +195,15 @@ OUTPUT FORMAT:
 Return ONLY a valid JSON object with this exact structure:
 {
   "lessonType": "Grammar" | "Vocabulary" | "Reading" | "Speaking" | "Writing" | "Listening" | "Functional Language" | "Mixed Skills",
+  "framework": "PPP" | "TTT" | "Pre-While-Post" | "Process Approach" | "Fluency-Focused" | "Integrated",
   "topic": "the exact topic provided",
   "cefrLevel": "the CEFR level provided",
   "totalSlides": number,
-  "stages": ["Lead-in", "Presentation", "Practice", "Production", "Consolidation"],
+  "stages": ["Stage names based on framework - see LESSON TYPE-SPECIFIC FRAMEWORKS section"],
   "slides": [
     {
       "slideNumber": 1,
-      "stage": "Lead-in",
+      "stage": "Stage name from your chosen framework",
       "title": "Slide title",
       "timing": "5 minutes",
       "interactionPattern": "Whole Class" | "Pairs" | "Small Groups" | "Individual",
@@ -149,14 +216,22 @@ Return ONLY a valid JSON object with this exact structure:
   "teacherNotes": "Overall lesson guidance including: 1) Lesson objectives (SMART goals), 2) Key teaching points and anticipated difficulties, 3) Differentiation strategies for mixed-ability classes, 4) Extension activities for fast finishers, 5) Assessment opportunities, 6) Tips for maximizing Student Talking Time, 7) Homework suggestions, 8) Materials needed, 9) Board plan suggestions, 10) Reflection questions for next lesson"
 }
 
-CRITICAL PEDAGOGICAL RULES:
-- **Practice must be the LONGEST stage** (40-50% of lesson time) - This is where learning happens!
-- Lead-in should be SHORT and engaging (5-10% max) - Don't over-teach in the warm-up
-- Production should allow authentic communication - Reduce teacher control, increase student autonomy
-- Match scaffolding to CEFR level: A1-A2 needs heavy support, C1-C2 needs minimal support
-- Include clear interaction patterns: Individual → Pairs → Groups progression
-- Specify Student Talking Time expectations for each activity
-- Age-appropriate content: Young learners (games/TPR), Teens (relevant/cool), Adults (practical/professional)
+CRITICAL FRAMEWORK SELECTION:
+- **Grammar/Vocabulary**: Use PPP framework → stages: ["Lead-in", "Presentation", "Practice", "Production", "Consolidation"]
+- **Functional Language**: Use TTT framework → stages: ["Lead-in", "Test 1", "Language Focus", "Test 2", "Production", "Consolidation"]
+- **Reading**: Use Pre-While-Post → stages: ["Pre-Reading", "While-Reading: Gist", "While-Reading: Detail", "Post-Reading", "Consolidation"]
+- **Listening**: Use Pre-While-Post → stages: ["Pre-Listening", "While-Listening: Gist", "While-Listening: Detail", "Post-Listening", "Consolidation"]
+- **Speaking**: Use Fluency-Focused → stages: ["Lead-in", "Model", "Preparation", "Speaking Task", "Language Focus", "Repeat Task"]
+- **Writing**: Use Process Approach → stages: ["Lead-in", "Model Analysis", "Planning", "Drafting", "Peer Review", "Revising", "Publishing"]
+- **Mixed Skills**: Use Integrated → stages: ["Lead-in", "Input Stage", "Language Focus", "Practice", "Output Stage", "Consolidation"]
+
+CRITICAL PEDAGOGICAL RULES BY FRAMEWORK:
+- **PPP**: Practice must be LONGEST (40-50%). Lead-in SHORT (5-10%). Production allows authentic use.
+- **TTT**: Test 1 (diagnostic) reveals gaps. Teach focuses on those gaps. Test 2 applies new language. Production extends to new context.
+- **Pre-While-Post (Reading/Listening)**: Pre-stage activates schema. While-stage has TWO parts (gist then detail). Post-stage encourages response/discussion.
+- **Fluency-Focused (Speaking)**: Speaking Task is LONGEST (30%). Include repeat task after language focus for improvement.
+- **Process Approach (Writing)**: Drafting and peer review essential. Don't skip revision stage. Publishing celebrates work.
+- **All Frameworks**: Match scaffolding to CEFR level, specify interaction patterns, aim for 70-80% STT
 
 CONTENT GENERATION RULES:
 - Each lesson must be unique, engaging, and interactive
@@ -176,43 +251,90 @@ CONTENT GENERATION RULES:
 Topic: ${topic}
 CEFR Level: ${cefrLevel}
 
-CRITICAL PEDAGOGICAL REQUIREMENTS:
+CRITICAL FRAMEWORK SELECTION:
+1. **Identify the lesson type** from the topic
+2. **Select the appropriate framework**:
+   - Grammar/Vocabulary → PPP (Presentation-Practice-Production)
+   - Functional Language (making requests, complaints, suggestions, etc.) → TTT (Test-Teach-Test)
+   - Reading comprehension → Pre-While-Post Reading
+   - Listening comprehension → Pre-While-Post Listening
+   - Speaking skills/fluency → Fluency-Focused approach
+   - Writing (essays, emails, reports) → Process Approach
+   - Mixed skills → Integrated approach
+3. **Use the stage names from your chosen framework** - Do NOT use generic PPP stages for all lesson types!
 
-### PPP BALANCE (45-60 minute lesson):
-1. Lead-in: 3-5 minutes (1-2 slides) - Quick, engaging warm-up
-2. Presentation: 10-15 minutes (2-3 slides) - Clear language introduction with examples
-3. Practice: 20-30 minutes (4-6 slides) - LONGEST STAGE - Mix of controlled and freer practice
-4. Production: 12-18 minutes (2-3 slides) - Authentic communication tasks
-5. Consolidation: 3-5 minutes (1 slide) - Quick review and homework
+FRAMEWORK-SPECIFIC REQUIREMENTS:
 
-### CONTENT REQUIREMENTS:
-6. The "content" field must contain ACTUAL text students will read - write complete questions, sentences, stories, vocabulary lists, NOT descriptions
-7. For discussion slides: Write 4-6 actual discussion questions
-8. For practice slides: Write 8-10 complete example sentences or exercises  
-9. For vocabulary slides: Write actual word lists with definitions and example sentences
-10. For reading slides: Write the complete story or passage (150-250 words for ${cefrLevel})
-11. For grammar slides: Write the rules AND 6-8 example sentences demonstrating the structure
+### If GRAMMAR/VOCABULARY (PPP):
+- Stages: ["Lead-in", "Presentation", "Practice", "Production", "Consolidation"]
+- Presentation: Clear explanation with 6-8 example sentences
+- Practice: 4-6 slides with controlled → freer practice progression (LONGEST STAGE)
+- Production: Authentic communication task using new language
 
-### VISUAL DESCRIPTIONS - CRITICAL:
-12. When slide content references images students need to see (e.g., "Look at the images", "Identify these devices"), the visualDescription MUST specify EXACTLY what to generate
-13. Example BAD: "Bright colorful collage of tech devices" 
-    Example GOOD: "Generate these specific items in a grid layout: 1) iPhone 14 showing Instagram app, 2) MacBook Pro laptop, 3) iPad tablet displaying YouTube, 4) Apple Watch, 5) Facebook logo icon, 6) TikTok logo icon, 7) Snapchat logo icon"
-14. Be specific: list each item/image students need to see and identify
-15. Age-appropriate styling: Young learners (cartoon style), Teens (modern/cool), Adults (realistic/professional)
+### If FUNCTIONAL LANGUAGE (TTT):
+- Stages: ["Lead-in", "Test 1", "Language Focus", "Test 2", "Production", "Consolidation"]
+- Test 1: Diagnostic task where students attempt the function (e.g., role-play making a complaint) - reveals what they can't do yet
+- Language Focus: Teach the functional phrases/expressions students need (based on Test 1 gaps)
+- Test 2: Repeat similar task with new language support to show improvement
+- Production: New authentic context using the function
 
-### CEFR-SPECIFIC SCAFFOLDING:
-16. ${cefrLevel === 'A1' || cefrLevel === 'A2' ? 'Heavy scaffolding: 80% controlled practice with clear examples, sentence frames, word banks. Short simple sentences.' : ''}
-17. ${cefrLevel === 'B1' || cefrLevel === 'B2' ? 'Balanced scaffolding: 50% controlled, 50% freer practice. Mix simple and complex structures. Gradually remove support.' : ''}
-18. ${cefrLevel === 'C1' || cefrLevel === 'C2' ? 'Light scaffolding: 20% controlled practice, 80% fluency focus. Complex structures, nuanced language, minimal support.' : ''}
+### If READING (Pre-While-Post):
+- Stages: ["Pre-Reading", "While-Reading: Gist", "While-Reading: Detail", "Post-Reading", "Consolidation"]
+- Pre-Reading: Predict, activate vocabulary, set purpose
+- While-Reading Gist: Read for main idea (1-2 general questions)
+- While-Reading Detail: Read for specific information (5-8 detailed questions)
+- Post-Reading: Discussion, personal response, critical thinking
 
-### INTERACTION PATTERNS & STT:
-19. Specify interactionPattern for each slide: "Individual", "Pairs", "Small Groups", or "Whole Class"
-20. Progression: Individual → Pairs → Small Groups → Whole Class
-21. Aim for 70-80% Student Talking Time overall
-22. Practice stage: Start individual, move to pairs, then groups
-23. Production stage: Maximize pair/group work
+### If LISTENING (Pre-While-Post):
+- Stages: ["Pre-Listening", "While-Listening: Gist", "While-Listening: Detail", "Post-Listening", "Consolidation"]
+- Pre-Listening: Predict content, activate vocabulary
+- While-Listening Gist: Listen once for main idea
+- While-Listening Detail: Listen 2-3 times for specific information
+- Post-Listening: Discussion, role-play based on audio
 
-Generate a pedagogically sound, well-balanced lesson with proper PPP ratios, age-appropriate activities, CEFR-aligned scaffolding, and high Student Talking Time.`;
+### If SPEAKING (Fluency-Focused):
+- Stages: ["Lead-in", "Model", "Preparation", "Speaking Task", "Language Focus", "Repeat Task"]
+- Model: Show example of target speaking task
+- Preparation: Students prepare ideas and useful language
+- Speaking Task: Main activity (30% of lesson) - discussions, debates, presentations
+- Language Focus: Error correction, useful phrases after listening to students
+- Repeat Task: Students repeat with improvements
+
+### If WRITING (Process Approach):
+- Stages: ["Lead-in", "Model Analysis", "Planning", "Drafting", "Peer Review", "Revising", "Publishing"]
+- Model Analysis: Analyze example text for structure and features
+- Planning: Brainstorm, outline, organize ideas
+- Drafting: Write first draft (focus on content)
+- Peer Review: Exchange drafts, give feedback
+- Revising: Improve based on feedback
+
+STAGE ALLOCATION:
+${cefrLevel === 'A1' || cefrLevel === 'A2' ? '- A1-A2: More controlled practice (80%), less production (20%). Heavy scaffolding throughout.' : ''}
+${cefrLevel === 'B1' || cefrLevel === 'B2' ? '- B1-B2: Balanced (50% controlled practice, 50% freer production). Gradual scaffolding removal.' : ''}
+${cefrLevel === 'C1' || cefrLevel === 'C2' ? '- C1-C2: Less controlled practice (20%), more fluency-focused production (80%). Light scaffolding.' : ''}
+
+CONTENT REQUIREMENTS:
+- The "content" field must contain ACTUAL text students will read - write complete questions, sentences, stories, vocabulary lists, NOT descriptions
+- For discussion slides: Write 4-6 actual discussion questions
+- For practice slides: Write 8-10 complete example sentences or exercises  
+- For vocabulary slides: Write actual word lists with definitions and example sentences
+- For reading slides: Write the complete story or passage (150-250 words for ${cefrLevel})
+- For listening slides: Write the complete script/transcript students will hear
+- For grammar slides: Write the rules AND 6-8 example sentences demonstrating the structure
+
+VISUAL DESCRIPTIONS:
+- When slide content references images students need to see, the visualDescription MUST specify EXACTLY what to generate
+- Example BAD: "Bright colorful collage of tech devices" 
+- Example GOOD: "Generate these specific items: 1) iPhone showing Instagram, 2) MacBook Pro, 3) iPad with YouTube, 4) Apple Watch, 5) Facebook icon, 6) TikTok icon"
+- Age-appropriate styling: Young learners (cartoon), Teens (modern/cool), Adults (realistic/professional)
+
+INTERACTION PATTERNS:
+- Specify interactionPattern for each slide: "Individual", "Pairs", "Small Groups", or "Whole Class"
+- Progression: Individual → Pairs → Small Groups → Whole Class
+- Aim for 70-80% Student Talking Time
+- Include STT expectations in activityInstructions
+
+Generate a pedagogically sound lesson using the CORRECT framework for this lesson type, with appropriate stages, timing, scaffolding, and high Student Talking Time.`;
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
