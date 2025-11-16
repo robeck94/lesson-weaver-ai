@@ -40,12 +40,43 @@ STEP 2 — PEDAGOGICALLY BALANCED LESSON STRUCTURE
 
 **GRAMMAR & VOCABULARY LESSONS → PPP (Presentation-Practice-Production):**
 Stages: Lead-in → Presentation → Practice → Production → Consolidation
-- **Lead-in**: 5-10% (3-5 minutes) - Activate schema, generate interest, assess prior knowledge
-- **Presentation**: 20-25% (10-15 minutes) - Introduce new language clearly with examples
-- **Practice**: 40-50% (20-30 minutes) - LONGEST STAGE - controlled then freer practice activities
-- **Production**: 25-30% (12-18 minutes) - Authentic communication using new language
-- **Consolidation**: 5-10% (3-5 minutes) - Review, reflect, assign homework
+- **Lead-in**: 5-10% (1 slide) - Activate schema, generate interest, assess prior knowledge
+- **Presentation**: 20-25% (2-3 slides MAX) - Introduce new language clearly with examples
+- **Practice**: 40-50% (4-6 slides MINIMUM) - LONGEST STAGE - controlled then freer practice activities
+- **Production**: 25-30% (2 slides) - Authentic communication using new language
+- **Consolidation**: 5-10% (1 slide) - Review, reflect, assign homework
 Best for: Introducing new grammar structures, vocabulary sets, or language patterns
+
+**CRITICAL PPP RULES:**
+1. **VOCABULARY CHUNKING (MANDATORY)**: 
+   - NEVER present all vocabulary at once
+   - Use CHUNK-PRACTICE-CHUNK pattern:
+     * Present 3-4 words with examples (1 slide)
+     * Immediate practice of THOSE words (1-2 slides, pairs)
+     * Present next 3-4 words (1 slide)
+     * Immediate practice of THOSE words (1-2 slides, pairs)
+     * Combined practice of ALL words (1-2 slides)
+   - Example: Teaching 9 vocabulary items = 2 presentation slides + 5-6 practice slides
+
+2. **SLIDE COUNT DISTRIBUTION**:
+   - Total slides: 10-12
+   - Lead-in: 1 slide
+   - Presentation: 2-3 slides MAX (split vocabulary into chunks)
+   - Practice: 5-6 slides MINIMUM (40-50% of total)
+   - Production: 2 slides
+   - Consolidation: 1 slide
+
+3. **PRACTICE VARIETY** (use different activities):
+   - Matching exercises (pairs)
+   - Gap-fill completion (individual then pairs)
+   - Information gap activity (pairs)
+   - Running dictation or sentence scramble (pairs)
+   - Memory game or quiz (small groups)
+   - Error correction (pairs)
+
+4. **FRONT-LOAD PAIR WORK**:
+   - Practice slides should start by slide 3-4 (not slide 6+)
+   - Don't make students sit through 20+ minutes of presentation before practicing
 
 **FUNCTIONAL LANGUAGE LESSONS → TTT (Test-Teach-Test):**
 Stages: Lead-in → Test 1 (Diagnostic Task) → Teach (Language Focus) → Test 2 (Practice Task) → Production → Consolidation
@@ -422,9 +453,12 @@ FRAMEWORK-SPECIFIC REQUIREMENTS:
 
 ### If GRAMMAR/VOCABULARY (PPP):
 - Stages: ["Lead-in", "Presentation", "Practice", "Production", "Consolidation"]
-- Presentation: Clear explanation with 6-8 example sentences
-- Practice: 4-6 slides with controlled → freer practice progression (LONGEST STAGE)
-- Production: Authentic communication task using new language
+- **MANDATORY CHUNKING**: Present 3-4 items → Practice those items → Present next 3-4 items → Practice those → Combined practice
+- **Slide distribution**: 1 lead-in + 2-3 presentation (chunked) + 5-6 practice (MOST slides) + 2 production + 1 consolidation = 11-13 slides total
+- Presentation slides: Each presents MAXIMUM 3-4 vocabulary items or 1 grammar rule with 3 examples
+- Practice slides MUST START by slide 3-4 (don't wait until slide 6+)
+- Practice activities: Use variety (matching, gap-fill, info gap, running dictation, memory games, error correction)
+- Each practice slide: 4-6 exercise items MAX, different interaction patterns (pairs, groups, individual)
 
 ### If FUNCTIONAL LANGUAGE (TTT):
 - Stages: ["Lead-in", "Test 1", "Language Focus", "Test 2", "Production", "Consolidation"]
@@ -565,13 +599,33 @@ FEEDBACK: After 4 minutes, stop activity. Ask 'What phrases did you use to order
 
 CRITICAL: Every slide must specify how to maximize STT. Avoid whole-class discussions. Use pairs and groups as much as possible!
 
-⚠️ FINAL REMINDER - SLIDE TEXT LIMITS:
+⚠️ FINAL QUALITY CHECKLIST - VERIFY BEFORE GENERATING:
+
+**FOR VOCABULARY/GRAMMAR LESSONS (PPP):**
+1. ✅ Am I using CHUNK-PRACTICE-CHUNK pattern? (3-4 words → practice → next 3-4 words → practice)
+2. ✅ Do I have 5-6 PRACTICE slides (40-50% of total slides)?
+3. ✅ Does practice start by slide 3-4 (not slide 6+)?
+4. ✅ Are presentation slides split into chunks (MAX 3-4 items per slide)?
+5. ✅ Do practice slides use VARIETY? (matching, gap-fill, info gap, running dictation, games)
+6. ✅ Is each slide MAX 6 lines and 500 characters?
+
+**SLIDE DISTRIBUTION CHECK:**
+- Total slides: 10-13 slides
+- Lead-in: 1 slide
+- Presentation: 2-3 slides (chunked vocabulary/grammar)
+- Practice: 5-6 slides ← MOST SLIDES HERE
+- Production: 2 slides
+- Consolidation: 1 slide
+
+If your lesson doesn't match these patterns, REVISE before outputting!
+
+⚠️ SLIDE TEXT LIMITS:
 - Maximum 6 lines per slide
 - Maximum 500 characters per slide
 - If content is too long, create multiple slides (e.g., "Practice 1" and "Practice 2")
 - Better to have 12 focused slides than 8 overcrowded slides
 
-Generate a pedagogically sound lesson using the CORRECT framework for this lesson type, with appropriate stages, timing, scaffolding, high Student Talking Time, and properly sized slide content.`;
+Generate a pedagogically sound lesson using the CORRECT framework for this lesson type, with proper chunking, abundant practice activities, appropriate stages, timing, scaffolding, high Student Talking Time, and properly sized slide content.`;
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
