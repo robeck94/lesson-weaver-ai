@@ -100,7 +100,8 @@ CRITICAL RULES:
 - Balance visual engagement with pedagogical clarity
 - Avoid repeating the same visual or structural pattern
 - Topics must be exciting and relevant to students
-- DO NOT use markdown formatting (no **, __, ##, etc.) - use plain text only
+- DO NOT use markdown formatting (no **, __, ##, *, etc.) - use plain text only. For emphasis, use CAPS or line breaks
+- Format vocabulary entries as: "Word (part of speech): Definition" followed by "Example: [sentence]" on next line
 - Return ONLY the JSON object, no additional text or markdown formatting`;
 
     const userPrompt = `Create a complete ESL lesson for:
