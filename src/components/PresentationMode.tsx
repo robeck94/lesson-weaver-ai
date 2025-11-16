@@ -158,41 +158,57 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
             </div>
 
             {/* Content Area */}
-            <div className="flex-1 space-y-6 overflow-auto">
-              {contentParts.map((part, index) => {
-                const isRevealed = revealedElements.has(index);
-                const isNext = !isRevealed && contentParts.slice(0, index).every((_, i) => revealedElements.has(i));
-                
-                return (
-                  <div
-                    key={index}
-                    className={`transition-all duration-700 ease-out ${
-                      isRevealed
-                        ? "opacity-100 translate-y-0 scale-100"
-                        : "opacity-0 translate-y-8 scale-95"
-                    }`}
-                  >
-                    <div 
-                      className={`bg-gradient-to-r from-muted/50 to-muted/30 backdrop-blur-sm rounded-xl p-6 border transition-all duration-300 cursor-pointer ${
-                        isNext 
-                          ? "border-primary/50 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 hover-scale ring-2 ring-primary/30" 
-                          : "border-border/50 hover:shadow-md"
-                      }`}
-                      onClick={() => handleCardClick(index)}
-                    >
-                      {isNext && (
-                        <div className="flex items-center gap-2 text-primary text-sm font-medium mb-2 animate-pulse">
-                          <span className="w-2 h-2 bg-primary rounded-full"></span>
-                          Press SPACE or click to reveal
-                        </div>
-                      )}
-                      <p className="text-2xl text-foreground leading-relaxed">
-                        {part}
-                      </p>
-                    </div>
+            <div className="flex-1 flex gap-6 overflow-auto">
+              {/* Image Section */}
+              {slide.imageUrl && (
+                <div className="w-1/3 flex-shrink-0 animate-fade-in">
+                  <div className="sticky top-0">
+                    <img 
+                      src={slide.imageUrl} 
+                      alt={slide.title}
+                      className="w-full h-auto rounded-2xl shadow-lg border border-border/50"
+                    />
                   </div>
-                );
-              })}
+                </div>
+              )}
+              
+              {/* Text Content Section */}
+              <div className={`flex-1 space-y-6 ${slide.imageUrl ? '' : 'max-w-4xl mx-auto'}`}>
+                {contentParts.map((part, index) => {
+                  const isRevealed = revealedElements.has(index);
+                  const isNext = !isRevealed && contentParts.slice(0, index).every((_, i) => revealedElements.has(i));
+                  
+                  return (
+                    <div
+                      key={index}
+                      className={`transition-all duration-700 ease-out ${
+                        isRevealed
+                          ? "opacity-100 translate-y-0 scale-100"
+                          : "opacity-0 translate-y-8 scale-95"
+                      }`}
+                    >
+                      <div 
+                        className={`bg-gradient-to-r from-muted/50 to-muted/30 backdrop-blur-sm rounded-xl p-6 border transition-all duration-300 cursor-pointer ${
+                          isNext 
+                            ? "border-primary/50 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 hover-scale ring-2 ring-primary/30" 
+                            : "border-border/50 hover:shadow-md"
+                        }`}
+                        onClick={() => handleCardClick(index)}
+                      >
+                        {isNext && (
+                          <div className="flex items-center gap-2 text-primary text-sm font-medium mb-2 animate-pulse">
+                            <span className="w-2 h-2 bg-primary rounded-full"></span>
+                            Press SPACE or click to reveal
+                          </div>
+                        )}
+                        <p className="text-2xl text-foreground leading-relaxed">
+                          {part}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
 
             {/* Activity Instructions */}
