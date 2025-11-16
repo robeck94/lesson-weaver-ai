@@ -31,6 +31,8 @@ STEP 1 — LESSON INPUT
 - Detect CEFR level and adapt complexity accordingly
 - Extract key topic, vocabulary, and context
 - Ensure topics are **highly engaging, memorable, and student-friendly**
+- Choose **relatable, modern, and interesting contexts** (social media, travel, food, technology, entertainment, personal experiences)
+- Avoid boring or overly academic topics - prioritize FUN and RELEVANCE to students' lives
 
 ---
 
@@ -66,13 +68,24 @@ Best for: Introducing new grammar structures, vocabulary sets, or language patte
    - Production: 2 slides
    - Consolidation: 1 slide
 
-3. **PRACTICE VARIETY** (use different activities):
-   - Matching exercises (pairs)
-   - Gap-fill completion (individual then pairs)
-   - Information gap activity (pairs)
-   - Running dictation or sentence scramble (pairs)
-   - Memory game or quiz (small groups)
-   - Error correction (pairs)
+3. **PRACTICE VARIETY** (use different FUN & ENGAGING activities):
+   - 🎮 Games: Memory games, board games, card games, bingo, charades (pairs/groups)
+   - 🏃 Movement activities: Running dictation, gallery walk, find someone who, mingle activities
+   - 🎭 Drama & role-plays: Realistic scenarios, improvisation, hot seating (pairs)
+   - 🧩 Puzzles: Matching, sentence scrambles, crosswords, word searches (pairs)
+   - 🤝 Information gap activities: Spot the differences, complete the chart, jigsaw (pairs)
+   - 🎯 Competitions: Team quizzes, relay races, fastest to finish challenges (groups)
+   - 🎨 Creative tasks: Draw and describe, design a poster, create a comic strip (pairs/groups)
+   - 💬 Discussions: Debates, surveys, interviews, ranking activities (pairs/groups)
+   - 📱 Real-world tasks: Plan a trip, order at a restaurant, make a shopping list (pairs)
+   
+   **ENGAGEMENT PRINCIPLES:**
+   ✅ Make it competitive (leaderboards, points, teams)
+   ✅ Add movement (stand up, move around, switch partners)
+   ✅ Use authentic scenarios (real situations students relate to)
+   ✅ Include choice (students choose topics, partners, or approach)
+   ✅ Make it social (pair/group work over individual)
+   ✅ Add surprise elements (mystery boxes, hidden answers, plot twists)
 
 4. **FRONT-LOAD PAIR WORK**:
    - Practice slides should start by slide 3-4 (not slide 6+)
@@ -295,6 +308,88 @@ Example stages: ["Lead-in", "Reading Input", "Language Focus", "Practice", "Spea
 
 ---
 
+STEP 2B — GAMIFICATION & ENGAGEMENT STRATEGIES 🎮
+
+### MAKING ACTIVITIES FUN AND ENGAGING:
+
+**1. ADD COMPETITION & POINTS:**
+- Award points for correct answers, creativity, speed
+- Create team competitions (divide class into 2-3 teams)
+- Use leaderboards and track scores throughout lesson
+- Examples: "Team with most correct answers wins", "First pair to finish gets a point"
+
+**2. INCLUDE MOVEMENT & ENERGY:**
+- Get students out of their seats regularly
+- Running dictation, gallery walks, board races, mingle activities
+- "Find someone who..." activities where students walk around
+- Switch partners every 3-5 minutes to maintain energy
+
+**3. USE AUTHENTIC & RELATABLE CONTEXTS:**
+- Social media scenarios (posting on Instagram, TikTok trends, viral videos)
+- Modern technology (apps, smartphones, streaming services)
+- Popular culture (movies, music, celebrities, sports, games)
+- Real-life situations students actually face (ordering food, shopping online, planning trips)
+- Avoid outdated or boring topics (traditional grammar drills, academic texts)
+
+**4. ADD CHOICE & PERSONALIZATION:**
+- Let students choose topics, partners, or approaches
+- "Choose A or B", "Pick your favorite...", "What do you think?"
+- Personalized questions: "Tell me about YOUR experience..."
+- Allows autonomy and increases engagement
+
+**5. CREATE MYSTERY & SURPRISE:**
+- Hidden answers, reveal activities, guessing games
+- "Mystery box" - students guess what's inside
+- Plot twists in role-plays or stories
+- Unexpected outcomes or humorous scenarios
+
+**6. USE DRAMA & STORYTELLING:**
+- Role-plays with realistic or funny scenarios
+- Create ongoing stories across multiple slides
+- Hot seating (interview a character)
+- Improvisation and creative expression
+
+**7. INCORPORATE HUMOR:**
+- Funny examples, silly scenarios, exaggerated situations
+- Allow students to be creative and humorous in responses
+- Use memes, jokes, or amusing images (age-appropriate)
+- Laughter lowers anxiety and increases memory retention
+
+**8. MAKE IT VISUAL & INTERACTIVE:**
+- Use colorful, modern, appealing images
+- Interactive elements: matching, drag-and-drop concepts, click-to-reveal
+- Infographics, charts, diagrams instead of plain text
+- Emojis and icons to make content pop
+
+**FUN ACTIVITY EXAMPLES BY STAGE:**
+
+**Lead-in Activities:**
+- 🎲 "Two Truths and a Lie" about the topic
+- 🎯 Quick quiz or prediction game
+- 🖼️ Picture reveal game (show parts of image)
+- 💭 "What would you do if...?" scenarios
+
+**Practice Activities:**
+- 🏃 Running dictation relay races
+- 🧩 Sentence scramble competitions
+- 🎮 Board game with target language
+- 🎭 Speed dating role-plays (rotate partners)
+- 🔍 Spot the error challenges
+- 🎪 Gallery walk and peer feedback
+
+**Production Activities:**
+- 🎬 Create a skit or commercial
+- 🗣️ Debate with judging and winners
+- 🎨 Design a poster and present
+- 📱 Create social media posts
+- 🎤 Presentations with Q&A
+
+**CRITICAL ENGAGEMENT RULE:**
+Every practice slide MUST include at least ONE of these engagement elements:
+✅ Competition/points ✅ Movement ✅ Choice ✅ Humor ✅ Real-world context ✅ Surprise ✅ Drama
+
+---
+
 STEP 3 — SLIDE DESIGN
 - Bold, readable titles with stage-based color coding
 - Layered layouts: cards, grids, boxes, floating elements, side panels
@@ -395,7 +490,7 @@ Return ONLY a valid JSON object with this exact structure:
       "content": "⚠️ CRITICAL LENGTH LIMITS: Maximum 6 lines, 500 characters total, 80 chars per line. Split into multiple slides if needed.\n\nTHE ACTUAL TEXT, QUESTIONS, AND MATERIAL STUDENTS WILL READ. Examples:\n- For discussion (3-4 questions MAX): 'Do you use technology every day?\nHow many apps are on your phone?\nWhat are the benefits of technology?\nWhat are the drawbacks?'\n- For vocabulary (4-6 words MAX): 'smartphone (n) - a mobile phone with advanced features\nlaptop (n) - a portable computer\ntablet (n) - a touchscreen device\nsmartwatch (n) - a wearable computer'\n- For grammar (1 rule + 3 examples): 'Past Simple: Regular verbs + -ed\nYesterday, I walked to school.\nLast week, she visited Paris.\nThey played football on Saturday.'\n- For practice (4-6 items MAX): '1. I _____ (go) to school.\n2. She _____ (work) here.\n3. They _____ (play) tennis.\n4. He _____ (study) English.'\n\nNEVER write descriptions like 'Questions about technology' - write ACTUAL questions.\nIf you have 8 items, make 2 slides with 4 each.",
       "visualDescription": "CRITICAL - This determines what images are generated:\n- If content references images students must see ('Look at the images', 'Match the pictures'), specify EXACTLY what to generate: 'Generate these items in a grid: 1) modern smartphone with Instagram visible, 2) silver laptop, 3) tablet showing Netflix, 4) smartwatch'\n- If content is text-based discussion/grammar, describe supportive styling: 'Colorful background with tech icons, modern clean layout'\n- BE SPECIFIC about what objects/items to generate when students need to see them\n- AGE-APPROPRIATE: For young learners use cartoon style, for teens use modern/cool style, for adults use professional/realistic style",
       "animationNotes": "INTERNAL NOTE: Animation instructions for presentation - NOT shown to students",
-      "activityInstructions": "DETAILED teacher instructions for delivering this slide. MUST include:\n1. INTERACTION PATTERN: Individual/Pairs/Small Groups/Whole Class\n2. EXPECTED STT%: Estimate 70-90% for pairs, 60-80% for groups, 20-40% for whole class\n3. STEP-BY-STEP PROCEDURE:\n   - Exact instructions to give students (keep under 30 seconds)\n   - ICQs (Instruction Checking Questions) to verify understanding\n   - Transition strategy from previous activity\n4. MAXIMIZING STT STRATEGIES:\n   - How to set up pair/group work to maximize talking time\n   - Example: 'Partner A speaks first for 2 mins, Partner B listens and asks follow-up questions, then switch roles'\n   - Specific activity structure (Think-Pair-Share, Running Dictation, Information Gap, etc.)\n5. MONITORING (Don't interrupt STT):\n   - How to monitor without talking (walk around, note errors, gesture)\n   - When/how to provide feedback (AFTER activity, not during)\n6. TIME BREAKDOWN:\n   - Instructions: 1 min (20% TTT)\n   - Activity: 4 mins (80% STT)\n   - Example timing that maximizes STT\n7. SCAFFOLDING for CEFR levels\n8. CONTINGENCY: What to do if students finish early/need more time"
+      "activityInstructions": "DETAILED teacher instructions for delivering this slide. MUST include:\n1. INTERACTION PATTERN: Individual/Pairs/Small Groups/Whole Class\n2. EXPECTED STT%: Estimate 70-90% for pairs, 60-80% for groups, 20-40% for whole class\n3. ENGAGEMENT ELEMENT: Which fun/gamification strategy is used (competition, movement, choice, humor, surprise, drama, etc.) - MANDATORY for practice slides\n4. STEP-BY-STEP PROCEDURE:\n   - Exact instructions to give students (keep under 30 seconds)\n   - ICQs (Instruction Checking Questions) to verify understanding\n   - Transition strategy from previous activity\n5. MAXIMIZING STT STRATEGIES:\n   - How to set up pair/group work to maximize talking time\n   - Example: 'Partner A speaks first for 2 mins, Partner B listens and asks follow-up questions, then switch roles'\n   - Specific activity structure (Think-Pair-Share, Running Dictation, Information Gap, Board race, Speed dating, etc.)\n6. MONITORING (Don't interrupt STT):\n   - How to monitor without talking (walk around, note errors, gesture)\n   - When/how to provide feedback (AFTER activity, not during)\n7. TIME BREAKDOWN:\n   - Instructions: 1 min (20% TTT)\n   - Activity: 4 mins (80% STT)\n   - Example timing that maximizes STT\n8. SCAFFOLDING for CEFR levels\n9. CONTINGENCY: What to do if students finish early/need more time"
     }
   ],
   "teacherNotes": "Overall lesson guidance including: 1) Lesson objectives (SMART goals), 2) Key teaching points and anticipated difficulties, 3) Differentiation strategies for mixed-ability classes, 4) Extension activities for fast finishers, 5) Assessment opportunities, 6) Tips for maximizing Student Talking Time, 7) Homework suggestions, 8) Materials needed, 9) Board plan suggestions, 10) Reflection questions for next lesson"
