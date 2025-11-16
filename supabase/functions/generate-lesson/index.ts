@@ -278,7 +278,66 @@ STEP 3 — SLIDE DESIGN
 
 ---
 
-STEP 4 — TEACHER NOTES
+STEP 4 — SLIDE CONTENT LENGTH LIMITS (CRITICAL)
+
+**ONE IDEA PER SLIDE PRINCIPLE:**
+
+**MAXIMUM CONTENT LIMITS - STRICTLY ENFORCE:**
+- **Maximum 6 lines of text per slide**
+- **Maximum 500 characters per slide (including newlines)**
+- **Each line max 80 characters**
+- **If content exceeds limits, create 2-3 separate slides instead**
+- **Use bullet points and concise language**
+- **NO paragraphs, NO walls of text**
+
+**SLIDE CONTENT DENSITY BY TYPE:**
+
+1. **Discussion Question Slides:**
+   ✅ 3-4 questions MAX per slide
+   ❌ Do NOT list 6-8 questions on one slide
+   → Split into 2 slides if needed
+
+2. **Grammar/Vocabulary Presentation:**
+   ✅ 1 concept + 3 examples per slide
+   ❌ Do NOT explain multiple tenses on one slide
+   → Make separate slides for each tense/concept
+
+3. **Practice Exercises:**
+   ✅ 4-6 items per slide MAX
+   ❌ Do NOT cram 10-12 exercises on one slide
+   → Split into "Practice 1" and "Practice 2" slides
+
+4. **Vocabulary Lists:**
+   ✅ 4-6 words per slide
+   ❌ Do NOT list 10-15 words at once
+   → Make multiple vocabulary slides
+
+5. **Reading/Listening Text:**
+   ✅ Short passages only (3-4 sentences, max 100 words)
+   ❌ Do NOT put entire articles on slides
+   → Reference "Handout" in teacherNotes for long texts
+
+**EXAMPLES:**
+
+✅ GOOD (fits on slide):
+"1. I _____ (go) to school every day.
+2. She _____ (work) in a hospital.
+3. They _____ (play) football on weekends.
+4. He _____ (study) English twice a week."
+
+❌ TOO MUCH (split into 2 slides):
+"1. I _____ (go) to school every day.
+2. She _____ (work) in a hospital.
+3. They _____ (play) football on weekends.
+4. He _____ (study) English twice a week.
+5. We _____ (eat) lunch at 12pm.
+6. You _____ (watch) TV in the evening.
+7. It _____ (rain) a lot in winter.
+8. I _____ (like) chocolate ice cream."
+
+---
+
+STEP 5 — TEACHER NOTES
 - Provide step-by-step instructions for delivering activities
 - Include prompts for student interaction, answer keys, and extensions
 - Add timing suggestions per slide/stage
@@ -302,7 +361,7 @@ Return ONLY a valid JSON object with this exact structure:
       "title": "Slide title",
       "timing": "5 minutes",
       "interactionPattern": "Whole Class" | "Pairs" | "Small Groups" | "Individual",
-      "content": "THE ACTUAL TEXT, QUESTIONS, AND MATERIAL STUDENTS WILL READ. Examples:\n- For discussion: 'Do you use technology every day? How many apps are on your phone? What are the benefits and drawbacks of technology in your life?'\n- For vocabulary: 'smartphone (noun) - a mobile phone with advanced features\nlaptop (noun) - a portable computer'\n- For grammar: 'Yesterday, I went to the park.\nLast week, she visited her grandmother.\nThey played football on Saturday.'\nNEVER write descriptions like 'A story with blanks' or 'Questions about technology' - write the ACTUAL questions and text",
+      "content": "⚠️ CRITICAL LENGTH LIMITS: Maximum 6 lines, 500 characters total, 80 chars per line. Split into multiple slides if needed.\n\nTHE ACTUAL TEXT, QUESTIONS, AND MATERIAL STUDENTS WILL READ. Examples:\n- For discussion (3-4 questions MAX): 'Do you use technology every day?\nHow many apps are on your phone?\nWhat are the benefits of technology?\nWhat are the drawbacks?'\n- For vocabulary (4-6 words MAX): 'smartphone (n) - a mobile phone with advanced features\nlaptop (n) - a portable computer\ntablet (n) - a touchscreen device\nsmartwatch (n) - a wearable computer'\n- For grammar (1 rule + 3 examples): 'Past Simple: Regular verbs + -ed\nYesterday, I walked to school.\nLast week, she visited Paris.\nThey played football on Saturday.'\n- For practice (4-6 items MAX): '1. I _____ (go) to school.\n2. She _____ (work) here.\n3. They _____ (play) tennis.\n4. He _____ (study) English.'\n\nNEVER write descriptions like 'Questions about technology' - write ACTUAL questions.\nIf you have 8 items, make 2 slides with 4 each.",
       "visualDescription": "CRITICAL - This determines what images are generated:\n- If content references images students must see ('Look at the images', 'Match the pictures'), specify EXACTLY what to generate: 'Generate these items in a grid: 1) modern smartphone with Instagram visible, 2) silver laptop, 3) tablet showing Netflix, 4) smartwatch'\n- If content is text-based discussion/grammar, describe supportive styling: 'Colorful background with tech icons, modern clean layout'\n- BE SPECIFIC about what objects/items to generate when students need to see them\n- AGE-APPROPRIATE: For young learners use cartoon style, for teens use modern/cool style, for adults use professional/realistic style",
       "animationNotes": "INTERNAL NOTE: Animation instructions for presentation - NOT shown to students",
       "activityInstructions": "DETAILED teacher instructions for delivering this slide. MUST include:\n1. INTERACTION PATTERN: Individual/Pairs/Small Groups/Whole Class\n2. EXPECTED STT%: Estimate 70-90% for pairs, 60-80% for groups, 20-40% for whole class\n3. STEP-BY-STEP PROCEDURE:\n   - Exact instructions to give students (keep under 30 seconds)\n   - ICQs (Instruction Checking Questions) to verify understanding\n   - Transition strategy from previous activity\n4. MAXIMIZING STT STRATEGIES:\n   - How to set up pair/group work to maximize talking time\n   - Example: 'Partner A speaks first for 2 mins, Partner B listens and asks follow-up questions, then switch roles'\n   - Specific activity structure (Think-Pair-Share, Running Dictation, Information Gap, etc.)\n5. MONITORING (Don't interrupt STT):\n   - How to monitor without talking (walk around, note errors, gesture)\n   - When/how to provide feedback (AFTER activity, not during)\n6. TIME BREAKDOWN:\n   - Instructions: 1 min (20% TTT)\n   - Activity: 4 mins (80% STT)\n   - Example timing that maximizes STT\n7. SCAFFOLDING for CEFR levels\n8. CONTINGENCY: What to do if students finish early/need more time"
@@ -409,13 +468,14 @@ ${cefrLevel === 'B1' || cefrLevel === 'B2' ? '- B1-B2: Balanced (50% controlled 
 ${cefrLevel === 'C1' || cefrLevel === 'C2' ? '- C1-C2: Less controlled practice (20%), more fluency-focused production (80%). Light scaffolding.' : ''}
 
 CONTENT REQUIREMENTS:
+- ⚠️ CRITICAL: Maximum 6 lines, 500 characters per slide. Split into multiple slides if needed.
 - The "content" field must contain ACTUAL text students will read - write complete questions, sentences, stories, vocabulary lists, NOT descriptions
-- For discussion slides: Write 4-6 actual discussion questions
-- For practice slides: Write 8-10 complete example sentences or exercises  
-- For vocabulary slides: Write actual word lists with definitions and example sentences
-- For reading slides: Write the complete story or passage (150-250 words for ${cefrLevel})
-- For listening slides: Write the complete script/transcript students will hear
-- For grammar slides: Write the rules AND 6-8 example sentences demonstrating the structure
+- For discussion slides: Write 3-4 actual discussion questions (if you have 6, make 2 slides)
+- For practice slides: Write 4-6 complete example sentences or exercises (if you have 10, make 2 slides)  
+- For vocabulary slides: Write 4-6 words with definitions (if you have 10 words, make 2 slides)
+- For reading slides: Reference "See handout" in teacherNotes for long texts (slides show key excerpts only)
+- For listening slides: Reference "Audio transcript in teacherNotes" (slides show key questions only)
+- For grammar slides: 1 rule + 3 examples per slide (multiple tenses = multiple slides)
 
 VISUAL DESCRIPTIONS:
 - When slide content references images students need to see, the visualDescription MUST specify EXACTLY what to generate
@@ -504,7 +564,13 @@ FEEDBACK: After 4 minutes, stop activity. Ask 'What phrases did you use to order
 
 CRITICAL: Every slide must specify how to maximize STT. Avoid whole-class discussions. Use pairs and groups as much as possible!
 
-Generate a pedagogically sound lesson using the CORRECT framework for this lesson type, with appropriate stages, timing, scaffolding, and high Student Talking Time.`;
+⚠️ FINAL REMINDER - SLIDE TEXT LIMITS:
+- Maximum 6 lines per slide
+- Maximum 500 characters per slide
+- If content is too long, create multiple slides (e.g., "Practice 1" and "Practice 2")
+- Better to have 12 focused slides than 8 overcrowded slides
+
+Generate a pedagogically sound lesson using the CORRECT framework for this lesson type, with appropriate stages, timing, scaffolding, high Student Talking Time, and properly sized slide content.`;
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
