@@ -9,6 +9,13 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Sparkles, BookOpen, Gamepad2 } from "lucide-react";
 
+export interface ImageValidation {
+  isValid: boolean;
+  confidence: number;
+  issues: string[];
+  recommendation: string;
+}
+
 export interface LessonSlide {
   slideNumber: number;
   stage: string;
@@ -20,6 +27,7 @@ export interface LessonSlide {
   timing?: string;
   imageUrl?: string;
   interactionPattern?: string;
+  imageValidation?: ImageValidation;
 }
 
 export interface GeneratedLesson {
@@ -107,6 +115,42 @@ const Index = () => {
               }
             } catch (err) {
               console.error(`Error generating image for slide ${i + 1}:`, err);
+            }
+          }
+        }
+
+        // Step 3: Validate generated images
+        if (imagesGenerated > 0) {
+          toast({
+            title: "Validating Images...",
+            description: "Checking if images match the lesson content",
+          });
+
+          for (let i = 0; i < slidesWithImages.length; i++) {
+            const slide = slidesWithImages[i];
+            
+            if (slide.imageUrl) {
+              try {
+                const { data: validationData, error: validationError } = await supabase.functions.invoke('validate-slide-image', {
+                  body: {
+                    imageUrl: slide.imageUrl,
+                    slideContent: slide.content,
+                    visualDescription: slide.visualDescription,
+                    slideTitle: slide.title
+                  }
+                });
+
+                if (!validationError && validationData?.validation) {
+                  slidesWithImages[i] = { 
+                    ...slide, 
+                    imageValidation: validationData.validation 
+                  };
+                  // Update lesson with validation results
+                  setGeneratedLesson({ ...lesson, slides: [...slidesWithImages] });
+                }
+              } catch (err) {
+                console.error(`Error validating image for slide ${i + 1}:`, err);
+              }
             }
           }
         }
