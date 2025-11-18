@@ -194,8 +194,14 @@ Generate a classroom-ready lesson following all the instructions provided in the
 
     console.log('Lesson generated successfully:', lesson.topic);
 
+    // Add totalSlides field for frontend compatibility
+    const lessonWithTotal = {
+      ...lesson,
+      totalSlides: lesson.slides?.length || 0
+    };
+
     return new Response(
-      JSON.stringify({ lesson }),
+      JSON.stringify({ lesson: lessonWithTotal }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
