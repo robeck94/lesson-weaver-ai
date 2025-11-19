@@ -47,6 +47,8 @@ cp "$SOURCE/src/components/RolePlayActivity.tsx" "$TARGET/src/components/"
 cp "$SOURCE/src/components/SentenceOrderingActivity.tsx" "$TARGET/src/components/"
 cp "$SOURCE/src/components/TrueFalseActivity.tsx" "$TARGET/src/components/"
 cp "$SOURCE/src/components/WordScrambleActivity.tsx" "$TARGET/src/components/"
+cp "$SOURCE/src/components/ImageGenerator.tsx" "$TARGET/src/components/"
+cp "$SOURCE/src/components/NavLink.tsx" "$TARGET/src/components/"
 cp "$SOURCE/src/components/games/GameCustomizer.tsx" "$TARGET/src/components/games/"
 cp "$SOURCE/src/components/games/GameTemplateCard.tsx" "$TARGET/src/components/games/"
 
