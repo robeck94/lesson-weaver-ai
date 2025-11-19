@@ -73,7 +73,7 @@ Style: Clean, colorful, professional, suitable for classroom presentation. Flat 
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash-image-preview',
+        model: 'google/gemini-2.5-flash-image',
         messages: [
           { role: 'user', content: imagePrompt }
         ],
@@ -110,15 +110,19 @@ Style: Clean, colorful, professional, suitable for classroom presentation. Flat 
 
     const data = await response.json();
     console.log('AI Response received');
+    console.log('Response structure:', JSON.stringify(data, null, 2).substring(0, 500));
 
     // Extract the generated image from the response
     const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
     
     if (!imageUrl) {
+      console.error('Full response data:', JSON.stringify(data));
+      console.error('Message content:', data.choices?.[0]?.message?.content);
+      console.error('Images array:', data.choices?.[0]?.message?.images);
       throw new Error('No image generated in response');
     }
 
-    console.log('Image generated successfully');
+    console.log('Image generated successfully, URL length:', imageUrl.length);
 
     return new Response(
       JSON.stringify({ imageUrl }),
