@@ -12,6 +12,7 @@ import { QuizSlide } from "./QuizSlide";
 import { FillInTheBlankActivity } from "./FillInTheBlankActivity";
 import { WordScrambleActivity } from "./WordScrambleActivity";
 import { SentenceOrderingActivity } from "./SentenceOrderingActivity";
+import { TrueFalseActivity } from "./TrueFalseActivity";
 
 interface LessonPreviewProps {
   slides: LessonSlide[];
@@ -99,7 +100,7 @@ export const LessonPreview = ({ slides }: LessonPreviewProps) => {
                     try {
                       if (slide.activityInstructions) {
                         const activityData = JSON.parse(slide.activityInstructions);
-                        hasInteractiveActivity = ['matching', 'quiz', 'fillblank', 'scramble', 'ordering'].includes(activityData.type);
+                        hasInteractiveActivity = ['matching', 'quiz', 'fillblank', 'scramble', 'ordering', 'truefalse'].includes(activityData.type);
                       }
                     } catch (e) {
                       // Not an interactive activity
@@ -220,6 +221,18 @@ export const LessonPreview = ({ slides }: LessonPreviewProps) => {
                                     <div className="w-full max-h-[600px] overflow-y-auto">
                                       <div className="activity-box">
                                         <SentenceOrderingActivity 
+                                          items={activityData.items}
+                                        />
+                                      </div>
+                                    </div>
+                                  );
+                                }
+
+                                if (activityData.type === 'truefalse' && activityData.items) {
+                                  return (
+                                    <div className="w-full max-h-[600px] overflow-y-auto">
+                                      <div className="activity-box">
+                                        <TrueFalseActivity 
                                           items={activityData.items}
                                         />
                                       </div>
