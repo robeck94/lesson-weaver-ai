@@ -14,6 +14,7 @@ import { WordScrambleActivity } from "./WordScrambleActivity";
 import { SentenceOrderingActivity } from "./SentenceOrderingActivity";
 import { TrueFalseActivity } from "./TrueFalseActivity";
 import { DialogueActivity } from "./DialogueActivity";
+import { RolePlayActivity } from "./RolePlayActivity";
 
 interface LessonPreviewProps {
   slides: LessonSlide[];
@@ -101,7 +102,7 @@ export const LessonPreview = ({ slides }: LessonPreviewProps) => {
                     try {
                       if (slide.activityInstructions) {
                         const activityData = JSON.parse(slide.activityInstructions);
-                        hasInteractiveActivity = ['matching', 'quiz', 'fillblank', 'scramble', 'ordering', 'truefalse', 'dialogue'].includes(activityData.type);
+                        hasInteractiveActivity = ['matching', 'quiz', 'fillblank', 'scramble', 'ordering', 'truefalse', 'dialogue', 'roleplay'].includes(activityData.type);
                       }
                     } catch (e) {
                       // Not an interactive activity
@@ -248,6 +249,18 @@ export const LessonPreview = ({ slides }: LessonPreviewProps) => {
                                         <DialogueActivity 
                                           lines={activityData.lines}
                                           title={activityData.title}
+                                        />
+                                      </div>
+                                    </div>
+                                  );
+                                }
+
+                                if (activityData.type === 'roleplay' && activityData.scenarios) {
+                                  return (
+                                    <div className="w-full max-h-[600px] overflow-y-auto">
+                                      <div className="activity-box">
+                                        <RolePlayActivity 
+                                          scenarios={activityData.scenarios}
                                         />
                                       </div>
                                     </div>
