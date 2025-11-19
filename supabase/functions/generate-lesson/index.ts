@@ -79,6 +79,12 @@ Follow these strict instructions:
 
 **Critical:** Every slide must be **ready for classroom use** without requiring additional teacher prep. Prioritize **clarity, engagement, visual appeal, and practical usability**.
 
+**IMPORTANT - Text Formatting:** 
+   - DO NOT use asterisks (**) or any markdown formatting in the slide content, titles, or objectives
+   - Use plain text only - the content will be displayed directly without markdown rendering
+   - For emphasis, use capital letters, bullet points, or line breaks instead of asterisks
+   - Example: Write "Objectives:" NOT "**Objectives:**"
+
 **JSON Output Format:**
 Return a JSON object with this structure:
 {
