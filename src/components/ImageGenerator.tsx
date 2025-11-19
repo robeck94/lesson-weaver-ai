@@ -19,6 +19,8 @@ export const ImageGenerator = ({ slides, onImagesGenerated }: ImageGeneratorProp
     setIsGenerating(true);
     setProgress(0);
     
+    const MAX_RETRIES = 2; // Maximum retry attempts for fixing issues
+    
     try {
       const updatedSlides = [...slides];
       
@@ -31,26 +33,81 @@ export const ImageGenerator = ({ slides, onImagesGenerated }: ImageGeneratorProp
           continue;
         }
 
-        try {
-          const { data, error } = await supabase.functions.invoke('generate-slide-image', {
-            body: {
-              visualDescription: slide.visualDescription,
-              slideTitle: slide.title
-            }
-          });
+        let imageGenerated = false;
+        let retryAttempt = 0;
+        let lastValidation: any = null;
 
-          if (error) {
-            console.error(`Error generating image for slide ${i + 1}:`, error);
-            toast({
-              title: `Failed to generate image for slide ${i + 1}`,
-              description: "Continuing with other slides...",
-              variant: "destructive",
+        // Retry loop for automatic fixing
+        while (!imageGenerated && retryAttempt <= MAX_RETRIES) {
+          try {
+            // Generate image with retry context
+            const { data: genData, error: genError } = await supabase.functions.invoke('generate-slide-image', {
+              body: {
+                visualDescription: slide.visualDescription,
+                slideTitle: slide.title,
+                slideContent: slide.content,
+                validationIssues: lastValidation?.issues || [],
+                retryAttempt
+              }
             });
-          } else if (data?.imageUrl) {
-            updatedSlides[i] = { ...slide, imageUrl: data.imageUrl };
+
+            if (genError) {
+              console.error(`Error generating image for slide ${i + 1}:`, genError);
+              break; // Stop retrying on generation errors
+            }
+
+            if (!genData?.imageUrl) {
+              break; // No image generated, stop retrying
+            }
+
+            // Validate the generated image
+            const { data: valData } = await supabase.functions.invoke('validate-slide-image', {
+              body: {
+                imageUrl: genData.imageUrl,
+                slideTitle: slide.title,
+                slideContent: slide.content,
+                visualDescription: slide.visualDescription
+              }
+            });
+
+            // Check validation results
+            if (valData?.validation?.isValid) {
+              // Image is valid, accept it
+              updatedSlides[i] = { 
+                ...slide, 
+                imageUrl: genData.imageUrl,
+                imageValidation: valData.validation
+              };
+              imageGenerated = true;
+            } else if (retryAttempt < MAX_RETRIES) {
+              // Image has issues and we have retries left
+              console.log(`Validation failed for slide ${i + 1}, retrying (attempt ${retryAttempt + 1}/${MAX_RETRIES})...`);
+              lastValidation = valData?.validation;
+              retryAttempt++;
+              // Continue to next iteration to retry
+            } else {
+              // Max retries reached, accept the image but keep validation warnings
+              console.log(`Max retries reached for slide ${i + 1}, accepting image with warnings`);
+              updatedSlides[i] = { 
+                ...slide, 
+                imageUrl: genData.imageUrl,
+                imageValidation: valData?.validation
+              };
+              imageGenerated = true;
+            }
+
+          } catch (err) {
+            console.error(`Error in image generation/validation loop for slide ${i + 1}:`, err);
+            break; // Stop retrying on unexpected errors
           }
-        } catch (err) {
-          console.error(`Error generating image for slide ${i + 1}:`, err);
+        }
+
+        if (!imageGenerated) {
+          toast({
+            title: `Failed to generate image for slide ${i + 1}`,
+            description: "Continuing with other slides...",
+            variant: "destructive",
+          });
         }
 
         setProgress(((i + 1) / slides.length) * 100);
@@ -58,9 +115,12 @@ export const ImageGenerator = ({ slides, onImagesGenerated }: ImageGeneratorProp
 
       onImagesGenerated(updatedSlides);
       
+      const successCount = updatedSlides.filter(s => s.imageUrl).length;
+      const issuesCount = updatedSlides.filter(s => s.imageValidation && !s.imageValidation.isValid).length;
+      
       toast({
         title: "Images Generated!",
-        description: `Successfully generated ${updatedSlides.filter(s => s.imageUrl).length} slide illustrations.`,
+        description: `Successfully generated ${successCount} images${issuesCount > 0 ? ` (${issuesCount} with minor issues)` : ''}.`,
       });
     } catch (err) {
       console.error('Unexpected error:', err);
