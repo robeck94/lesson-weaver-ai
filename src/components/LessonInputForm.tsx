@@ -178,7 +178,6 @@ const TOPIC_CATEGORIES = {
     "Group Study Sessions",
   ],
   "Hobbies & Interests": [
-    "Photography",
     "Collecting Things",
     "DIY and Crafts",
     "Volunteering",
