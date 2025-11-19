@@ -7,6 +7,7 @@ import { QuizSlide } from "./QuizSlide";
 import { MatchingActivity } from "./MatchingActivity";
 import { FillInTheBlankActivity } from "./FillInTheBlankActivity";
 import { WordScrambleActivity } from "./WordScrambleActivity";
+import { SentenceOrderingActivity } from "./SentenceOrderingActivity";
 
 type TransitionEffect = "fade" | "slide" | "zoom";
 
@@ -154,7 +155,7 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
     try {
       if (slide.activityInstructions) {
         const activityData = JSON.parse(slide.activityInstructions);
-        return ['matching', 'fillblank', 'scramble'].includes(activityData.type);
+        return ['matching', 'fillblank', 'scramble', 'ordering'].includes(activityData.type);
       }
     } catch (e) {
       return false;
@@ -406,6 +407,16 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
                           </div>
                         );
                       }
+                      
+                      if (activityData.type === 'ordering' && activityData.items) {
+                        return (
+                          <div className="bg-card/50 backdrop-blur-sm border-2 border-primary/40 rounded-lg p-6 animate-scale-in shadow-xl">
+                            <SentenceOrderingActivity 
+                              items={activityData.items}
+                            />
+                          </div>
+                        );
+                      }
                     } catch (e) {
                       return null;
                     }
@@ -422,7 +433,7 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
                     const activityData = JSON.parse(slide.activityInstructions);
                     
                     // Skip interactive activities (they're rendered in main content area)
-                    if (['matching', 'fillblank', 'scramble'].includes(activityData.type)) {
+                    if (['matching', 'fillblank', 'scramble', 'ordering'].includes(activityData.type)) {
                       return null;
                     }
                   } catch (e) {
