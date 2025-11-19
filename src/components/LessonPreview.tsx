@@ -11,6 +11,7 @@ import { MatchingActivity } from "./MatchingActivity";
 import { QuizSlide } from "./QuizSlide";
 import { FillInTheBlankActivity } from "./FillInTheBlankActivity";
 import { WordScrambleActivity } from "./WordScrambleActivity";
+import { SentenceOrderingActivity } from "./SentenceOrderingActivity";
 
 interface LessonPreviewProps {
   slides: LessonSlide[];
@@ -98,7 +99,7 @@ export const LessonPreview = ({ slides }: LessonPreviewProps) => {
                     try {
                       if (slide.activityInstructions) {
                         const activityData = JSON.parse(slide.activityInstructions);
-                        hasInteractiveActivity = ['matching', 'quiz', 'fillblank', 'scramble'].includes(activityData.type);
+                        hasInteractiveActivity = ['matching', 'quiz', 'fillblank', 'scramble', 'ordering'].includes(activityData.type);
                       }
                     } catch (e) {
                       // Not an interactive activity
@@ -201,13 +202,25 @@ export const LessonPreview = ({ slides }: LessonPreviewProps) => {
                                   );
                                 }
 
-                                if (activityData.type === 'scramble' && activityData.words) {
+                                 if (activityData.type === 'scramble' && activityData.words) {
                                   return (
                                     <div className="w-full max-h-[600px] overflow-y-auto">
                                       <div className="activity-box">
                                         <WordScrambleActivity 
                                           title="🔤 Word Scramble"
                                           words={activityData.words}
+                                        />
+                                      </div>
+                                    </div>
+                                  );
+                                }
+
+                                if (activityData.type === 'ordering' && activityData.items) {
+                                  return (
+                                    <div className="w-full max-h-[600px] overflow-y-auto">
+                                      <div className="activity-box">
+                                        <SentenceOrderingActivity 
+                                          items={activityData.items}
                                         />
                                       </div>
                                     </div>

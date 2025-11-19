@@ -43,6 +43,7 @@ Follow these strict instructions:
    - **For matching activities**: Use the JSON format in activityInstructions: {"type": "matching", "pairs": [{"left": "item1", "right": "match1"}, {"left": "item2", "right": "match2"}]}
    - **For fill-in-the-blank activities**: Use JSON format: {"type": "fillblank", "items": [{"text": "The cat ___ on the mat.", "answer": "sits"}, {"text": "I ___ to school.", "answer": "go"}]}
    - **For word scramble activities**: Use JSON format: {"type": "scramble", "words": [{"scrambled": "tca", "answer": "cat", "hint": "a small furry pet"}, {"scrambled": "dgo", "answer": "dog", "hint": "man's best friend"}]}
+   - **For sentence ordering activities**: Use JSON format: {"type": "ordering", "items": [{"sentence": "The cat sits on the mat.", "words": ["cat", "The", "sits", "mat.", "the", "on"]}, {"sentence": "I go to school.", "words": ["go", "I", "school.", "to"]}]}
    - Provide **cultural or real-life context** to make language relevant.
    - Suggest **online or offline adaptations** if the class is virtual.
 
@@ -95,6 +96,7 @@ Return a JSON object with this structure:
         - Matching: {\"type\": \"matching\", \"pairs\": [{\"left\": \"word1\", \"right\": \"definition1\"}, ...]} 
         - Fill-in-blank: {\"type\": \"fillblank\", \"items\": [{\"text\": \"The cat ___ on the mat.\", \"answer\": \"sits\"}, ...]}
         - Word scramble: {\"type\": \"scramble\", \"words\": [{\"scrambled\": \"tca\", \"answer\": \"cat\", \"hint\": \"a small pet\"}, ...]}
+        - Sentence ordering: {\"type\": \"ordering\", \"items\": [{\"sentence\": \"The cat sits on the mat.\", \"words\": [\"cat\", \"The\", \"sits\", \"mat.\", \"the\", \"on\"]}, ...]}
         - Quiz: {\"type\": \"quiz\", \"questions\": [{\"question\": \"...\", \"options\": [...], \"correctAnswer\": 0}]}
         For regular activities, use plain text.)",
       "visualDescription": "string (detailed description of images/visuals needed)",
