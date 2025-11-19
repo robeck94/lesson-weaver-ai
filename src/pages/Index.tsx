@@ -4,6 +4,7 @@ import { LessonInputForm } from "@/components/LessonInputForm";
 import { LessonPreview } from "@/components/LessonPreview";
 import { TeacherGuide } from "@/components/TeacherGuide";
 import { ImageGenerator } from "@/components/ImageGenerator";
+import { RemixOptions } from "@/components/RemixOptions";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -43,6 +44,7 @@ export interface GeneratedLesson {
 
 const Index = () => {
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isRemixing, setIsRemixing] = useState(false);
   const [generatedLesson, setGeneratedLesson] = useState<GeneratedLesson | null>(null);
   const { toast } = useToast();
 
@@ -277,6 +279,93 @@ const Index = () => {
     }
   };
 
+  const handleRemixLesson = async (remixInstruction: string) => {
+    if (!generatedLesson) return;
+    
+    setIsRemixing(true);
+    
+    try {
+      toast({
+        title: "Remixing Lesson...",
+        description: "Creating an enhanced version with your requested changes",
+      });
+
+      // Call generate-lesson with remix context
+      const { data, error } = await supabase.functions.invoke('generate-lesson', {
+        body: { 
+          topic: generatedLesson.topic,
+          cefrLevel: generatedLesson.cefrLevel,
+          remixInstruction,
+          currentLesson: JSON.stringify(generatedLesson)
+        }
+      });
+
+      if (error) {
+        console.error('Error remixing lesson:', error);
+        toast({
+          title: "Remix Failed",
+          description: "Failed to remix lesson. Please try again.",
+          variant: "destructive",
+        });
+        setIsRemixing(false);
+        return;
+      }
+
+      if (data?.lesson) {
+        const lesson = data.lesson;
+        setGeneratedLesson(lesson);
+        
+        toast({
+          title: "Lesson Remixed!",
+          description: `Created enhanced ${lesson.totalSlides}-slide lesson. Generating images...`,
+        });
+
+        // Generate images for the remixed lesson
+        const slidesWithImages = [...lesson.slides];
+        let imagesGenerated = 0;
+
+        for (let i = 0; i < lesson.slides.length; i++) {
+          const slide = lesson.slides[i];
+          
+          if (slide.visualDescription) {
+            try {
+              const { data: imageData, error: imageError } = await supabase.functions.invoke('generate-slide-image', {
+                body: {
+                  visualDescription: slide.visualDescription,
+                  slideTitle: slide.title,
+                  slideContent: slide.content,
+                  retryAttempt: 0
+                }
+              });
+
+              if (!imageError && imageData?.imageUrl) {
+                slidesWithImages[i] = { ...slide, imageUrl: imageData.imageUrl };
+                imagesGenerated++;
+                setGeneratedLesson({ ...lesson, slides: [...slidesWithImages] });
+              }
+            } catch (err) {
+              console.error(`Error generating image for slide ${i + 1}:`, err);
+            }
+          }
+        }
+
+        toast({
+          title: "Complete!",
+          description: `Remixed lesson with ${imagesGenerated} images generated`,
+        });
+      }
+    } catch (err) {
+      console.error('Unexpected error during remix:', err);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred during remix. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsRemixing(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-muted/30 to-background">
       {/* Hero Header */}
@@ -386,6 +475,9 @@ const Index = () => {
                 </button>
               </div>
             </div>
+
+            {/* Remix Options */}
+            <RemixOptions onRemix={handleRemixLesson} isRemixing={isRemixing} />
 
             <div className="grid lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">

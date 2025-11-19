@@ -11,8 +11,8 @@ serve(async (req) => {
   }
 
   try {
-    const { topic, cefrLevel } = await req.json();
-    console.log('Generating lesson for:', { topic, cefrLevel });
+    const { topic, cefrLevel, remixInstruction, currentLesson } = await req.json();
+    console.log('Generating lesson for:', { topic, cefrLevel, isRemix: !!remixInstruction });
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
@@ -136,11 +136,33 @@ Return a JSON object with this structure:
 
 **CRITICAL JSON FORMATTING**: Use only escaped newlines (\\n) in strings. Never use literal tab characters or control characters. All newlines must be \\n, not actual line breaks within JSON string values. Return ONLY the JSON object, no additional text or markdown formatting.`;
 
-    const userPrompt = `Create a complete ESL lesson for:
+    // User prompt - different for remix vs new lesson
+    let userPrompt: string;
+    if (remixInstruction && currentLesson) {
+      userPrompt = `REMIX REQUEST - Enhance an existing lesson based on the following instruction:
+
+REMIX INSTRUCTION: ${remixInstruction}
+
+CURRENT LESSON:
+${currentLesson}
+
+Your task:
+1. Take the existing lesson above and enhance it according to the remix instruction
+2. Keep the same topic (${topic}) and CEFR level (${cefrLevel})
+3. Maintain the lesson structure but ADD or IMPROVE based on the instruction
+4. If adding activities, integrate them naturally into the lesson flow
+5. Ensure all new content follows the same quality standards
+6. Update timing and slide numbers accordingly
+7. Keep what works well, enhance what can be better
+
+Generate the COMPLETE enhanced lesson following all the instructions in the system prompt.`;
+    } else {
+      userPrompt = `Create a complete ESL lesson for:
 Topic: ${topic}
 CEFR Level: ${cefrLevel}
 
 Generate a classroom-ready lesson following all the instructions provided in the system prompt.`;
+    }
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
