@@ -45,6 +45,7 @@ Follow these strict instructions:
    - **For word scramble activities**: Use JSON format: {"type": "scramble", "words": [{"scrambled": "tca", "answer": "cat", "hint": "a small furry pet"}, {"scrambled": "dgo", "answer": "dog", "hint": "man's best friend"}]}
    - **For sentence ordering activities**: Use JSON format: {"type": "ordering", "items": [{"sentence": "The cat sits on the mat.", "words": ["cat", "The", "sits", "mat.", "the", "on"]}, {"sentence": "I go to school.", "words": ["go", "I", "school.", "to"]}]}
    - **For true/false activities**: Use JSON format: {"type": "truefalse", "items": [{"statement": "Cats can fly.", "answer": false, "explanation": "Cats are mammals and cannot fly."}, {"statement": "Water boils at 100°C.", "answer": true, "explanation": "At sea level, water boils at 100 degrees Celsius."}]}
+   - **For dialogue completion activities**: Use JSON format: {"type": "dialogue", "title": "At the Restaurant", "lines": [{"speaker": "Waiter", "text": "Good evening! Welcome to our restaurant."}, {"speaker": "Customer", "isBlank": true, "answer": "Thank you! Do you have a table for two?", "hint": "Ask about seating"}, {"speaker": "Waiter", "text": "Yes, right this way please."}]}
    - Provide **cultural or real-life context** to make language relevant.
    - Suggest **online or offline adaptations** if the class is virtual.
 
@@ -99,6 +100,7 @@ Return a JSON object with this structure:
         - Word scramble: {\"type\": \"scramble\", \"words\": [{\"scrambled\": \"tca\", \"answer\": \"cat\", \"hint\": \"a small pet\"}, ...]}
         - Sentence ordering: {\"type\": \"ordering\", \"items\": [{\"sentence\": \"The cat sits on the mat.\", \"words\": [\"cat\", \"The\", \"sits\", \"mat.\", \"the\", \"on\"]}, ...]}
         - True/False: {\"type\": \"truefalse\", \"items\": [{\"statement\": \"Cats can fly.\", \"answer\": false, \"explanation\": \"Cats are mammals and cannot fly.\"}, ...]}
+        - Dialogue: {\"type\": \"dialogue\", \"title\": \"At the Restaurant\", \"lines\": [{\"speaker\": \"Waiter\", \"text\": \"Good evening!\"}, {\"speaker\": \"Customer\", \"isBlank\": true, \"answer\": \"Thank you!\", \"hint\": \"Polite response\"}]}
         - Quiz: {\"type\": \"quiz\", \"questions\": [{\"question\": \"...\", \"options\": [...], \"correctAnswer\": 0}]}
         For regular activities, use plain text.)",
       "visualDescription": "string (detailed description of images/visuals needed)",
