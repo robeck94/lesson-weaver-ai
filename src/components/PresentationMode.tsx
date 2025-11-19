@@ -4,6 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { X, ChevronLeft, ChevronRight, Play, Sparkles } from "lucide-react";
 import type { LessonSlide } from "@/pages/Index";
 import { QuizSlide } from "./QuizSlide";
+import { MatchingActivity } from "./MatchingActivity";
 
 type TransitionEffect = "fade" | "slide" | "zoom";
 
@@ -352,13 +353,36 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
 
             {/* Activity Instructions */}
             {slide.activityInstructions && (
-              <div className="mt-4 bg-gradient-to-br from-primary/30 via-primary/20 to-primary/10 border-2 border-primary/40 rounded-lg p-4 animate-scale-in shadow-xl">
-                <h3 className="text-sm md:text-base lg:text-lg font-bold text-primary mb-2 flex items-center gap-2">
-                  <span className="w-5 h-5 bg-primary rounded-full flex items-center justify-center text-white text-xs">✓</span>
-                  Activity
-                </h3>
-                <p className="text-sm md:text-base text-foreground leading-relaxed break-words">{slide.activityInstructions}</p>
-              </div>
+              <>
+                {(() => {
+                  try {
+                    const activityData = JSON.parse(slide.activityInstructions);
+                    
+                    if (activityData.type === 'matching' && activityData.pairs) {
+                      return (
+                        <div className="mt-4 bg-card/50 backdrop-blur-sm border-2 border-primary/40 rounded-lg p-4 animate-scale-in shadow-xl">
+                          <MatchingActivity 
+                            title="🎯 Matching Activity"
+                            pairs={activityData.pairs}
+                          />
+                        </div>
+                      );
+                    }
+                  } catch (e) {
+                    // If not JSON or parsing fails, render as regular text
+                  }
+                  
+                  return (
+                    <div className="mt-4 bg-gradient-to-br from-primary/30 via-primary/20 to-primary/10 border-2 border-primary/40 rounded-lg p-4 animate-scale-in shadow-xl">
+                      <h3 className="text-sm md:text-base lg:text-lg font-bold text-primary mb-2 flex items-center gap-2">
+                        <span className="w-5 h-5 bg-primary rounded-full flex items-center justify-center text-white text-xs">✓</span>
+                        Activity
+                      </h3>
+                      <p className="text-sm md:text-base text-foreground leading-relaxed break-words">{slide.activityInstructions}</p>
+                    </div>
+                  );
+                })()}
+              </>
             )}
           </div>
           )}

@@ -40,6 +40,7 @@ Follow these strict instructions:
 
 3. **Engagement & Interaction**
    - Include **fun, dynamic, and age-appropriate activities**: matching games, fill-in-the-blanks, polls, drawing, acting, or group work.
+   - **For matching activities**: Use the JSON format in activityInstructions: {"type": "matching", "pairs": [{"left": "item1", "right": "match1"}, {"left": "item2", "right": "match2"}]}
    - Provide **cultural or real-life context** to make language relevant.
    - Suggest **online or offline adaptations** if the class is virtual.
 
@@ -88,7 +89,7 @@ Return a JSON object with this structure:
       "slideNumber": "number",
       "title": "string",
       "content": "string (main slide text - clear, concise, max 6 lines)",
-      "activity": "string (detailed activity instructions)",
+      "activityInstructions": "string or JSON string (for interactive activities like matching, use JSON format: {\"type\": \"matching\", \"pairs\": [{\"left\": \"word1\", \"right\": \"definition1\"}, ...]} or for quiz: {\"type\": \"quiz\", \"questions\": [{\"question\": \"...\", \"options\": [...], \"correctAnswer\": 0}]}. For regular activities, use plain text.)",
       "visualDescription": "string (detailed description of images/visuals needed)",
       "teacherNotes": "string (step-by-step instructions, answers, tips)",
       "timing": "number (minutes for this slide)",

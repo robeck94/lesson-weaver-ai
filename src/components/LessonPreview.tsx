@@ -7,6 +7,8 @@ import type { LessonSlide } from "@/pages/Index";
 import { useState } from "react";
 import { PresentationMode } from "./PresentationMode";
 import { ImageValidationWarning } from "./ImageValidationWarning";
+import { MatchingActivity } from "./MatchingActivity";
+import { QuizSlide } from "./QuizSlide";
 
 interface LessonPreviewProps {
   slides: LessonSlide[];
@@ -125,10 +127,44 @@ export const LessonPreview = ({ slides }: LessonPreviewProps) => {
 
                   {/* Activity Instructions */}
                   {slide.activityInstructions && (
-                    <div className="bg-accent/5 border border-accent/20 rounded-lg p-3 text-xs">
-                      <p className="text-accent font-medium mb-1">Activity:</p>
-                      <p className="text-foreground">{slide.activityInstructions}</p>
-                    </div>
+                    <>
+                      {(() => {
+                        try {
+                          const activityData = JSON.parse(slide.activityInstructions);
+                          
+                          if (activityData.type === 'matching' && activityData.pairs) {
+                            return (
+                              <div className="activity-box">
+                                <MatchingActivity 
+                                  title="🎯 Matching Activity"
+                                  pairs={activityData.pairs}
+                                />
+                              </div>
+                            );
+                          }
+                          
+                          if (activityData.type === 'quiz' && activityData.questions) {
+                            return (
+                              <div className="activity-box">
+                                <QuizSlide 
+                                  title="🎯 Quiz"
+                                  questions={activityData.questions}
+                                />
+                              </div>
+                            );
+                          }
+                        } catch (e) {
+                          // If not JSON or parsing fails, render as regular text
+                        }
+                        
+                        return (
+                          <div className="bg-accent/5 border border-accent/20 rounded-lg p-3 text-xs">
+                            <p className="text-accent font-medium mb-1">Activity:</p>
+                            <p className="text-foreground">{slide.activityInstructions}</p>
+                          </div>
+                        );
+                      })()}
+                    </>
                   )}
                 </div>
               </div>
