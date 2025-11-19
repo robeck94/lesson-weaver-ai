@@ -9,6 +9,8 @@ import { PresentationMode } from "./PresentationMode";
 import { ImageValidationWarning } from "./ImageValidationWarning";
 import { MatchingActivity } from "./MatchingActivity";
 import { QuizSlide } from "./QuizSlide";
+import { FillInTheBlankActivity } from "./FillInTheBlankActivity";
+import { WordScrambleActivity } from "./WordScrambleActivity";
 
 interface LessonPreviewProps {
   slides: LessonSlide[];
@@ -96,7 +98,7 @@ export const LessonPreview = ({ slides }: LessonPreviewProps) => {
                     try {
                       if (slide.activityInstructions) {
                         const activityData = JSON.parse(slide.activityInstructions);
-                        hasInteractiveActivity = activityData.type === 'matching' || activityData.type === 'quiz';
+                        hasInteractiveActivity = ['matching', 'quiz', 'fillblank', 'scramble'].includes(activityData.type);
                       }
                     } catch (e) {
                       // Not an interactive activity
@@ -180,6 +182,32 @@ export const LessonPreview = ({ slides }: LessonPreviewProps) => {
                                         <QuizSlide 
                                           title="🎯 Quiz"
                                           questions={activityData.questions}
+                                        />
+                                      </div>
+                                    </div>
+                                  );
+                                }
+
+                                if (activityData.type === 'fillblank' && activityData.items) {
+                                  return (
+                                    <div className="w-full max-h-[600px] overflow-y-auto">
+                                      <div className="activity-box">
+                                        <FillInTheBlankActivity 
+                                          title="✏️ Fill in the Blanks"
+                                          items={activityData.items}
+                                        />
+                                      </div>
+                                    </div>
+                                  );
+                                }
+
+                                if (activityData.type === 'scramble' && activityData.words) {
+                                  return (
+                                    <div className="w-full max-h-[600px] overflow-y-auto">
+                                      <div className="activity-box">
+                                        <WordScrambleActivity 
+                                          title="🔤 Word Scramble"
+                                          words={activityData.words}
                                         />
                                       </div>
                                     </div>

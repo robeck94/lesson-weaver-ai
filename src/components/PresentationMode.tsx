@@ -5,6 +5,8 @@ import { X, ChevronLeft, ChevronRight, Play, Sparkles } from "lucide-react";
 import type { LessonSlide } from "@/pages/Index";
 import { QuizSlide } from "./QuizSlide";
 import { MatchingActivity } from "./MatchingActivity";
+import { FillInTheBlankActivity } from "./FillInTheBlankActivity";
+import { WordScrambleActivity } from "./WordScrambleActivity";
 
 type TransitionEffect = "fade" | "slide" | "zoom";
 
@@ -147,12 +149,12 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
                       slide.activityInstructions?.toLowerCase().includes('quiz') ||
                       contentParts.some(part => part.match(/^[a-d]\)/i));
 
-  // Detect if this is a matching activity slide
-  const isMatchingSlide = (() => {
+  // Detect if this is an interactive activity slide (matching, fillblank, scramble)
+  const isInteractiveSlide = (() => {
     try {
       if (slide.activityInstructions) {
         const activityData = JSON.parse(slide.activityInstructions);
-        return activityData.type === 'matching';
+        return ['matching', 'fillblank', 'scramble'].includes(activityData.type);
       }
     } catch (e) {
       return false;
@@ -310,7 +312,7 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
               {/* Content Area */}
               <div className="flex-1 flex gap-4 overflow-hidden min-h-0">
               {/* Image Section - Hide for interactive activities */}
-              {slide.imageUrl && !isMatchingSlide && (
+              {slide.imageUrl && !isInteractiveSlide && (
                 <div className="w-[35%] md:w-[40%] flex-shrink-0 animate-scale-in flex items-start justify-center overflow-hidden">
                   <div className="w-full h-full bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 rounded-xl border-2 border-primary/20 p-3 shadow-xl backdrop-blur-sm flex items-center justify-center overflow-hidden">
                     <img 
@@ -322,8 +324,8 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
                 </div>
               )}
               
-              {/* Text Content Section - Hide for matching activities */}
-              {!isMatchingSlide && (
+              {/* Text Content Section - Hide for interactive activities */}
+              {!isInteractiveSlide && (
                 <div className={`flex-1 overflow-y-auto ${getSpacing()} pr-2 ${slide.imageUrl ? '' : 'max-w-6xl mx-auto'}`}>
                 {contentParts.map((part, index) => {
                   const isRevealed = revealedElements.has(index);
@@ -365,18 +367,41 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
                 </div>
               )}
               
-              {/* Matching Activity - Full Screen when present */}
-              {isMatchingSlide && slide.activityInstructions && (
+              {/* Interactive Activities - Full Screen when present */}
+              {isInteractiveSlide && slide.activityInstructions && (
                 <div className="flex-1 overflow-y-auto max-w-5xl mx-auto">
                   {(() => {
                     try {
                       const activityData = JSON.parse(slide.activityInstructions);
+                      
                       if (activityData.type === 'matching' && activityData.pairs) {
                         return (
                           <div className="bg-card/50 backdrop-blur-sm border-2 border-primary/40 rounded-lg p-6 animate-scale-in shadow-xl">
                             <MatchingActivity 
                               title="🎯 Matching Activity"
                               pairs={activityData.pairs}
+                            />
+                          </div>
+                        );
+                      }
+                      
+                      if (activityData.type === 'fillblank' && activityData.items) {
+                        return (
+                          <div className="bg-card/50 backdrop-blur-sm border-2 border-primary/40 rounded-lg p-6 animate-scale-in shadow-xl">
+                            <FillInTheBlankActivity 
+                              title="✏️ Fill in the Blanks"
+                              items={activityData.items}
+                            />
+                          </div>
+                        );
+                      }
+                      
+                      if (activityData.type === 'scramble' && activityData.words) {
+                        return (
+                          <div className="bg-card/50 backdrop-blur-sm border-2 border-primary/40 rounded-lg p-6 animate-scale-in shadow-xl">
+                            <WordScrambleActivity 
+                              title="🔤 Word Scramble"
+                              words={activityData.words}
                             />
                           </div>
                         );
@@ -390,14 +415,14 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
             </div>
 
             {/* Activity Instructions - Only for non-interactive activities */}
-            {slide.activityInstructions && !isMatchingSlide && (
+            {slide.activityInstructions && !isInteractiveSlide && (
               <>
                 {(() => {
                   try {
                     const activityData = JSON.parse(slide.activityInstructions);
                     
-                    // Skip matching activities (they're rendered in main content area)
-                    if (activityData.type === 'matching') {
+                    // Skip interactive activities (they're rendered in main content area)
+                    if (['matching', 'fillblank', 'scramble'].includes(activityData.type)) {
                       return null;
                     }
                   } catch (e) {
