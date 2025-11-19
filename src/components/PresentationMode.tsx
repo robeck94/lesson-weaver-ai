@@ -120,14 +120,14 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
   };
 
   const getContentSize = () => {
-    // Very dense content (lots of text)
-    if (totalChars > 600 || lineCount > 10) return "text-sm md:text-base lg:text-lg";
-    // Dense content
-    if (totalChars > 400 || lineCount > 7) return "text-base md:text-lg lg:text-xl";
-    // Medium content
-    if (totalChars > 250 || lineCount > 5) return "text-lg md:text-xl lg:text-2xl";
-    // Light content - can be bigger
-    return "text-xl md:text-2xl lg:text-3xl";
+    // Very dense content (lots of text) - still readable from distance
+    if (totalChars > 600 || lineCount > 10) return "text-base md:text-lg lg:text-xl";
+    // Dense content - larger for classroom visibility
+    if (totalChars > 400 || lineCount > 7) return "text-lg md:text-xl lg:text-2xl";
+    // Medium content - very visible
+    if (totalChars > 250 || lineCount > 5) return "text-xl md:text-2xl lg:text-3xl";
+    // Light content - maximum visibility
+    return "text-2xl md:text-3xl lg:text-4xl";
   };
 
   const getLineSpacing = () => {
