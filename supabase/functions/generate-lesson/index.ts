@@ -92,6 +92,13 @@ Follow these strict instructions:
    - For emphasis, use capital letters, bullet points, or line breaks instead of asterisks
    - Example: Write "Objectives:" NOT "**Objectives:**"
 
+**CRITICAL JSON OUTPUT INSTRUCTIONS - READ FIRST:**
+1. Return ONLY valid JSON - no markdown, no code fences, no text before or after
+2. Your entire response must be parseable by JSON.parse() - nothing else
+3. DO NOT wrap the JSON in markdown code blocks - just return the raw JSON object starting with {
+4. All string values must have properly escaped special characters (use \\n for newlines, \\t for tabs, \\" for quotes)
+5. Test your JSON is valid before responding
+
 **JSON Output Format:**
 Return a JSON object with this structure:
 {
@@ -184,39 +191,61 @@ Generate a classroom-ready lesson following all the instructions provided in the
 
     // Parse the JSON response
     let lesson;
+    let aggressiveClean: string = '';
     try {
-      // Step 1: Remove markdown code blocks if present
-      let cleanedText = generatedText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      // Step 1: Remove markdown code blocks and any surrounding text
+      let cleanedText = generatedText;
       
-      // Step 2: Sanitize control characters that break JSON parsing
-      // Replace literal tab characters with escaped version
-      cleanedText = cleanedText.replace(/\t/g, '\\t');
-      // Replace literal carriage returns
-      cleanedText = cleanedText.replace(/\r/g, '\\r');
-      // Fix any unescaped newlines within strings (but not between JSON properties)
-      // This is tricky - we need to escape newlines that appear inside quoted strings
+      // Extract JSON from markdown code fence if present
+      const jsonMatch = cleanedText.match(/```json\s*\n?([\s\S]*?)\n?```/);
+      if (jsonMatch) {
+        cleanedText = jsonMatch[1];
+      } else {
+        // Try without json tag
+        const codeMatch = cleanedText.match(/```\s*\n?([\s\S]*?)\n?```/);
+        if (codeMatch) {
+          cleanedText = codeMatch[1];
+        }
+      }
+      
+      cleanedText = cleanedText.trim();
+      
+      // Step 2: Fix common JSON issues
+      // Replace literal newlines within string values (not between JSON properties)
+      // This regex finds strings and replaces actual newlines with \n
+      cleanedText = cleanedText.replace(/"([^"]*?)"/gs, (_match: string, content: string) => {
+        // Escape any unescaped newlines, tabs, and other control chars within the string
+        const escaped = content
+          .replace(/\\/g, '\\\\')  // Escape backslashes first
+          .replace(/\n/g, '\\n')   // Escape newlines
+          .replace(/\r/g, '\\r')   // Escape carriage returns
+          .replace(/\t/g, '\\t')   // Escape tabs
+          .replace(/"/g, '\\"');   // Escape quotes
+        return `"${escaped}"`;
+      });
       
       // Step 3: Try to parse
       lesson = JSON.parse(cleanedText);
+      console.log('Successfully parsed AI response');
     } catch (parseError) {
       console.error('Failed to parse AI response:', parseError);
-      console.error('Raw response:', generatedText.substring(0, 1000) + '...[truncated]');
+      console.error('Raw response (first 2000 chars):', generatedText.substring(0, 2000));
       
       // Try one more aggressive cleanup attempt
       try {
-        let aggressiveClean = generatedText
-          .replace(/```json\n?/g, '')
-          .replace(/```\n?/g, '')
+        aggressiveClean = generatedText
+          .replace(/```json\s*\n?/g, '')
+          .replace(/```\s*\n?/g, '')
           .trim()
-          // Remove all control characters except newlines that are already escaped
-          .replace(/[\x00-\x09\x0B-\x0C\x0E-\x1F\x7F]/g, ' ')
-          // Normalize multiple spaces
-          .replace(/  +/g, ' ');
+          // Remove control characters completely
+          .replace(/[\x00-\x1F\x7F]/g, '')
+          .replace(/\n\s*\n/g, '\n');
         
         lesson = JSON.parse(aggressiveClean);
         console.log('Successfully parsed with aggressive cleanup');
       } catch (secondError) {
         console.error('Second parse attempt failed:', secondError);
+        console.error('Cleaned text (first 2000 chars):', aggressiveClean?.substring(0, 2000));
         throw new Error('Failed to parse lesson data from AI response');
       }
     }
