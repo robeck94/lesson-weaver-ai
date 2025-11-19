@@ -90,82 +90,117 @@ export const LessonPreview = ({ slides }: LessonPreviewProps) => {
 
                 {/* Slide Content */}
                 <div className="space-y-3">
-                  <div className="content-box">
-                    <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap font-sans">
-                      {slide.content}
-                    </p>
-                  </div>
+                  {(() => {
+                    // Check if this slide has an interactive activity
+                    let hasInteractiveActivity = false;
+                    try {
+                      if (slide.activityInstructions) {
+                        const activityData = JSON.parse(slide.activityInstructions);
+                        hasInteractiveActivity = activityData.type === 'matching' || activityData.type === 'quiz';
+                      }
+                    } catch (e) {
+                      // Not an interactive activity
+                    }
 
-                  {/* Image Validation Warning */}
-                  {slide.imageValidation && (
-                    <ImageValidationWarning
-                      validation={slide.imageValidation}
-                      slideNumber={slide.slideNumber}
-                      slideTitle={slide.title}
-                    />
-                  )}
-
-                  {/* Visual Description */}
-                  {slide.visualDescription && (
-                    <div className="text-xs space-y-1">
-                      <p className="text-muted-foreground font-medium">Visual Design:</p>
-                      <p className="text-muted-foreground italic pl-2 border-l-2 border-primary/30">
-                        {slide.visualDescription}
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Animation Notes */}
-                  {slide.animationNotes && (
-                    <div className="text-xs space-y-1">
-                      <p className="text-muted-foreground font-medium">Animations:</p>
-                      <p className="text-muted-foreground italic pl-2 border-l-2 border-secondary/30">
-                        {slide.animationNotes}
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Activity Instructions */}
-                  {slide.activityInstructions && (
-                    <>
-                      {(() => {
-                        try {
-                          const activityData = JSON.parse(slide.activityInstructions);
-                          
-                          if (activityData.type === 'matching' && activityData.pairs) {
-                            return (
-                              <div className="activity-box">
-                                <MatchingActivity 
-                                  title="🎯 Matching Activity"
-                                  pairs={activityData.pairs}
-                                />
-                              </div>
-                            );
-                          }
-                          
-                          if (activityData.type === 'quiz' && activityData.questions) {
-                            return (
-                              <div className="activity-box">
-                                <QuizSlide 
-                                  title="🎯 Quiz"
-                                  questions={activityData.questions}
-                                />
-                              </div>
-                            );
-                          }
-                        } catch (e) {
-                          // If not JSON or parsing fails, render as regular text
-                        }
-                        
-                        return (
-                          <div className="bg-accent/5 border border-accent/20 rounded-lg p-3 text-xs">
-                            <p className="text-accent font-medium mb-1">Activity:</p>
-                            <p className="text-foreground">{slide.activityInstructions}</p>
+                    return (
+                      <>
+                        {/* Only show text content if no interactive activity */}
+                        {!hasInteractiveActivity && (
+                          <div className="content-box">
+                            <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap font-sans">
+                              {slide.content}
+                            </p>
                           </div>
-                        );
-                      })()}
-                    </>
-                  )}
+                        )}
+
+                        {/* Show image only if NOT an interactive activity */}
+                        {slide.imageUrl && !hasInteractiveActivity && (
+                          <div className="rounded-lg overflow-hidden border border-border/50">
+                            <img 
+                              src={slide.imageUrl} 
+                              alt={slide.title}
+                              className="w-full h-auto"
+                            />
+                          </div>
+                        )}
+
+                        {/* Image Validation Warning */}
+                        {slide.imageValidation && !hasInteractiveActivity && (
+                          <ImageValidationWarning
+                            validation={slide.imageValidation}
+                            slideNumber={slide.slideNumber}
+                            slideTitle={slide.title}
+                          />
+                        )}
+
+                        {/* Visual Description - only show for non-interactive slides */}
+                        {slide.visualDescription && !hasInteractiveActivity && (
+                          <div className="text-xs space-y-1">
+                            <p className="text-muted-foreground font-medium">Visual Design:</p>
+                            <p className="text-muted-foreground italic pl-2 border-l-2 border-primary/30">
+                              {slide.visualDescription}
+                            </p>
+                          </div>
+                        )}
+
+                        {/* Animation Notes */}
+                        {slide.animationNotes && (
+                          <div className="text-xs space-y-1">
+                            <p className="text-muted-foreground font-medium">Animations:</p>
+                            <p className="text-muted-foreground italic pl-2 border-l-2 border-secondary/30">
+                              {slide.animationNotes}
+                            </p>
+                          </div>
+                        )}
+
+                        {/* Activity Instructions */}
+                        {slide.activityInstructions && (
+                          <>
+                            {(() => {
+                              try {
+                                const activityData = JSON.parse(slide.activityInstructions);
+                                
+                                if (activityData.type === 'matching' && activityData.pairs) {
+                                  return (
+                                    <div className="w-full max-h-[600px] overflow-y-auto">
+                                      <div className="activity-box">
+                                        <MatchingActivity 
+                                          title="🎯 Matching Activity"
+                                          pairs={activityData.pairs}
+                                        />
+                                      </div>
+                                    </div>
+                                  );
+                                }
+                                
+                                if (activityData.type === 'quiz' && activityData.questions) {
+                                  return (
+                                    <div className="w-full max-h-[600px] overflow-y-auto">
+                                      <div className="activity-box">
+                                        <QuizSlide 
+                                          title="🎯 Quiz"
+                                          questions={activityData.questions}
+                                        />
+                                      </div>
+                                    </div>
+                                  );
+                                }
+                              } catch (e) {
+                                // If not JSON or parsing fails, render as regular text
+                              }
+                              
+                              return (
+                                <div className="bg-accent/5 border border-accent/20 rounded-lg p-3 text-xs">
+                                  <p className="text-accent font-medium mb-1">Activity:</p>
+                                  <p className="text-foreground">{slide.activityInstructions}</p>
+                                </div>
+                              );
+                            })()}
+                          </>
+                        )}
+                      </>
+                    );
+                  })()}
                 </div>
               </div>
             ))}

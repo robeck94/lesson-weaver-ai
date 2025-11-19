@@ -147,6 +147,19 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
                       slide.activityInstructions?.toLowerCase().includes('quiz') ||
                       contentParts.some(part => part.match(/^[a-d]\)/i));
 
+  // Detect if this is a matching activity slide
+  const isMatchingSlide = (() => {
+    try {
+      if (slide.activityInstructions) {
+        const activityData = JSON.parse(slide.activityInstructions);
+        return activityData.type === 'matching';
+      }
+    } catch (e) {
+      return false;
+    }
+    return false;
+  })();
+
   // Parse quiz content if it's a quiz slide
   const parseQuizContent = () => {
     const questions: Array<{ question: string; options: string[]; correctAnswer: number }> = [];
@@ -296,8 +309,8 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
 
               {/* Content Area */}
               <div className="flex-1 flex gap-4 overflow-hidden min-h-0">
-              {/* Image Section - Maximum Vertical Space */}
-              {slide.imageUrl && (
+              {/* Image Section - Hide for interactive activities */}
+              {slide.imageUrl && !isMatchingSlide && (
                 <div className="w-[35%] md:w-[40%] flex-shrink-0 animate-scale-in flex items-start justify-center overflow-hidden">
                   <div className="w-full h-full bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 rounded-xl border-2 border-primary/20 p-3 shadow-xl backdrop-blur-sm flex items-center justify-center overflow-hidden">
                     <img 
@@ -309,8 +322,9 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
                 </div>
               )}
               
-              {/* Text Content Section */}
-              <div className={`flex-1 overflow-y-auto ${getSpacing()} pr-2 ${slide.imageUrl ? '' : 'max-w-6xl mx-auto'}`}>
+              {/* Text Content Section - Hide for matching activities */}
+              {!isMatchingSlide && (
+                <div className={`flex-1 overflow-y-auto ${getSpacing()} pr-2 ${slide.imageUrl ? '' : 'max-w-6xl mx-auto'}`}>
                 {contentParts.map((part, index) => {
                   const isRevealed = revealedElements.has(index);
                   const isNext = !isRevealed && contentParts.slice(0, index).every((_, i) => revealedElements.has(i));
@@ -348,25 +362,43 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
                     </div>
                   );
                 })}
-              </div>
+                </div>
+              )}
+              
+              {/* Matching Activity - Full Screen when present */}
+              {isMatchingSlide && slide.activityInstructions && (
+                <div className="flex-1 overflow-y-auto max-w-5xl mx-auto">
+                  {(() => {
+                    try {
+                      const activityData = JSON.parse(slide.activityInstructions);
+                      if (activityData.type === 'matching' && activityData.pairs) {
+                        return (
+                          <div className="bg-card/50 backdrop-blur-sm border-2 border-primary/40 rounded-lg p-6 animate-scale-in shadow-xl">
+                            <MatchingActivity 
+                              title="🎯 Matching Activity"
+                              pairs={activityData.pairs}
+                            />
+                          </div>
+                        );
+                      }
+                    } catch (e) {
+                      return null;
+                    }
+                  })()}
+                </div>
+              )}
             </div>
 
-            {/* Activity Instructions */}
-            {slide.activityInstructions && (
+            {/* Activity Instructions - Only for non-interactive activities */}
+            {slide.activityInstructions && !isMatchingSlide && (
               <>
                 {(() => {
                   try {
                     const activityData = JSON.parse(slide.activityInstructions);
                     
-                    if (activityData.type === 'matching' && activityData.pairs) {
-                      return (
-                        <div className="mt-4 bg-card/50 backdrop-blur-sm border-2 border-primary/40 rounded-lg p-4 animate-scale-in shadow-xl">
-                          <MatchingActivity 
-                            title="🎯 Matching Activity"
-                            pairs={activityData.pairs}
-                          />
-                        </div>
-                      );
+                    // Skip matching activities (they're rendered in main content area)
+                    if (activityData.type === 'matching') {
+                      return null;
                     }
                   } catch (e) {
                     // If not JSON or parsing fails, render as regular text
