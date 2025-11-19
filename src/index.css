@@ -191,6 +191,10 @@ All colors MUST be HSL.
     @apply bg-gradient-to-br from-card via-card to-muted/20 rounded-2xl p-6 shadow-lg border-2 border-border/50 backdrop-blur-sm;
   }
   
+  .activity-box {
+    @apply bg-gradient-to-br from-primary/5 via-accent/5 to-secondary/5 rounded-xl p-4 shadow-md border-2 border-primary/20 backdrop-blur-sm;
+  }
+  
   .slide-content {
     @apply leading-relaxed tracking-wide text-foreground;
     line-height: 1.7;
