@@ -20,33 +20,48 @@ serve(async (req) => {
     }
 
     // Enhanced prompt with validation feedback for retries
-    let imagePrompt = `Educational illustration for ESL lesson slide: ${slideTitle}. ${visualDescription}. Style: Clean, colorful, professional, suitable for classroom presentation. Flat design, friendly, engaging for students.`;
+    let imagePrompt = `Educational illustration for ESL lesson slide: ${slideTitle}. ${visualDescription}. 
+    
+⚠️ CRITICAL SPELLING REQUIREMENT: All text in the image MUST be spelled correctly. Double-check every word before rendering.
+
+Style: Clean, colorful, professional, suitable for classroom presentation. Flat design, friendly, engaging for students.`;
     
     // If this is a retry with validation issues, enhance the prompt
     if (retryAttempt > 0 && validationIssues && validationIssues.length > 0) {
-      imagePrompt = `IMPORTANT - Previous image had issues, please fix them:
+      imagePrompt = `🔴 CRITICAL - Previous image had SPELLING ERRORS and other issues. You MUST fix them:
 ${validationIssues.map((issue: string, idx: number) => `${idx + 1}. ${issue}`).join('\n')}
 
 Educational illustration for ESL lesson slide: ${slideTitle}
 
-EXACT CONTENT TO INCLUDE:
+EXACT CONTENT TO INCLUDE (COPY THESE WORDS EXACTLY):
 ${slideContent}
 
 VISUAL REQUIREMENTS:
 ${visualDescription}
 
-CRITICAL: Include the EXACT words and vocabulary from the content above. For matching games, show both the words AND definitions exactly as listed in the content. Do not use generic examples.
+⚠️ MANDATORY REQUIREMENTS:
+1. SPELL EVERY WORD CORRECTLY - This is an educational ESL lesson, spelling mistakes are unacceptable
+2. Copy the EXACT words from the content above - do not paraphrase or use synonyms
+3. For matching activities, include BOTH the items AND their matches exactly as listed
+4. Double-check ALL text before generating the image
+5. If there are multiple items or vocabulary words, include them ALL
 
 Style: Clean, colorful, professional, suitable for classroom presentation. Flat design, friendly, engaging for students.`;
     } else if (slideContent) {
       // Even for first attempt, include content context
       imagePrompt = `Educational illustration for ESL lesson slide: ${slideTitle}
 
-CONTENT CONTEXT (include exact words if applicable):
+CONTENT TO INCLUDE (use these EXACT words):
 ${slideContent}
 
 VISUAL REQUIREMENTS:
 ${visualDescription}
+
+⚠️ CRITICAL REQUIREMENTS:
+1. SPELL ALL WORDS CORRECTLY - Double-check spelling before generating
+2. Use the EXACT vocabulary and phrases from the content above
+3. For educational activities (matching, vocabulary lists, etc.), include ALL items mentioned in the content
+4. This is for ESL students - accuracy is essential
 
 Style: Clean, colorful, professional, suitable for classroom presentation. Flat design, friendly, engaging for students.`;
     }
