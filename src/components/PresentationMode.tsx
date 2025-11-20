@@ -26,7 +26,9 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
   const [revealedElements, setRevealedElements] = useState<Set<number>>(new Set());
   const [transitionEffect, setTransitionEffect] = useState<TransitionEffect>("fade");
   const containerRef = useRef<HTMLDivElement>(null);
-  const { getFontSizeClass } = useSettings();
+  const { getFontSizeClass, getThemeColors } = useSettings();
+  
+  const theme = getThemeColors();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -318,10 +320,10 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
             <div className="h-full bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl shadow-2xl p-3 md:p-4 flex flex-col overflow-hidden">
               {/* Title */}
               <div className="mb-2 md:mb-3 flex-shrink-0 animate-slide-in-right">
-                <h1 className={`${getTitleSize()} font-heading font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent mb-1 md:mb-2 break-words text-shadow-md`}>
+                <h1 className={`${getTitleSize()} font-heading font-bold bg-gradient-to-r ${theme.gradient} bg-clip-text text-transparent mb-1 md:mb-2 break-words text-shadow-md`}>
                   {slide.title}
                 </h1>
-                <div className="h-1.5 w-28 bg-gradient-to-r from-primary via-secondary to-accent rounded-full shadow-lg" />
+                <div className={`h-1.5 w-28 bg-gradient-to-r ${theme.gradient} rounded-full shadow-lg`} />
               </div>
 
               {/* Content Area */}
@@ -329,7 +331,7 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
               {/* Image Section - Hide for interactive activities */}
               {slide.imageUrl && !isInteractiveSlide && (
                 <div className="w-[35%] md:w-[40%] flex-shrink-0 animate-scale-in flex items-start justify-center overflow-hidden">
-                  <div className="w-full h-full bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 rounded-xl border-2 border-primary/20 p-3 shadow-xl backdrop-blur-sm flex items-center justify-center overflow-hidden">
+                  <div className={`w-full h-full bg-gradient-to-br ${theme.gradient.replace('from-', 'from-').replace('via-', 'via-').replace('to-', 'to-').split(' ').map(c => c + '/5').join(' ')} rounded-xl border-2 ${theme.border} p-3 shadow-xl backdrop-blur-sm flex items-center justify-center overflow-hidden`}>
                     <img 
                       src={slide.imageUrl} 
                       alt={slide.title}
