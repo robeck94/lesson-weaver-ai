@@ -5,10 +5,11 @@ import { LessonPreview } from "@/components/LessonPreview";
 import { TeacherGuide } from "@/components/TeacherGuide";
 import { ImageGenerator } from "@/components/ImageGenerator";
 import { RemixOptions } from "@/components/RemixOptions";
+import { LessonFeedback } from "@/components/LessonFeedback";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { Sparkles, BookOpen, Gamepad2 } from "lucide-react";
+import { Sparkles, BookOpen, Gamepad2, Star } from "lucide-react";
 import { PromptTemplate } from "@/types/template";
 
 export interface ImageValidation {
@@ -47,11 +48,15 @@ const Index = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isRemixing, setIsRemixing] = useState(false);
   const [generatedLesson, setGeneratedLesson] = useState<GeneratedLesson | null>(null);
+  const [currentTemplateId, setCurrentTemplateId] = useState<string | undefined>();
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [imageQualityScore, setImageQualityScore] = useState<number | undefined>();
   const { toast } = useToast();
 
   const handleGenerateLesson = async (topic: string, cefrLevel: string, template?: PromptTemplate) => {
     setIsGenerating(true);
     setGeneratedLesson(null);
+    setCurrentTemplateId(template?.id);
 
     try {
       // Step 1: Generate lesson content
@@ -462,6 +467,15 @@ const Index = () => {
                 </p>
               </div>
               <div className="flex items-center gap-3">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowFeedback(true)}
+                  className="gap-2"
+                >
+                  <Star className="w-4 h-4" />
+                  Rate This Lesson
+                </Button>
                 <ImageGenerator 
                   slides={generatedLesson.slides}
                   onImagesGenerated={(slidesWithImages) => {
@@ -495,6 +509,19 @@ const Index = () => {
               </div>
             </div>
           </div>
+        )}
+        
+        {/* Feedback Dialog */}
+        {generatedLesson && (
+          <LessonFeedback
+            isOpen={showFeedback}
+            onClose={() => setShowFeedback(false)}
+            lessonTopic={generatedLesson.topic}
+            cefrLevel={generatedLesson.cefrLevel}
+            slidesCount={generatedLesson.totalSlides}
+            templateId={currentTemplateId}
+            imageQualityScore={imageQualityScore}
+          />
         )}
       </main>
     </div>
