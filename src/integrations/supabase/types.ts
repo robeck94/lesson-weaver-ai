@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      image_cache: {
+        Row: {
+          content_keywords: string | null
+          created_at: string
+          id: string
+          image_url: string
+          last_used_at: string
+          slide_title: string | null
+          usage_count: number
+          visual_description: string
+        }
+        Insert: {
+          content_keywords?: string | null
+          created_at?: string
+          id?: string
+          image_url: string
+          last_used_at?: string
+          slide_title?: string | null
+          usage_count?: number
+          visual_description: string
+        }
+        Update: {
+          content_keywords?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string
+          last_used_at?: string
+          slide_title?: string | null
+          usage_count?: number
+          visual_description?: string
+        }
+        Relationships: []
+      }
       lesson_analytics: {
         Row: {
           cefr_level: string
