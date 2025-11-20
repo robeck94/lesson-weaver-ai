@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Check, X, RotateCcw, Shuffle } from "lucide-react";
+import { useSettings } from "@/contexts/SettingsContext";
 
 interface ScrambledWord {
   scrambled: string;
@@ -17,6 +18,7 @@ interface WordScrambleActivityProps {
 export const WordScrambleActivity = ({ title, words }: WordScrambleActivityProps) => {
   const [userAnswers, setUserAnswers] = useState<Record<number, string>>({});
   const [showResults, setShowResults] = useState(false);
+  const { getFontSizeClass } = useSettings();
 
   const handleInputChange = (index: number, value: string) => {
     if (showResults) return;
@@ -81,7 +83,7 @@ export const WordScrambleActivity = ({ title, words }: WordScrambleActivityProps
                     </span>
                     <div className="flex items-center gap-2">
                       <Shuffle className="w-4 h-4 text-primary" />
-                      <span className="text-lg font-bold text-primary tracking-wider">
+                      <span className={`${getFontSizeClass()} font-bold text-primary tracking-wider`}>
                         {word.scrambled.toUpperCase()}
                       </span>
                     </div>

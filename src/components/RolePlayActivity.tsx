@@ -4,6 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Lightbulb, Users, MessageSquare, RotateCcw, ChevronRight } from 'lucide-react';
+import { useSettings } from '@/contexts/SettingsContext';
 
 interface RolePlayTurn {
   role: string;
@@ -30,6 +31,7 @@ export const RolePlayActivity: React.FC<RolePlayActivityProps> = ({ scenarios })
   const [userResponses, setUserResponses] = useState<Record<number, string>>({});
   const [showTips, setShowTips] = useState<boolean>(false);
   const [showSamples, setShowSamples] = useState<boolean>(false);
+  const { getFontSizeClass } = useSettings();
 
   const currentScenario = scenarios[currentScenarioIndex];
   const currentTurn = currentScenario.turns[currentTurnIndex];
@@ -97,7 +99,7 @@ export const RolePlayActivity: React.FC<RolePlayActivityProps> = ({ scenarios })
             <MessageSquare className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
             <div className="flex-1 space-y-3">
               <h4 className="text-xl font-bold text-foreground">{currentScenario.title}</h4>
-              <p className="text-foreground/80 leading-relaxed">{currentScenario.situation}</p>
+              <p className={`${getFontSizeClass()} text-foreground/80 leading-relaxed font-medium`}>{currentScenario.situation}</p>
               
               <div className="flex flex-wrap gap-2">
                 <Badge variant="outline" className="bg-card">
@@ -108,7 +110,7 @@ export const RolePlayActivity: React.FC<RolePlayActivityProps> = ({ scenarios })
 
               <div className="bg-card/50 rounded-lg p-3 border border-border">
                 <p className="text-sm font-medium text-muted-foreground mb-1">Objective:</p>
-                <p className="text-sm text-foreground">{currentScenario.objective}</p>
+                <p className={`${getFontSizeClass()} text-foreground font-medium`}>{currentScenario.objective}</p>
               </div>
             </div>
           </div>
@@ -129,7 +131,7 @@ export const RolePlayActivity: React.FC<RolePlayActivityProps> = ({ scenarios })
 
           <div className="bg-muted/30 rounded-lg p-4 border border-border/50">
             <p className="text-sm font-medium text-muted-foreground mb-2">What to say:</p>
-            <p className="text-foreground leading-relaxed">{currentTurn.prompt}</p>
+            <p className={`${getFontSizeClass()} text-foreground leading-relaxed font-medium`}>{currentTurn.prompt}</p>
           </div>
 
           {/* User Input */}

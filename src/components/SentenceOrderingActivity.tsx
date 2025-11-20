@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { CheckCircle2, XCircle, RotateCcw } from 'lucide-react';
+import { useSettings } from '@/contexts/SettingsContext';
 
 interface OrderingItem {
   sentence: string;
@@ -19,6 +20,7 @@ export const SentenceOrderingActivity: React.FC<SentenceOrderingActivityProps> =
     shuffleArray([...items[0].words])
   );
   const [feedback, setFeedback] = useState<'correct' | 'incorrect' | null>(null);
+  const { getFontSizeClass } = useSettings();
 
   function shuffleArray(array: string[]) {
     const shuffled = [...array];
@@ -114,7 +116,7 @@ export const SentenceOrderingActivity: React.FC<SentenceOrderingActivityProps> =
                 key={`${word}-${idx}`}
                 draggable
                 onDragStart={(e) => handleDragStart(e, word, 'dragged')}
-                className="px-4 py-2 bg-primary text-primary-foreground rounded-lg cursor-move hover:bg-primary/90 transition-colors shadow-sm"
+                className={`px-4 py-2 ${getFontSizeClass()} font-medium bg-primary text-primary-foreground rounded-lg cursor-move hover:bg-primary/90 transition-colors shadow-sm`}
               >
                 {word}
               </div>
@@ -138,7 +140,7 @@ export const SentenceOrderingActivity: React.FC<SentenceOrderingActivityProps> =
               key={`${word}-${idx}`}
               draggable
               onDragStart={(e) => handleDragStart(e, word, 'available')}
-              className="px-4 py-2 bg-card border-2 border-border rounded-lg cursor-move hover:bg-accent hover:text-accent-foreground transition-colors shadow-sm"
+              className={`px-4 py-2 ${getFontSizeClass()} font-medium bg-card border-2 border-border rounded-lg cursor-move hover:bg-accent hover:text-accent-foreground transition-colors shadow-sm`}
             >
               {word}
             </div>

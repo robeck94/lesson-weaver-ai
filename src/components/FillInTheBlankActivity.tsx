@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Check, X, RotateCcw } from "lucide-react";
+import { useSettings } from "@/contexts/SettingsContext";
 
 interface BlankItem {
   text: string;
@@ -16,6 +17,7 @@ interface FillInTheBlankActivityProps {
 export const FillInTheBlankActivity = ({ title, items }: FillInTheBlankActivityProps) => {
   const [userAnswers, setUserAnswers] = useState<Record<number, string>>({});
   const [showResults, setShowResults] = useState(false);
+  const { getFontSizeClass } = useSettings();
 
   const handleInputChange = (index: number, value: string) => {
     if (showResults) return;
@@ -73,7 +75,7 @@ export const FillInTheBlankActivity = ({ title, items }: FillInTheBlankActivityP
                   {index + 1}.
                 </span>
                 <div className="flex-1 space-y-2">
-                  <p className="text-sm text-foreground leading-relaxed">
+                  <p className={`${getFontSizeClass()} text-foreground leading-relaxed font-medium`}>
                     {item.text}
                   </p>
                   <div className="flex items-center gap-2">

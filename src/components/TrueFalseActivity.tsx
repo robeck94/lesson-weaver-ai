@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { CheckCircle2, XCircle, RotateCcw } from 'lucide-react';
+import { useSettings } from '@/contexts/SettingsContext';
 
 interface TrueFalseItem {
   statement: string;
@@ -17,6 +18,7 @@ export const TrueFalseActivity: React.FC<TrueFalseActivityProps> = ({ items }) =
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<boolean | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
+  const { getFontSizeClass } = useSettings();
 
   const currentItem = items[currentIndex];
   const isCorrect = selectedAnswer === currentItem.answer;
@@ -54,7 +56,7 @@ export const TrueFalseActivity: React.FC<TrueFalseActivityProps> = ({ items }) =
 
       {/* Statement Card */}
       <Card className="p-8 bg-gradient-to-br from-card to-muted/20 border-2 border-border">
-        <p className="text-lg md:text-xl text-center text-foreground leading-relaxed">
+        <p className={`${getFontSizeClass()} text-center text-foreground leading-relaxed font-medium`}>
           {currentItem.statement}
         </p>
       </Card>
