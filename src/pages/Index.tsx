@@ -6,6 +6,7 @@ import { TeacherGuide } from "@/components/TeacherGuide";
 import { ImageGenerator } from "@/components/ImageGenerator";
 import { RemixOptions } from "@/components/RemixOptions";
 import { LessonFeedback } from "@/components/LessonFeedback";
+import { SettingsDialog } from "@/components/SettingsDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -389,6 +390,7 @@ const Index = () => {
             </div>
           </div>
           <div className="flex items-center gap-3">
+            <SettingsDialog />
             <Link to="/game-templates">
               <Button variant="outline" size="sm" className="gap-2">
                 <Gamepad2 className="w-4 h-4" />
