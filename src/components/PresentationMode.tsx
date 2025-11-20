@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { X, ChevronLeft, ChevronRight, Play, Sparkles } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, Sparkles, Clock } from "lucide-react";
 import type { LessonSlide } from "@/pages/Index";
 import { QuizSlide } from "./QuizSlide";
 import { MatchingActivity } from "./MatchingActivity";
