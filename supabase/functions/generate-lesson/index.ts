@@ -78,6 +78,7 @@ Follow these strict instructions:
    - Use **color coding** for grammar, vocabulary, speaking/writing prompts.
    - Ensure slides are **not overcrowded** and visually easy to follow.
    - Include **icons or visual cues for different activity types** (e.g., speaking = 🎤, writing = ✏️, game = 🎲).
+   - **CRITICAL FOR VISUAL DESCRIPTIONS**: All images must be TEXT-FREE. Visual descriptions should focus on pure illustrations, icons, scenes, and diagrams WITHOUT any text overlays, labels, or captions. The slide text is displayed separately in the UI, so images should be purely visual storytelling elements.
 
 5. **Teacher Support**
    - Include **step-by-step instructions for each activity**.

@@ -19,52 +19,34 @@ serve(async (req) => {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    // Enhanced prompt with validation feedback for retries
-    let imagePrompt = `Educational illustration for ESL lesson slide: ${slideTitle}. ${visualDescription}. 
-    
-⚠️ CRITICAL SPELLING REQUIREMENT: All text in the image MUST be spelled correctly. Double-check every word before rendering.
+    // Enhanced prompt - NO TEXT IN IMAGES
+    let imagePrompt = `Create a text-free educational illustration for an ESL lesson slide.
 
-Style: Clean, colorful, professional, suitable for classroom presentation. Flat design, friendly, engaging for students.`;
-    
-    // If this is a retry with validation issues, enhance the prompt
-    if (retryAttempt > 0 && validationIssues && validationIssues.length > 0) {
-      imagePrompt = `🔴 CRITICAL - Previous image had SPELLING ERRORS and other issues. You MUST fix them:
-${validationIssues.map((issue: string, idx: number) => `${idx + 1}. ${issue}`).join('\n')}
+🚫 ABSOLUTELY NO TEXT IN THE IMAGE - THIS IS CRITICAL
+- Do NOT include any words, letters, labels, or captions in the image
+- Do NOT add slide titles, vocabulary words, or definitions to the image
+- The text content is displayed separately - the image must be purely visual
 
-Educational illustration for ESL lesson slide: ${slideTitle}
-
-EXACT CONTENT TO INCLUDE (COPY THESE WORDS EXACTLY):
-${slideContent}
-
-VISUAL REQUIREMENTS:
+VISUAL CONCEPT:
 ${visualDescription}
 
-⚠️ MANDATORY REQUIREMENTS:
-1. SPELL EVERY WORD CORRECTLY - This is an educational ESL lesson, spelling mistakes are unacceptable
-2. Copy the EXACT words from the content above - do not paraphrase or use synonyms
-3. For matching activities, include BOTH the items AND their matches exactly as listed
-4. Double-check ALL text before generating the image
-5. If there are multiple items or vocabulary words, include them ALL
+SLIDE CONTEXT (for understanding only - do NOT render this text):
+Title: ${slideTitle}
 
-Style: Clean, colorful, professional, suitable for classroom presentation. Flat design, friendly, engaging for students.`;
-    } else if (slideContent) {
-      // Even for first attempt, include content context
-      imagePrompt = `Educational illustration for ESL lesson slide: ${slideTitle}
+Style Requirements:
+- Clean, modern, flat design illustration
+- Colorful and engaging for ESL classroom
+- Professional quality
+- Focus on visual storytelling through icons, scenes, and illustrations only
+- No text, no labels, no captions
 
-CONTENT TO INCLUDE (use these EXACT words):
-${slideContent}
+Examples of what to create:
+- For vocabulary slides: Show the objects/actions visually (e.g., person stretching, coffee cup, alarm clock)
+- For grammar slides: Use visual diagrams with arrows, boxes, or flowcharts (no text labels)
+- For conversation slides: Show people in conversational poses with speech bubble shapes (empty, no text inside)
+- For activities: Illustrative scenes that support the learning concept visually
 
-VISUAL REQUIREMENTS:
-${visualDescription}
-
-⚠️ CRITICAL REQUIREMENTS:
-1. SPELL ALL WORDS CORRECTLY - Double-check spelling before generating
-2. Use the EXACT vocabulary and phrases from the content above
-3. For educational activities (matching, vocabulary lists, etc.), include ALL items mentioned in the content
-4. This is for ESL students - accuracy is essential
-
-Style: Clean, colorful, professional, suitable for classroom presentation. Flat design, friendly, engaging for students.`;
-    }
+Remember: The image is a visual aid - all text is handled separately by the UI.`;
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
