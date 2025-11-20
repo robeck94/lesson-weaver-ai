@@ -112,26 +112,101 @@ export const LessonPreview = ({ slides }: LessonPreviewProps) => {
 
                     return (
                       <>
-                        {/* Only show text content if no interactive activity */}
-                        {!hasInteractiveActivity && (
-                          <div className="content-box">
-                            <p className={`${getFontSizeClass()} text-foreground leading-relaxed whitespace-pre-wrap font-sans font-medium`}>
-                              {slide.content}
-                            </p>
-                          </div>
-                        )}
-
-                        {/* Show image only if NOT an interactive activity */}
-                        {slide.imageUrl && !hasInteractiveActivity && (
-                          <div className="rounded-lg overflow-hidden border border-border/50">
-                            <img 
-                              src={slide.imageUrl} 
-                              alt={slide.title}
-                              className="w-full h-auto"
-                            />
-                          </div>
-                        )}
-
+                        {/* Determine layout type */}
+                        {(() => {
+                          const layout = (slide as any).layout || 'standard';
+                          
+                          // Layout: text-heavy (minimal/no image, content dominates)
+                          if (layout === 'text-heavy' && !hasInteractiveActivity) {
+                            return (
+                              <>
+                                <div className="content-box">
+                                  <p className={`${getFontSizeClass()} text-foreground leading-relaxed whitespace-pre-wrap font-sans font-medium`}>
+                                    {slide.content}
+                                  </p>
+                                </div>
+                                {slide.imageUrl && (
+                                  <div className="w-32 h-32 rounded-lg overflow-hidden border border-border/50 ml-auto opacity-70">
+                                    <img src={slide.imageUrl} alt={slide.title} className="w-full h-full object-cover" />
+                                  </div>
+                                )}
+                              </>
+                            );
+                          }
+                          
+                          // Layout: image-focused (large image, minimal text)
+                          if (layout === 'image-focused' && !hasInteractiveActivity) {
+                            return (
+                              <>
+                                {slide.imageUrl && (
+                                  <div className="rounded-lg overflow-hidden border border-border/50 mb-3">
+                                    <img src={slide.imageUrl} alt={slide.title} className="w-full h-auto max-h-[400px] object-cover" />
+                                  </div>
+                                )}
+                                <div className="content-box">
+                                  <p className={`${getFontSizeClass()} text-lg text-foreground leading-relaxed whitespace-pre-wrap font-sans font-bold text-center`}>
+                                    {slide.content}
+                                  </p>
+                                </div>
+                              </>
+                            );
+                          }
+                          
+                          // Layout: split (side-by-side text and image)
+                          if (layout === 'split' && !hasInteractiveActivity) {
+                            return (
+                              <div className="grid grid-cols-2 gap-4">
+                                <div className="content-box">
+                                  <p className={`${getFontSizeClass()} text-foreground leading-relaxed whitespace-pre-wrap font-sans font-medium`}>
+                                    {slide.content}
+                                  </p>
+                                </div>
+                                {slide.imageUrl && (
+                                  <div className="rounded-lg overflow-hidden border border-border/50 flex items-center justify-center">
+                                    <img src={slide.imageUrl} alt={slide.title} className="w-full h-full object-cover" />
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          }
+                          
+                          // Layout: example-grid (grid layout for multiple items)
+                          if (layout === 'example-grid' && !hasInteractiveActivity) {
+                            const examples = slide.content.split('\n').filter(line => line.trim());
+                            return (
+                              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                {examples.map((example, idx) => (
+                                  <div key={idx} className="content-box p-3 border border-border/30 rounded-lg hover:border-primary/50 transition-colors">
+                                    <p className={`${getFontSizeClass()} text-sm text-foreground font-medium text-center`}>
+                                      {example}
+                                    </p>
+                                  </div>
+                                ))}
+                              </div>
+                            );
+                          }
+                          
+                          // Layout: standard (default balanced layout)
+                          if (!hasInteractiveActivity) {
+                            return (
+                              <>
+                                <div className="content-box">
+                                  <p className={`${getFontSizeClass()} text-foreground leading-relaxed whitespace-pre-wrap font-sans font-medium`}>
+                                    {slide.content}
+                                  </p>
+                                </div>
+                                {slide.imageUrl && (
+                                  <div className="rounded-lg overflow-hidden border border-border/50">
+                                    <img src={slide.imageUrl} alt={slide.title} className="w-full h-auto" />
+                                  </div>
+                                )}
+                              </>
+                            );
+                          }
+                          
+                          return null;
+                        })()}
+                        
                         {/* Image Validation Warning */}
                         {slide.imageValidation && !hasInteractiveActivity && (
                           <ImageValidationWarning

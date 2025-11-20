@@ -91,6 +91,15 @@ Follow these strict instructions:
    - Ensure slides are **not overcrowded** and visually easy to follow.
    - Include **icons or visual cues for different activity types** (e.g., speaking = 🎤, writing = ✏️, game = 🎲).
    - **CRITICAL FOR VISUAL DESCRIPTIONS**: All images must be TEXT-FREE. Visual descriptions should focus on pure illustrations, icons, scenes, and diagrams WITHOUT any text overlays, labels, or captions. The slide text is displayed separately in the UI, so images should be purely visual storytelling elements.
+   
+   **SLIDE LAYOUT TEMPLATES** - Choose the most appropriate layout for each slide:
+   - **text-heavy**: Best for grammar explanations, vocabulary lists with multiple examples, detailed instructions. Content dominates with minimal or no image.
+   - **image-focused**: Best for visual vocabulary, describing scenes, storytelling. Large prominent image with brief text.
+   - **split**: Best for comparisons, before/after, contrasting concepts. Equal space for text and image side-by-side.
+   - **example-grid**: Best for showing multiple vocabulary items, phrase variations, sentence patterns. Text organized in grid/table format with small supporting images.
+   - **standard**: Balanced text and image for general content.
+   
+   Specify the layout type for EVERY slide based on its content and learning objective.
 
 5. **Teacher Support**
    - Include **step-by-step instructions for each activity**.
@@ -158,7 +167,8 @@ Return a JSON object with this structure:
       "teacherNotes": "string (step-by-step instructions, answers, tips)",
       "timing": "number (minutes for this slide)",
       "interactionPattern": "Individual | Pairs | Small Groups | Whole Class",
-      "stage": "string (lesson stage this slide belongs to)"
+      "stage": "string (lesson stage this slide belongs to)",
+      "layout": "text-heavy | image-focused | split | example-grid | standard (Choose based on content: text-heavy for detailed explanations, image-focused for visual learning, split for comparisons, example-grid for multiple items, standard for balanced content)"
     }
   ]
 }
@@ -218,7 +228,11 @@ Generate a classroom-ready lesson following all the instructions provided in the
               teacherNotes: { type: "string" },
               timing: { type: "number" },
               interactionPattern: { type: "string" },
-              stage: { type: "string" }
+              stage: { type: "string" },
+              layout: { 
+                type: "string",
+                enum: ["text-heavy", "image-focused", "split", "example-grid", "standard"]
+              }
             },
             required: ["slideNumber", "title", "content", "stage"]
           }

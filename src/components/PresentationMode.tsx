@@ -328,61 +328,186 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
 
               {/* Content Area */}
               <div className="flex-1 flex gap-4 overflow-hidden min-h-0">
-              {/* Image Section - Hide for interactive activities */}
-              {slide.imageUrl && !isInteractiveSlide && (
-                <div className="w-[35%] md:w-[40%] flex-shrink-0 animate-scale-in flex items-start justify-center overflow-hidden">
-                  <div className={`w-full h-full bg-gradient-to-br ${theme.gradient.replace('from-', 'from-').replace('via-', 'via-').replace('to-', 'to-').split(' ').map(c => c + '/5').join(' ')} rounded-xl border-2 ${theme.border} p-3 shadow-xl backdrop-blur-sm flex items-center justify-center overflow-hidden`}>
-                    <img 
-                      src={slide.imageUrl} 
-                      alt={slide.title}
-                      className="max-w-full max-h-full object-contain rounded-lg shadow-2xl transform transition-transform duration-300 hover:scale-105"
-                    />
-                  </div>
-                </div>
-              )}
-              
-              {/* Text Content Section - Hide for interactive activities */}
-              {!isInteractiveSlide && (
-                <div className={`flex-1 overflow-y-auto ${getSpacing()} pr-2 ${slide.imageUrl ? '' : 'max-w-6xl mx-auto'}`}>
-                {contentParts.map((part, index) => {
-                  const isRevealed = revealedElements.has(index);
-                  const isNext = !isRevealed && contentParts.slice(0, index).every((_, i) => revealedElements.has(i));
-                  
+              {(() => {
+                const layout = (slide as any).layout || 'standard';
+                
+                // Layout: text-heavy (content dominates, small/no image)
+                if (layout === 'text-heavy' && !isInteractiveSlide) {
                   return (
-                    <div
-                      key={index}
-                      className={`transition-all duration-700 ease-out ${
-                        isRevealed
-                          ? "opacity-100 translate-y-0 scale-100 blur-0"
-                          : "opacity-0 translate-y-8 scale-95 blur-sm"
-                      }`}
-                    >
-                      <div 
-                        className={`content-box ${getCardPadding()} ${getLineSpacing()} transition-all duration-300 cursor-pointer relative overflow-hidden ${
-                          isNext 
-                            ? "border-primary/40 shadow-2xl hover:shadow-[0_0_30px_rgba(59,130,246,0.3)] hover:scale-[1.02] animate-pulse before:absolute before:inset-0 before:bg-gradient-to-r before:from-primary/10 before:to-secondary/10 before:opacity-50" 
-                            : isRevealed 
-                            ? "border-border/50 shadow-lg hover:border-primary/40 hover:shadow-2xl hover:scale-[1.02] before:absolute before:inset-0 before:bg-gradient-to-r before:from-primary/0 before:to-secondary/0 before:opacity-0 hover:before:opacity-30 before:transition-opacity" 
-                            : "border-border/30"
-                        }`}
-                        onClick={() => handleCardClick(index)}
-                      >
-                        {isNext && (
-                          <div className="flex items-center gap-3 text-primary text-xs md:text-sm font-bold mb-3 animate-pulse relative z-10 font-heading">
-                            <span className="w-2.5 h-2.5 bg-primary rounded-full animate-ping"></span>
-                            <span className="w-2.5 h-2.5 bg-primary rounded-full -ml-4"></span>
-                            Press SPACE or click to reveal
+                    <div className="flex-1 flex gap-4">
+                      <div className={`flex-1 overflow-y-auto ${getSpacing()} pr-2`}>
+                        {contentParts.map((part, index) => {
+                          const isRevealed = revealedElements.has(index);
+                          const isNext = !isRevealed && contentParts.slice(0, index).every((_, i) => revealedElements.has(i));
+                          
+                          return (
+                            <div
+                              key={index}
+                              onClick={() => handleCardClick(index)}
+                              className={`${getCardPadding()} bg-gradient-to-br ${theme.gradient.split(' ').map(c => c + '/10').join(' ')} backdrop-blur-sm rounded-xl border-2 ${theme.border} shadow-lg transform transition-all duration-500 cursor-pointer hover:shadow-2xl ${
+                                isRevealed ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
+                              } ${isNext ? 'ring-2 ring-primary ring-offset-2 ring-offset-background animate-pulse-gentle' : ''}`}
+                              style={{ transitionDelay: `${index * 100}ms` }}
+                            >
+                              <p className={`${getContentSize()} ${getLineSpacing()} text-card-foreground font-medium whitespace-pre-wrap`}>
+                                {part}
+                              </p>
+                            </div>
+                          );
+                        })}
+                      </div>
+                      {slide.imageUrl && (
+                        <div className="w-48 flex-shrink-0 animate-scale-in flex items-start">
+                          <div className={`w-full bg-gradient-to-br ${theme.gradient.split(' ').map(c => c + '/5').join(' ')} rounded-xl border-2 ${theme.border} p-2 shadow-xl backdrop-blur-sm opacity-60`}>
+                            <img src={slide.imageUrl} alt={slide.title} className="w-full h-auto object-contain rounded-lg" />
                           </div>
-                        )}
-                        <p className={`${getContentSize()} font-sans slide-content text-foreground break-words relative z-10`}>
-                          {part}
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+                
+                // Layout: image-focused (large image, brief text)
+                if (layout === 'image-focused' && !isInteractiveSlide) {
+                  return (
+                    <div className="flex-1 flex flex-col gap-4">
+                      {slide.imageUrl && (
+                        <div className="flex-1 animate-scale-in flex items-center justify-center">
+                          <div className={`max-w-4xl w-full h-full bg-gradient-to-br ${theme.gradient.split(' ').map(c => c + '/5').join(' ')} rounded-xl border-2 ${theme.border} p-4 shadow-xl backdrop-blur-sm flex items-center justify-center`}>
+                            <img src={slide.imageUrl} alt={slide.title} className="max-w-full max-h-full object-contain rounded-lg shadow-2xl" />
+                          </div>
+                        </div>
+                      )}
+                      <div className={`${getCardPadding()} bg-gradient-to-br ${theme.gradient.split(' ').map(c => c + '/10').join(' ')} backdrop-blur-sm rounded-xl border-2 ${theme.border} shadow-lg text-center`}>
+                        <p className={`text-2xl md:text-3xl lg:text-4xl font-bold text-card-foreground whitespace-pre-wrap`}>
+                          {slide.content}
                         </p>
                       </div>
                     </div>
                   );
-                })}
-                </div>
-              )}
+                }
+                
+                // Layout: split (side-by-side)
+                if (layout === 'split' && !isInteractiveSlide) {
+                  return (
+                    <div className="flex-1 grid grid-cols-2 gap-4">
+                      <div className={`overflow-y-auto ${getSpacing()} pr-2`}>
+                        {contentParts.map((part, index) => {
+                          const isRevealed = revealedElements.has(index);
+                          return (
+                            <div
+                              key={index}
+                              onClick={() => handleCardClick(index)}
+                              className={`${getCardPadding()} bg-gradient-to-br ${theme.gradient.split(' ').map(c => c + '/10').join(' ')} backdrop-blur-sm rounded-xl border-2 ${theme.border} shadow-lg transform transition-all duration-500 cursor-pointer ${
+                                isRevealed ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+                              }`}
+                            >
+                              <p className={`${getContentSize()} text-card-foreground font-medium whitespace-pre-wrap`}>
+                                {part}
+                              </p>
+                            </div>
+                          );
+                        })}
+                      </div>
+                      {slide.imageUrl && (
+                        <div className="animate-scale-in flex items-center justify-center">
+                          <div className={`w-full h-full bg-gradient-to-br ${theme.gradient.split(' ').map(c => c + '/5').join(' ')} rounded-xl border-2 ${theme.border} p-4 shadow-xl backdrop-blur-sm flex items-center justify-center`}>
+                            <img src={slide.imageUrl} alt={slide.title} className="max-w-full max-h-full object-contain rounded-lg shadow-2xl" />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+                
+                // Layout: example-grid (grid of items)
+                if (layout === 'example-grid' && !isInteractiveSlide) {
+                  return (
+                    <div className="flex-1 overflow-y-auto pr-2">
+                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {contentParts.map((part, index) => {
+                          const isRevealed = revealedElements.has(index);
+                          return (
+                            <div
+                              key={index}
+                              onClick={() => handleCardClick(index)}
+                              className={`${getCardPadding()} bg-gradient-to-br ${theme.gradient.split(' ').map(c => c + '/10').join(' ')} backdrop-blur-sm rounded-xl border-2 ${theme.border} shadow-lg transform transition-all duration-500 cursor-pointer hover:scale-105 ${
+                                isRevealed ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+                              }`}
+                              style={{ transitionDelay: `${index * 100}ms` }}
+                            >
+                              <p className={`${getContentSize()} text-card-foreground font-bold text-center whitespace-pre-wrap`}>
+                                {part}
+                              </p>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                }
+                
+                // Standard layout (default)
+                if (!isInteractiveSlide) {
+                  return (
+                    <>
+                      {slide.imageUrl && (
+                        <div className="w-[35%] md:w-[40%] flex-shrink-0 animate-scale-in flex items-start justify-center overflow-hidden">
+                          <div className={`w-full h-full bg-gradient-to-br ${theme.gradient.split(' ').map(c => c + '/5').join(' ')} rounded-xl border-2 ${theme.border} p-3 shadow-xl backdrop-blur-sm flex items-center justify-center overflow-hidden`}>
+                            <img 
+                              src={slide.imageUrl} 
+                              alt={slide.title}
+                              className="max-w-full max-h-full object-contain rounded-lg shadow-2xl transform transition-transform duration-300 hover:scale-105"
+                            />
+                          </div>
+                        </div>
+                      )}
+                      
+                      <div className={`flex-1 overflow-y-auto ${getSpacing()} pr-2 ${slide.imageUrl ? '' : 'max-w-6xl mx-auto'}`}>
+                        {contentParts.map((part, index) => {
+                          const isRevealed = revealedElements.has(index);
+                          const isNext = !isRevealed && contentParts.slice(0, index).every((_, i) => revealedElements.has(i));
+                  
+                          return (
+                            <div
+                              key={index}
+                              className={`transition-all duration-700 ease-out ${
+                                isRevealed
+                                  ? "opacity-100 translate-y-0 scale-100 blur-0"
+                                  : "opacity-0 translate-y-8 scale-95 blur-sm"
+                              }`}
+                            >
+                              <div 
+                                className={`content-box ${getCardPadding()} ${getLineSpacing()} transition-all duration-300 cursor-pointer relative overflow-hidden ${
+                                  isNext 
+                                    ? "border-primary/40 shadow-2xl hover:shadow-[0_0_30px_rgba(59,130,246,0.3)] hover:scale-[1.02] animate-pulse before:absolute before:inset-0 before:bg-gradient-to-r before:from-primary/10 before:to-secondary/10 before:opacity-50" 
+                                    : isRevealed 
+                                    ? "border-border/50 shadow-lg hover:border-primary/40 hover:shadow-2xl hover:scale-[1.02] before:absolute before:inset-0 before:bg-gradient-to-r before:from-primary/0 before:to-secondary/0 before:opacity-0 hover:before:opacity-30 before:transition-opacity" 
+                                    : "border-border/30"
+                                }`}
+                                onClick={() => handleCardClick(index)}
+                              >
+                                {isNext && (
+                                  <div className="flex items-center gap-3 text-primary text-xs md:text-sm font-bold mb-3 animate-pulse relative z-10 font-heading">
+                                    <span className="w-2.5 h-2.5 bg-primary rounded-full animate-ping"></span>
+                                    <span className="w-2.5 h-2.5 bg-primary rounded-full -ml-4"></span>
+                                    Press SPACE or click to reveal
+                                  </div>
+                                )}
+                                <p className={`${getContentSize()} font-sans slide-content text-foreground break-words relative z-10`}>
+                                  {part}
+                                </p>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </>
+                  );
+                }
+                
+                return null;
+              })()}
               
               {/* Interactive Activities - Full Screen when present */}
               {isInteractiveSlide && slide.activityInstructions && (
