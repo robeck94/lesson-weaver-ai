@@ -15,6 +15,7 @@ import { SentenceOrderingActivity } from "./SentenceOrderingActivity";
 import { TrueFalseActivity } from "./TrueFalseActivity";
 import { DialogueActivity } from "./DialogueActivity";
 import { RolePlayActivity } from "./RolePlayActivity";
+import { useSettings } from "@/contexts/SettingsContext";
 
 interface LessonPreviewProps {
   slides: LessonSlide[];
@@ -31,6 +32,7 @@ const STAGE_COLORS: Record<string, string> = {
 
 export const LessonPreview = ({ slides }: LessonPreviewProps) => {
   const [isPresentationMode, setIsPresentationMode] = useState(false);
+  const { getFontSizeClass } = useSettings();
 
   if (isPresentationMode) {
     return (
@@ -113,7 +115,7 @@ export const LessonPreview = ({ slides }: LessonPreviewProps) => {
                         {/* Only show text content if no interactive activity */}
                         {!hasInteractiveActivity && (
                           <div className="content-box">
-                            <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap font-sans">
+                            <p className={`${getFontSizeClass()} text-foreground leading-relaxed whitespace-pre-wrap font-sans font-medium`}>
                               {slide.content}
                             </p>
                           </div>
