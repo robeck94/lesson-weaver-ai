@@ -180,6 +180,43 @@ CEFR Level: ${cefrLevel}
 Generate a classroom-ready lesson following all the instructions provided in the system prompt.`;
     }
 
+    // Define the lesson schema for structured output via tool calling
+    const lessonSchema = {
+      type: "object",
+      properties: {
+        topic: { type: "string" },
+        cefrLevel: { type: "string" },
+        duration: { type: "number" },
+        objectives: { type: "array", items: { type: "string" } },
+        lessonType: { type: "string" },
+        framework: { type: "string" },
+        stages: { type: "array", items: { type: "string" } },
+        teacherNotes: { type: "string" },
+        slides: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              slideNumber: { type: "number" },
+              title: { type: "string" },
+              content: { type: "string" },
+              activityInstructions: { type: "string" },
+              visualDescription: { type: "string" },
+              teacherNotes: { type: "string" },
+              timing: { type: "number" },
+              interactionPattern: { type: "string" },
+              stage: { type: "string" }
+            },
+            required: ["slideNumber", "title", "content", "stage"]
+          }
+        }
+      },
+      required: ["topic", "cefrLevel", "slides"],
+      additionalProperties: false
+    };
+
+    console.log('Calling Lovable AI with structured output...');
+
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -192,7 +229,17 @@ Generate a classroom-ready lesson following all the instructions provided in the
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        temperature: 0.9, // Increased for more variety and creativity
+        tools: [
+          {
+            type: "function",
+            function: {
+              name: "create_esl_lesson",
+              description: "Create a complete ESL lesson plan with slides and activities",
+              parameters: lessonSchema
+            }
+          }
+        ],
+        tool_choice: { type: "function", function: { name: "create_esl_lesson" } }
       }),
     });
 
@@ -224,68 +271,47 @@ Generate a classroom-ready lesson following all the instructions provided in the
     }
 
     const data = await response.json();
-    const generatedText = data.choices[0].message.content;
-    console.log('AI Response received, parsing...');
+    console.log('AI Response received, extracting lesson data...');
 
-    // Parse the JSON response
+    // Extract lesson data from structured output (tool call)
     let lesson;
-    let aggressiveClean: string = '';
+    
     try {
-      // Step 1: Remove markdown code blocks and any surrounding text
-      let cleanedText = generatedText;
+      const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
       
-      // Extract JSON from markdown code fence if present
-      const jsonMatch = cleanedText.match(/```json\s*\n?([\s\S]*?)\n?```/);
-      if (jsonMatch) {
-        cleanedText = jsonMatch[1];
+      if (toolCall && toolCall.function?.name === "create_esl_lesson") {
+        // Parse the structured function arguments
+        lesson = JSON.parse(toolCall.function.arguments);
+        console.log('Successfully extracted lesson from structured output');
       } else {
-        // Try without json tag
-        const codeMatch = cleanedText.match(/```\s*\n?([\s\S]*?)\n?```/);
-        if (codeMatch) {
-          cleanedText = codeMatch[1];
-        }
-      }
-      
-      cleanedText = cleanedText.trim();
-      
-      // Step 2: Fix common JSON issues
-      // Replace literal newlines within string values (not between JSON properties)
-      // This regex finds strings and replaces actual newlines with \n
-      cleanedText = cleanedText.replace(/"([^"]*?)"/gs, (_match: string, content: string) => {
-        // Escape any unescaped newlines, tabs, and other control chars within the string
-        const escaped = content
-          .replace(/\\/g, '\\\\')  // Escape backslashes first
-          .replace(/\n/g, '\\n')   // Escape newlines
-          .replace(/\r/g, '\\r')   // Escape carriage returns
-          .replace(/\t/g, '\\t')   // Escape tabs
-          .replace(/"/g, '\\"');   // Escape quotes
-        return `"${escaped}"`;
-      });
-      
-      // Step 3: Try to parse
-      lesson = JSON.parse(cleanedText);
-      console.log('Successfully parsed AI response');
-    } catch (parseError) {
-      console.error('Failed to parse AI response:', parseError);
-      console.error('Raw response (first 2000 chars):', generatedText.substring(0, 2000));
-      
-      // Try one more aggressive cleanup attempt
-      try {
-        aggressiveClean = generatedText
-          .replace(/```json\s*\n?/g, '')
-          .replace(/```\s*\n?/g, '')
-          .trim()
-          // Remove control characters completely
-          .replace(/[\x00-\x1F\x7F]/g, '')
-          .replace(/\n\s*\n/g, '\n');
+        // Fallback: try parsing from content if tool call wasn't used
+        const generatedText = data.choices?.[0]?.message?.content;
         
-        lesson = JSON.parse(aggressiveClean);
-        console.log('Successfully parsed with aggressive cleanup');
-      } catch (secondError) {
-        console.error('Second parse attempt failed:', secondError);
-        console.error('Cleaned text (first 2000 chars):', aggressiveClean?.substring(0, 2000));
-        throw new Error('Failed to parse lesson data from AI response');
+        if (!generatedText) {
+          throw new Error('No content or tool call received from AI');
+        }
+        
+        console.log('Tool call not found, attempting fallback parse...');
+        
+        // Simple cleanup: just remove markdown code blocks
+        let cleanedText = generatedText.trim();
+        const jsonMatch = cleanedText.match(/```json\s*\n?([\s\S]*?)\n?```/);
+        if (jsonMatch) {
+          cleanedText = jsonMatch[1].trim();
+        } else {
+          const codeMatch = cleanedText.match(/```\s*\n?([\s\S]*?)\n?```/);
+          if (codeMatch) {
+            cleanedText = codeMatch[1].trim();
+          }
+        }
+        
+        lesson = JSON.parse(cleanedText);
+        console.log('Successfully parsed from content fallback');
       }
+    } catch (parseError) {
+      console.error('Failed to extract lesson data:', parseError);
+      console.error('Raw AI response:', JSON.stringify(data, null, 2).substring(0, 2000));
+      throw new Error('Failed to parse lesson data from AI response');
     }
 
     console.log('Lesson generated successfully:', lesson.topic);
