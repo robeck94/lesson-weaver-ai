@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Sparkles, BookOpen, Gamepad2 } from "lucide-react";
+import { PromptTemplate } from "@/types/template";
 
 export interface ImageValidation {
   isValid: boolean;
@@ -48,14 +49,14 @@ const Index = () => {
   const [generatedLesson, setGeneratedLesson] = useState<GeneratedLesson | null>(null);
   const { toast } = useToast();
 
-  const handleGenerateLesson = async (topic: string, cefrLevel: string) => {
+  const handleGenerateLesson = async (topic: string, cefrLevel: string, template?: PromptTemplate) => {
     setIsGenerating(true);
     setGeneratedLesson(null);
 
     try {
       // Step 1: Generate lesson content
       const { data, error } = await supabase.functions.invoke('generate-lesson', {
-        body: { topic, cefrLevel }
+        body: { topic, cefrLevel, template }
       });
 
       if (error) {

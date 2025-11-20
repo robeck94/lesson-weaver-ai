@@ -11,17 +11,33 @@ serve(async (req) => {
   }
 
   try {
-    const { topic, cefrLevel, remixInstruction, currentLesson } = await req.json();
-    console.log('Generating lesson for:', { topic, cefrLevel, isRemix: !!remixInstruction });
+    const { topic, cefrLevel, remixInstruction, currentLesson, template } = await req.json();
+    console.log('Generating lesson for:', { topic, cefrLevel, isRemix: !!remixInstruction, hasTemplate: !!template });
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
+    // Build template preferences text if a template is provided
+    let templatePreferences = '';
+    if (template) {
+      templatePreferences = `
+
+CUSTOM TEACHING STYLE PREFERENCES:
+Teaching Style: ${template.teachingStyle}
+Tone: ${template.tone}
+${template.emphasisAreas.length > 0 ? `Emphasis Areas: Focus particularly on ${template.emphasisAreas.join(', ')}` : ''}
+${template.activityPreferences.length > 0 ? `Preferred Activities: Prioritize these activity types: ${template.activityPreferences.join(', ')}` : ''}
+${template.customInstructions ? `Additional Instructions: ${template.customInstructions}` : ''}
+
+Please incorporate these preferences throughout the lesson while maintaining all other requirements.
+`;
+    }
+
     // System prompt for lesson generation
     const systemPrompt = `You are a Master ESL Teacher, Senior TEFL Trainer, Curriculum Designer, and Professional Slide Designer. Your task is to generate a complete, classroom-ready ESL lesson in slide format that is engaging, visually appealing, and pedagogically perfect.
-
+${templatePreferences}
 CRITICAL TEXT FORMATTING RULE - READ THIS FIRST:
 - NEVER use asterisks ** or any markdown symbols in your output
 - NEVER use bold, italic, or any formatting marks in slide titles, content, objectives, or any text

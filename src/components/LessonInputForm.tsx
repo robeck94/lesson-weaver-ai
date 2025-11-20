@@ -6,9 +6,12 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Loader2, Sparkles, Coffee, Plane, Briefcase, Smartphone, Heart, Leaf, Film, Users, GraduationCap, Palette, BookText, TrendingUp } from "lucide-react";
+import { TemplateManager } from "@/components/TemplateManager";
+import { PromptTemplate } from "@/types/template";
+import { Badge } from "@/components/ui/badge";
 
 interface LessonInputFormProps {
-  onGenerate: (topic: string, cefrLevel: string) => void;
+  onGenerate: (topic: string, cefrLevel: string, template?: PromptTemplate) => void;
   isGenerating: boolean;
 }
 
@@ -242,11 +245,12 @@ export const LessonInputForm = ({ onGenerate, isGenerating }: LessonInputFormPro
   const [topic, setTopic] = useState("");
   const [cefrLevel, setCefrLevel] = useState("B1");
   const [usePreset, setUsePreset] = useState(true);
+  const [selectedTemplate, setSelectedTemplate] = useState<PromptTemplate | undefined>();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (topic.trim() && cefrLevel) {
-      onGenerate(topic, cefrLevel);
+      onGenerate(topic, cefrLevel, selectedTemplate);
     }
   };
 
@@ -347,11 +351,56 @@ export const LessonInputForm = ({ onGenerate, isGenerating }: LessonInputFormPro
                   </SelectItem>
                 ))}
               </SelectContent>
-            </Select>
-          </div>
+          </Select>
+        </div>
 
-          {/* Submit Button */}
-          <Button
+        {/* Template Selection */}
+        <div className="space-y-2">
+          <Label className="text-foreground font-medium">
+            Teaching Style Template (Optional)
+          </Label>
+          <div className="flex gap-2 items-start">
+            <div className="flex-1">
+              {selectedTemplate ? (
+                <Card className="p-3 bg-muted/50">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <div className="font-medium text-sm truncate">{selectedTemplate.name}</div>
+                      <div className="text-xs text-muted-foreground mt-1 line-clamp-1">
+                        {selectedTemplate.description}
+                      </div>
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        <Badge variant="secondary" className="text-xs">
+                          {selectedTemplate.teachingStyle}
+                        </Badge>
+                        <Badge variant="outline" className="text-xs">
+                          {selectedTemplate.tone}
+                        </Badge>
+                      </div>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setSelectedTemplate(undefined)}
+                      className="shrink-0"
+                    >
+                      Clear
+                    </Button>
+                  </div>
+                </Card>
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  No template selected. The lesson will use default settings.
+                </p>
+              )}
+            </div>
+            <TemplateManager onSelectTemplate={setSelectedTemplate} />
+          </div>
+        </div>
+
+        {/* Submit Button */}
+        <Button
             type="submit"
             disabled={isGenerating || !topic.trim()}
             className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-semibold py-6 text-lg shadow-medium hover:shadow-soft transition-all"
