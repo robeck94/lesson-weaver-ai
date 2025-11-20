@@ -14,10 +14,113 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      lesson_analytics: {
+        Row: {
+          cefr_level: string
+          generated_at: string | null
+          id: string
+          image_quality_score: number | null
+          lesson_topic: string
+          slides_count: number | null
+          template_id: string | null
+          user_feedback: string | null
+          user_rating: number | null
+        }
+        Insert: {
+          cefr_level: string
+          generated_at?: string | null
+          id?: string
+          image_quality_score?: number | null
+          lesson_topic: string
+          slides_count?: number | null
+          template_id?: string | null
+          user_feedback?: string | null
+          user_rating?: number | null
+        }
+        Update: {
+          cefr_level?: string
+          generated_at?: string | null
+          id?: string
+          image_quality_score?: number | null
+          lesson_topic?: string
+          slides_count?: number | null
+          template_id?: string | null
+          user_feedback?: string | null
+          user_rating?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lesson_analytics_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "template_analytics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lesson_analytics_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      templates: {
+        Row: {
+          activity_preferences: string[] | null
+          created_at: string | null
+          custom_instructions: string | null
+          description: string | null
+          emphasis_areas: string[] | null
+          id: string
+          name: string
+          teaching_style: string
+          tone: string
+          updated_at: string | null
+        }
+        Insert: {
+          activity_preferences?: string[] | null
+          created_at?: string | null
+          custom_instructions?: string | null
+          description?: string | null
+          emphasis_areas?: string[] | null
+          id?: string
+          name: string
+          teaching_style: string
+          tone: string
+          updated_at?: string | null
+        }
+        Update: {
+          activity_preferences?: string[] | null
+          created_at?: string | null
+          custom_instructions?: string | null
+          description?: string | null
+          emphasis_areas?: string[] | null
+          id?: string
+          name?: string
+          teaching_style?: string
+          tone?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
-      [_ in never]: never
+      template_analytics: {
+        Row: {
+          average_rating: number | null
+          avg_image_quality: number | null
+          id: string | null
+          last_used_at: string | null
+          name: string | null
+          satisfaction_rate: number | null
+          teaching_style: string | null
+          tone: string | null
+          total_ratings: number | null
+          total_uses: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never

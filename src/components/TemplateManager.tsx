@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { useTemplates } from '@/hooks/useTemplates';
 import { PromptTemplate } from '@/types/template';
-import { Settings, Plus, Trash2, Edit } from 'lucide-react';
+import { Settings, Plus, Trash2, Edit, Star } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface TemplateManagerProps {
@@ -17,7 +17,7 @@ interface TemplateManagerProps {
 }
 
 export const TemplateManager = ({ onSelectTemplate }: TemplateManagerProps) => {
-  const { templates, saveTemplate, deleteTemplate, updateTemplate } = useTemplates();
+  const { templates, analytics, isLoading, saveTemplate, deleteTemplate, updateTemplate, getTemplateAnalytics } = useTemplates();
   const [isOpen, setIsOpen] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState<PromptTemplate | null>(null);
   const [formData, setFormData] = useState({
@@ -54,25 +54,29 @@ export const TemplateManager = ({ onSelectTemplate }: TemplateManagerProps) => {
     'Fluency',
   ];
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!formData.name.trim()) {
       toast.error('Please enter a template name');
       return;
     }
 
-    if (editingTemplate) {
-      updateTemplate(editingTemplate.id, formData);
-      toast.success('Template updated successfully');
-    } else {
-      const newTemplate = saveTemplate(formData);
-      toast.success('Template created successfully');
-      if (onSelectTemplate) {
-        onSelectTemplate(newTemplate);
+    try {
+      if (editingTemplate) {
+        await updateTemplate(editingTemplate.id, formData);
+        toast.success('Template updated successfully');
+      } else {
+        const newTemplate = await saveTemplate(formData);
+        toast.success('Template created successfully');
+        if (onSelectTemplate && newTemplate) {
+          onSelectTemplate(newTemplate);
+        }
       }
-    }
 
-    resetForm();
-    setIsOpen(false);
+      resetForm();
+      setIsOpen(false);
+    } catch (error) {
+      // Error is already handled in useTemplates
+    }
   };
 
   const handleEdit = (template: PromptTemplate) => {
@@ -157,61 +161,99 @@ export const TemplateManager = ({ onSelectTemplate }: TemplateManagerProps) => {
                   </CardContent>
                 </Card>
               ) : (
-                templates.map((template) => (
-                  <Card key={template.id} className="group">
-                    <CardHeader className="pb-3">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <CardTitle className="text-base">{template.name}</CardTitle>
-                          <CardDescription className="text-sm mt-1">
-                            {template.description}
-                          </CardDescription>
+                templates.map((template) => {
+                  const templateAnalytics = getTemplateAnalytics(template.id);
+                  return (
+                    <Card key={template.id} className="group">
+                      <CardHeader className="pb-3">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <CardTitle className="text-base">{template.name}</CardTitle>
+                            <CardDescription className="text-sm mt-1">
+                              {template.description}
+                            </CardDescription>
+                          </div>
+                          <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleEdit(template)}
+                            >
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleDelete(template.id)}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
                         </div>
-                        <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        <div className="flex flex-wrap gap-2">
+                          <Badge variant="secondary">{template.teachingStyle}</Badge>
+                          <Badge variant="outline">{template.tone}</Badge>
+                        </div>
+                        
+                        {/* Analytics Section */}
+                        {templateAnalytics && templateAnalytics.total_uses > 0 && (
+                          <div className="p-3 bg-muted/50 rounded-lg space-y-2">
+                            <div className="text-xs font-medium text-muted-foreground">ANALYTICS</div>
+                            <div className="grid grid-cols-2 gap-3 text-sm">
+                              <div>
+                                <div className="text-xs text-muted-foreground">Uses</div>
+                                <div className="font-semibold">{templateAnalytics.total_uses}</div>
+                              </div>
+                              {templateAnalytics.average_rating > 0 && (
+                                <div>
+                                  <div className="text-xs text-muted-foreground">Avg Rating</div>
+                                  <div className="font-semibold flex items-center gap-1">
+                                    <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                                    {templateAnalytics.average_rating.toFixed(1)}
+                                  </div>
+                                </div>
+                              )}
+                              {templateAnalytics.satisfaction_rate > 0 && (
+                                <div>
+                                  <div className="text-xs text-muted-foreground">Satisfaction</div>
+                                  <div className="font-semibold">{templateAnalytics.satisfaction_rate}%</div>
+                                </div>
+                              )}
+                              {templateAnalytics.avg_image_quality > 0 && (
+                                <div>
+                                  <div className="text-xs text-muted-foreground">Image Quality</div>
+                                  <div className="font-semibold">{(templateAnalytics.avg_image_quality * 100).toFixed(0)}%</div>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                        
+                        {template.emphasisAreas.length > 0 && (
+                          <div className="text-sm">
+                            <span className="text-muted-foreground">Focus: </span>
+                            {template.emphasisAreas.join(', ')}
+                          </div>
+                        )}
+                        {onSelectTemplate && (
                           <Button
                             size="sm"
-                            variant="ghost"
-                            onClick={() => handleEdit(template)}
+                            variant="outline"
+                            onClick={() => {
+                              onSelectTemplate(template);
+                              setIsOpen(false);
+                            }}
+                            className="w-full mt-2"
                           >
-                            <Edit className="w-4 h-4" />
+                            Use This Template
                           </Button>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => handleDelete(template.id)}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                      <div className="flex flex-wrap gap-2">
-                        <Badge variant="secondary">{template.teachingStyle}</Badge>
-                        <Badge variant="outline">{template.tone}</Badge>
-                      </div>
-                      {template.emphasisAreas.length > 0 && (
-                        <div className="text-sm">
-                          <span className="text-muted-foreground">Focus: </span>
-                          {template.emphasisAreas.join(', ')}
-                        </div>
-                      )}
-                      {onSelectTemplate && (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => {
-                            onSelectTemplate(template);
-                            setIsOpen(false);
-                          }}
-                          className="w-full mt-2"
-                        >
-                          Use This Template
-                        </Button>
-                      )}
-                    </CardContent>
-                  </Card>
-                ))
+                        )}
+                      </CardContent>
+                    </Card>
+                  );
+                })
               )}
             </div>
           </div>
