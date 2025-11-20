@@ -19,34 +19,35 @@ serve(async (req) => {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    // Enhanced prompt - NO TEXT IN IMAGES
-    let imagePrompt = `Create a text-free educational illustration for an ESL lesson slide.
+    // ULTRA-STRICT NO TEXT PROMPT
+    let imagePrompt = `🎨 CREATE A PURE VISUAL ILLUSTRATION - ZERO TEXT ALLOWED
 
-🚫 ABSOLUTELY NO TEXT IN THE IMAGE - THIS IS CRITICAL
-- Do NOT include any words, letters, labels, or captions in the image
-- Do NOT add slide titles, vocabulary words, or definitions to the image
-- The text content is displayed separately - the image must be purely visual
+⛔ CRITICAL RULES - FOLLOW EXACTLY:
+1. NO WORDS - Do not write any words, letters, numbers, or text anywhere in the image
+2. NO LABELS - Do not label objects, people, or actions
+3. NO CAPTIONS - Do not add explanations or descriptions as text
+4. NO SIGNS - Do not include text on signs, books, screens, or objects
+5. EMPTY SPEECH BUBBLES ONLY - If showing conversation, use empty speech bubble shapes with no text inside
 
-VISUAL CONCEPT:
-${visualDescription}
+✅ WHAT TO CREATE:
+Pure visual representation: ${visualDescription}
 
-SLIDE CONTEXT (for understanding only - do NOT render this text):
-Title: ${slideTitle}
+Context (DO NOT WRITE THIS IN THE IMAGE): ${slideTitle}
 
-Style Requirements:
-- Clean, modern, flat design illustration
-- Colorful and engaging for ESL classroom
-- Professional quality
-- Focus on visual storytelling through icons, scenes, and illustrations only
-- No text, no labels, no captions
+🎨 STYLE:
+- Flat design illustration style
+- Bright, engaging colors
+- Simple, clean icons and shapes
+- Professional educational look
+- Think: pure visual icons, not labeled diagrams
 
-Examples of what to create:
-- For vocabulary slides: Show the objects/actions visually (e.g., person stretching, coffee cup, alarm clock)
-- For grammar slides: Use visual diagrams with arrows, boxes, or flowcharts (no text labels)
-- For conversation slides: Show people in conversational poses with speech bubble shapes (empty, no text inside)
-- For activities: Illustrative scenes that support the learning concept visually
+EXAMPLES OF CORRECT OUTPUT:
+- Alarm clock icon (just the clock, no "6:00 AM" text)
+- Person brushing teeth (just the visual action, no "brush teeth" label)
+- Coffee cup (just the cup shape, no "coffee" text)
+- Empty speech bubbles (bubble shapes only, completely empty inside)
 
-Remember: The image is a visual aid - all text is handled separately by the UI.`;
+YOU MUST: Create only visual elements. Pretend you cannot write any text at all.`;
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
