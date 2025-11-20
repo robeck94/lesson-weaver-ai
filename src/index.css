@@ -43,10 +43,22 @@ All colors MUST be HSL.
 
     --radius: 0.75rem;
 
+    /* Premium Gradients */
     --gradient-hero: linear-gradient(135deg, hsl(215 75% 50%), hsl(180 70% 45%));
     --gradient-card: linear-gradient(145deg, hsl(215 75% 98%), hsl(180 70% 98%));
+    --gradient-slide: linear-gradient(160deg, hsl(215 75% 97%), hsl(180 70% 98%), hsl(0 0% 100%));
+    --gradient-overlay: linear-gradient(180deg, hsl(0 0% 100% / 0), hsl(0 0% 100% / 0.8));
+    
+    /* Depth Shadows */
     --shadow-soft: 0 4px 20px -2px hsl(215 75% 50% / 0.1);
     --shadow-medium: 0 8px 30px -4px hsl(215 75% 50% / 0.15);
+    --shadow-depth: 0 10px 40px -8px hsl(215 75% 50% / 0.2);
+    --shadow-float: 0 20px 60px -10px hsl(215 75% 50% / 0.25);
+    
+    /* Slide Specific */
+    --slide-bg: 0 0% 100%;
+    --slide-content-bg: 215 75% 98%;
+    --slide-image-overlay: 0 0% 0% / 0.03;
   }
 
   .dark {
@@ -80,6 +92,15 @@ All colors MUST be HSL.
     --border: 220 20% 25%;
     --input: 220 20% 25%;
     --ring: 215 75% 55%;
+    
+    /* Dark Mode Gradients */
+    --gradient-slide: linear-gradient(160deg, hsl(220 20% 15%), hsl(215 75% 15%), hsl(220 20% 12%));
+    --gradient-overlay: linear-gradient(180deg, hsl(220 20% 12% / 0), hsl(220 20% 12% / 0.8));
+    
+    /* Dark Slide Specific */
+    --slide-bg: 220 20% 12%;
+    --slide-content-bg: 220 20% 16%;
+    --slide-image-overlay: 0 0% 100% / 0.05;
   }
 }
 
@@ -101,6 +122,7 @@ All colors MUST be HSL.
 }
 
 @layer utilities {
+  /* Gradient Utilities */
   .gradient-hero {
     background: var(--gradient-hero);
   }
@@ -109,6 +131,11 @@ All colors MUST be HSL.
     background: var(--gradient-card);
   }
   
+  .gradient-slide {
+    background: var(--gradient-slide);
+  }
+  
+  /* Shadow Utilities */
   .shadow-soft {
     box-shadow: var(--shadow-soft);
   }
@@ -117,12 +144,25 @@ All colors MUST be HSL.
     box-shadow: var(--shadow-medium);
   }
   
+  .shadow-depth {
+    box-shadow: var(--shadow-depth);
+  }
+  
+  .shadow-float {
+    box-shadow: var(--shadow-float);
+  }
+  
+  /* Text Shadows */
   .text-shadow-sm {
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   }
   
   .text-shadow-md {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  }
+  
+  .text-shadow-lg {
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
   
   .animate-fade-up {
@@ -187,16 +227,47 @@ All colors MUST be HSL.
     }
   }
   
+  /* Premium Slide Components */
   .content-box {
-    @apply bg-gradient-to-br from-card via-card to-muted/20 rounded-2xl p-6 shadow-lg border-2 border-border/50 backdrop-blur-sm;
+    @apply p-8 rounded-2xl bg-gradient-to-br from-primary/5 via-secondary/5 to-transparent 
+           border border-primary/10 shadow-soft backdrop-blur-sm
+           transition-all duration-300 hover:shadow-medium hover:border-primary/20;
   }
   
   .activity-box {
-    @apply bg-gradient-to-br from-primary/5 via-accent/5 to-secondary/5 rounded-xl p-4 shadow-md border-2 border-primary/20 backdrop-blur-sm;
+    @apply p-10 rounded-3xl bg-gradient-to-br from-accent/10 via-primary/5 to-secondary/5
+           border-2 border-accent/20 shadow-depth
+           transition-all duration-300 hover:shadow-float;
   }
   
   .slide-content {
-    @apply leading-relaxed tracking-wide text-foreground;
-    line-height: 1.7;
+    @apply space-y-6 text-lg leading-relaxed;
+  }
+  
+  /* Slide Stage Badges */
+  .stage-badge {
+    @apply inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold
+           shadow-soft backdrop-blur-sm transition-all duration-300
+           hover:scale-105 hover:shadow-medium;
+  }
+  
+  .stage-warmup {
+    @apply bg-accent/10 text-accent border border-accent/20;
+  }
+  
+  .stage-presentation {
+    @apply bg-primary/10 text-primary border border-primary/20;
+  }
+  
+  .stage-practice {
+    @apply bg-secondary/10 text-secondary border border-secondary/20;
+  }
+  
+  .stage-production {
+    @apply bg-success/10 text-success border border-success/20;
+  }
+  
+  .stage-review {
+    @apply bg-muted text-muted-foreground border border-border;
   }
 }

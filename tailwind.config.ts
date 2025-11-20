@@ -55,6 +55,10 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        slide: {
+          bg: "hsl(var(--slide-bg))",
+          content: "hsl(var(--slide-content-bg))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
