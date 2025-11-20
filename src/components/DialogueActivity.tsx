@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { CheckCircle2, XCircle, RotateCcw, Lightbulb } from 'lucide-react';
+import { useSettings } from '@/contexts/SettingsContext';
 
 interface DialogueLine {
   speaker: string;
@@ -21,6 +22,7 @@ export const DialogueActivity: React.FC<DialogueActivityProps> = ({ lines, title
   const [userAnswers, setUserAnswers] = useState<Record<number, string>>({});
   const [showFeedback, setShowFeedback] = useState(false);
   const [showHints, setShowHints] = useState<Set<number>>(new Set());
+  const { getFontSizeClass } = useSettings();
 
   const blankLines = lines.filter(line => line.isBlank);
 
@@ -85,7 +87,7 @@ export const DialogueActivity: React.FC<DialogueActivityProps> = ({ lines, title
         {lines.map((line, index) => (
           <div key={index} className="space-y-2">
             <div className="flex items-start gap-3">
-              <div className="font-semibold text-primary min-w-[100px]">
+              <div className={`${getFontSizeClass()} font-semibold text-primary min-w-[100px]`}>
                 {line.speaker}:
               </div>
               <div className="flex-1">
@@ -151,7 +153,7 @@ export const DialogueActivity: React.FC<DialogueActivityProps> = ({ lines, title
                     )}
                   </div>
                 ) : (
-                  <p className="text-foreground">{line.text}</p>
+                  <p className={`${getFontSizeClass()} text-foreground font-medium`}>{line.text}</p>
                 )}
               </div>
             </div>
