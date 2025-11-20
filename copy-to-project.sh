@@ -49,8 +49,21 @@ cp "$SOURCE/src/components/TrueFalseActivity.tsx" "$TARGET/src/components/"
 cp "$SOURCE/src/components/WordScrambleActivity.tsx" "$TARGET/src/components/"
 cp "$SOURCE/src/components/ImageGenerator.tsx" "$TARGET/src/components/"
 cp "$SOURCE/src/components/NavLink.tsx" "$TARGET/src/components/"
+cp "$SOURCE/src/components/TemplateManager.tsx" "$TARGET/src/components/"
 cp "$SOURCE/src/components/games/GameCustomizer.tsx" "$TARGET/src/components/games/"
 cp "$SOURCE/src/components/games/GameTemplateCard.tsx" "$TARGET/src/components/games/"
+
+# Copy hooks
+echo "📤 Copying hooks..."
+mkdir -p "$TARGET/src/hooks"
+cp "$SOURCE/src/hooks/use-mobile.tsx" "$TARGET/src/hooks/" 2>/dev/null || true
+cp "$SOURCE/src/hooks/use-toast.ts" "$TARGET/src/hooks/" 2>/dev/null || true
+cp "$SOURCE/src/hooks/useTemplates.ts" "$TARGET/src/hooks/"
+
+# Copy types
+echo "📤 Copying types..."
+mkdir -p "$TARGET/src/types"
+cp "$SOURCE/src/types/template.ts" "$TARGET/src/types/"
 
 # Update config.toml
 echo "⚙️  Updating config.toml..."
