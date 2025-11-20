@@ -6,12 +6,21 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import GameTemplates from "./pages/GameTemplates";
 import NotFound from "./pages/NotFound";
+import { useSettings } from "./contexts/SettingsContext";
+import { useEffect } from "react";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
+const AppContent = () => {
+  const { getFontFamilyClass } = useSettings();
+  
+  useEffect(() => {
+    // Apply font family to body
+    document.body.className = getFontFamilyClass();
+  }, [getFontFamilyClass]);
+
+  return (
+    <>
       <Toaster />
       <Sonner />
       <BrowserRouter>
@@ -22,6 +31,14 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
+    </>
+  );
+};
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <AppContent />
     </TooltipProvider>
   </QueryClientProvider>
 );
