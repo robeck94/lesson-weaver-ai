@@ -11,6 +11,7 @@ import { SentenceOrderingActivity } from "./SentenceOrderingActivity";
 import { TrueFalseActivity } from "./TrueFalseActivity";
 import { DialogueActivity } from "./DialogueActivity";
 import { RolePlayActivity } from "./RolePlayActivity";
+import { useSettings } from "@/contexts/SettingsContext";
 
 type TransitionEffect = "fade" | "slide" | "zoom";
 
@@ -25,6 +26,7 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
   const [revealedElements, setRevealedElements] = useState<Set<number>>(new Set());
   const [transitionEffect, setTransitionEffect] = useState<TransitionEffect>("fade");
   const containerRef = useRef<HTMLDivElement>(null);
+  const { getFontSizeClass } = useSettings();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -120,14 +122,23 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
   };
 
   const getContentSize = () => {
-    // Very dense content (lots of text) - still readable from distance
-    if (totalChars > 600 || lineCount > 10) return "text-base md:text-lg lg:text-xl";
-    // Dense content - larger for classroom visibility
-    if (totalChars > 400 || lineCount > 7) return "text-lg md:text-xl lg:text-2xl";
-    // Medium content - very visible
-    if (totalChars > 250 || lineCount > 5) return "text-xl md:text-2xl lg:text-3xl";
+    const baseSize = getFontSizeClass();
+    
+    // Adjust based on content density and user preference
+    if (totalChars > 600 || lineCount > 10) {
+      // Very dense content
+      return baseSize; // Use user's base size
+    }
+    if (totalChars > 400 || lineCount > 7) {
+      // Dense content - slightly larger
+      return `${baseSize} md:text-lg lg:text-xl`;
+    }
+    if (totalChars > 250 || lineCount > 5) {
+      // Medium content
+      return `${baseSize} md:text-xl lg:text-2xl`;
+    }
     // Light content - maximum visibility
-    return "text-2xl md:text-3xl lg:text-4xl";
+    return `${baseSize} md:text-2xl lg:text-3xl`;
   };
 
   const getLineSpacing = () => {

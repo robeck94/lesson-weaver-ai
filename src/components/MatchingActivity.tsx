@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Check, X, RotateCcw } from "lucide-react";
+import { useSettings } from "@/contexts/SettingsContext";
 
 interface MatchingPair {
   left: string;
@@ -21,6 +22,7 @@ export const MatchingActivity = ({ title, pairs }: MatchingActivityProps) => {
     const rightItems = pairs.map(p => p.right);
     return rightItems.sort(() => Math.random() - 0.5);
   });
+  const { getFontSizeClass } = useSettings();
 
   const handleLeftClick = (index: number) => {
     if (showResults) return;
@@ -106,7 +108,7 @@ export const MatchingActivity = ({ title, pairs }: MatchingActivityProps) => {
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-lg font-semibold">{pair.left}</span>
+                  <span className={`${getFontSizeClass()} font-semibold`}>{pair.left}</span>
                   {showResults && isMatched && (
                     isCorrect ? (
                       <Check className="w-4 h-4 text-green-600" />
@@ -147,7 +149,7 @@ export const MatchingActivity = ({ title, pairs }: MatchingActivityProps) => {
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-lg font-semibold">{item}</span>
+                  <span className={`${getFontSizeClass()} font-semibold`}>{item}</span>
                   {showResults && isMatchedToThis && leftIndexMatchedToThis !== undefined && (
                     isCorrectMatch(Number(leftIndexMatchedToThis), index) ? (
                       <Check className="w-4 h-4 text-green-600" />
