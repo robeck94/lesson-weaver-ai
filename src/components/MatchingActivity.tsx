@@ -81,7 +81,7 @@ export const MatchingActivity = ({ title, pairs }: MatchingActivityProps) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Left Column */}
         <div className="space-y-2">
-          <p className="text-sm text-muted-foreground font-medium mb-3">Match these items:</p>
+          <p className="text-base text-foreground font-semibold mb-3">Match these items:</p>
           {pairs.map((pair, index) => {
             const matchedRightIndex = matches[index];
             const isMatched = matchedRightIndex !== undefined;
@@ -106,7 +106,7 @@ export const MatchingActivity = ({ title, pairs }: MatchingActivityProps) => {
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">{pair.left}</span>
+                  <span className="text-lg font-semibold">{pair.left}</span>
                   {showResults && isMatched && (
                     isCorrect ? (
                       <Check className="w-4 h-4 text-green-600" />
@@ -115,7 +115,7 @@ export const MatchingActivity = ({ title, pairs }: MatchingActivityProps) => {
                     )
                   )}
                   {isMatched && !showResults && (
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-sm font-medium text-muted-foreground">
                       → {shuffledRight[matchedRightIndex]}
                     </span>
                   )}
@@ -127,7 +127,7 @@ export const MatchingActivity = ({ title, pairs }: MatchingActivityProps) => {
 
         {/* Right Column */}
         <div className="space-y-2">
-          <p className="text-sm text-muted-foreground font-medium mb-3">With these:</p>
+          <p className="text-base text-foreground font-semibold mb-3">With these:</p>
           {shuffledRight.map((item, index) => {
             const isMatchedToThis = Object.values(matches).includes(index);
             const leftIndexMatchedToThis = Object.entries(matches).find(
@@ -147,7 +147,7 @@ export const MatchingActivity = ({ title, pairs }: MatchingActivityProps) => {
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">{item}</span>
+                  <span className="text-lg font-semibold">{item}</span>
                   {showResults && isMatchedToThis && leftIndexMatchedToThis !== undefined && (
                     isCorrectMatch(Number(leftIndexMatchedToThis), index) ? (
                       <Check className="w-4 h-4 text-green-600" />
@@ -164,7 +164,7 @@ export const MatchingActivity = ({ title, pairs }: MatchingActivityProps) => {
 
       {/* Instructions */}
       {!showResults && (
-        <p className="text-xs text-muted-foreground text-center">
+        <p className="text-sm text-muted-foreground text-center font-medium">
           Click an item on the left, then click its match on the right
         </p>
       )}
