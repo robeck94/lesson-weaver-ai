@@ -100,32 +100,77 @@ const Index = () => {
           description: `Created a ${lesson.totalSlides}-slide ${lesson.lessonType} lesson. Generating images...`,
         });
 
-        // Step 2: Generate images for slides with visual descriptions
+        // Step 2: Generate images for slides with visual descriptions (with caching)
         const slidesWithImages = [...lesson.slides];
         let imagesGenerated = 0;
+        let imagesFromCache = 0;
 
         for (let i = 0; i < lesson.slides.length; i++) {
           const slide = lesson.slides[i];
           
           if (slide.visualDescription) {
             try {
-              const { data: imageData, error: imageError } = await supabase.functions.invoke('generate-slide-image', {
-                body: {
-                  visualDescription: slide.visualDescription,
-                  slideTitle: slide.title,
-                  slideContent: slide.content,
-                  retryAttempt: 0
-                }
-              });
+              // Extract keywords from content for better matching
+              const keywords = slide.content.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/).slice(0, 10).join(' ');
+              
+              // Check cache first for similar images
+              const { data: cachedImages, error: cacheError } = await supabase
+                .from('image_cache')
+                .select('*')
+                .ilike('visual_description', `%${slide.visualDescription.substring(0, 50)}%`)
+                .limit(1);
 
-              if (!imageError && imageData?.imageUrl) {
-                slidesWithImages[i] = { ...slide, imageUrl: imageData.imageUrl };
-                imagesGenerated++;
-                // Update lesson with newly generated image
+              if (!cacheError && cachedImages && cachedImages.length > 0) {
+                // Found cached image! Reuse it
+                const cached = cachedImages[0];
+                slidesWithImages[i] = { ...slide, imageUrl: cached.image_url };
+                imagesFromCache++;
+                
+                // Update usage stats
+                await supabase
+                  .from('image_cache')
+                  .update({ 
+                    usage_count: cached.usage_count + 1,
+                    last_used_at: new Date().toISOString()
+                  })
+                  .eq('id', cached.id);
+                
+                // Update lesson with cached image
                 setGeneratedLesson({ ...lesson, slides: [...slidesWithImages] });
+                
+                console.log(`Reused cached image for slide ${i + 1}`);
+              } else {
+                // No cache hit, generate new image
+                const { data: imageData, error: imageError } = await supabase.functions.invoke('generate-slide-image', {
+                  body: {
+                    visualDescription: slide.visualDescription,
+                    slideTitle: slide.title,
+                    slideContent: slide.content,
+                    retryAttempt: 0
+                  }
+                });
+
+                if (!imageError && imageData?.imageUrl) {
+                  slidesWithImages[i] = { ...slide, imageUrl: imageData.imageUrl };
+                  imagesGenerated++;
+                  
+                  // Store in cache for future reuse
+                  await supabase
+                    .from('image_cache')
+                    .insert({
+                      image_url: imageData.imageUrl,
+                      visual_description: slide.visualDescription,
+                      slide_title: slide.title,
+                      content_keywords: keywords
+                    });
+                  
+                  // Update lesson with newly generated image
+                  setGeneratedLesson({ ...lesson, slides: [...slidesWithImages] });
+                  console.log(`Generated and cached new image for slide ${i + 1}`);
+                }
               }
             } catch (err) {
-              console.error(`Error generating image for slide ${i + 1}:`, err);
+              console.error(`Error processing image for slide ${i + 1}:`, err);
             }
           }
         }
@@ -174,10 +219,11 @@ const Index = () => {
           }
         }
 
-        if (imagesGenerated > 0) {
+        if (imagesGenerated > 0 || imagesFromCache > 0) {
+          const totalImages = imagesGenerated + imagesFromCache;
           toast({
-            title: "Images Generated!",
-            description: `Successfully generated ${imagesGenerated} slide illustrations.`,
+            title: "Images Ready!",
+            description: `${totalImages} images: ${imagesGenerated} new, ${imagesFromCache} from cache (saved ${imagesFromCache} AI calls!)`,
           });
         }
       }
@@ -234,38 +280,80 @@ const Index = () => {
           description: `Created enhanced ${lesson.totalSlides}-slide lesson. Generating images...`,
         });
 
-        // Generate images for the remixed lesson
+        // Generate images for the remixed lesson (with caching)
         const slidesWithImages = [...lesson.slides];
         let imagesGenerated = 0;
+        let imagesFromCache = 0;
 
         for (let i = 0; i < lesson.slides.length; i++) {
           const slide = lesson.slides[i];
           
           if (slide.visualDescription) {
             try {
-              const { data: imageData, error: imageError } = await supabase.functions.invoke('generate-slide-image', {
-                body: {
-                  visualDescription: slide.visualDescription,
-                  slideTitle: slide.title,
-                  slideContent: slide.content,
-                  retryAttempt: 0
-                }
-              });
+              // Extract keywords from content for better matching
+              const keywords = slide.content.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/).slice(0, 10).join(' ');
+              
+              // Check cache first for similar images
+              const { data: cachedImages, error: cacheError } = await supabase
+                .from('image_cache')
+                .select('*')
+                .ilike('visual_description', `%${slide.visualDescription.substring(0, 50)}%`)
+                .limit(1);
 
-              if (!imageError && imageData?.imageUrl) {
-                slidesWithImages[i] = { ...slide, imageUrl: imageData.imageUrl };
-                imagesGenerated++;
+              if (!cacheError && cachedImages && cachedImages.length > 0) {
+                // Found cached image! Reuse it
+                const cached = cachedImages[0];
+                slidesWithImages[i] = { ...slide, imageUrl: cached.image_url };
+                imagesFromCache++;
+                
+                // Update usage stats
+                await supabase
+                  .from('image_cache')
+                  .update({ 
+                    usage_count: cached.usage_count + 1,
+                    last_used_at: new Date().toISOString()
+                  })
+                  .eq('id', cached.id);
+                
                 setGeneratedLesson({ ...lesson, slides: [...slidesWithImages] });
+              } else {
+                // No cache hit, generate new image
+                const { data: imageData, error: imageError } = await supabase.functions.invoke('generate-slide-image', {
+                  body: {
+                    visualDescription: slide.visualDescription,
+                    slideTitle: slide.title,
+                    slideContent: slide.content,
+                    retryAttempt: 0
+                  }
+                });
+
+                if (!imageError && imageData?.imageUrl) {
+                  slidesWithImages[i] = { ...slide, imageUrl: imageData.imageUrl };
+                  imagesGenerated++;
+                  
+                  // Store in cache for future reuse
+                  await supabase
+                    .from('image_cache')
+                    .insert({
+                      image_url: imageData.imageUrl,
+                      visual_description: slide.visualDescription,
+                      slide_title: slide.title,
+                      content_keywords: keywords
+                    });
+                  
+                  setGeneratedLesson({ ...lesson, slides: [...slidesWithImages] });
+                }
               }
             } catch (err) {
-              console.error(`Error generating image for slide ${i + 1}:`, err);
+              console.error(`Error processing image for slide ${i + 1}:`, err);
             }
           }
         }
 
+        const totalImages = imagesGenerated + imagesFromCache;
         toast({
           title: "Complete!",
-          description: `Remixed lesson with ${imagesGenerated} images generated`,
+          description: `Remixed lesson: ${totalImages} images (${imagesGenerated} new, ${imagesFromCache} from cache)`,
         });
       }
     } catch (err) {
