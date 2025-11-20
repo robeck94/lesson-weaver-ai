@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { BookOpen, Download, FileText, Users, User, UserCircle2, Users2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { LessonSlide } from "@/pages/Index";
+import { useSettings } from "@/contexts/SettingsContext";
 
 interface TeacherGuideProps {
   slides: LessonSlide[];
@@ -15,6 +16,7 @@ interface TeacherGuideProps {
 
 export const TeacherGuide = ({ slides, teacherNotes, lessonType, framework, stages }: TeacherGuideProps) => {
   const { toast } = useToast();
+  const { getFontSizeClass } = useSettings();
 
   const handleExportPDF = () => {
     toast({
@@ -123,7 +125,7 @@ export const TeacherGuide = ({ slides, teacherNotes, lessonType, framework, stag
                 Lesson Overview
               </h3>
               <div className="bg-muted/50 rounded-lg p-4">
-                <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
+                <p className={`${getFontSizeClass()} text-foreground leading-relaxed whitespace-pre-wrap font-medium`}>
                   {teacherNotes}
                 </p>
               </div>
@@ -163,7 +165,7 @@ export const TeacherGuide = ({ slides, teacherNotes, lessonType, framework, stag
                     {slide.activityInstructions && (
                       <div className="text-xs space-y-1 pl-8">
                         <p className="text-muted-foreground font-medium">Instructions:</p>
-                        <p className="text-foreground">{slide.activityInstructions}</p>
+                        <p className={`${getFontSizeClass()} text-foreground font-medium`}>{slide.activityInstructions}</p>
                       </div>
                     )}
                     
