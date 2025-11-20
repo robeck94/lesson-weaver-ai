@@ -60,6 +60,18 @@ Follow these strict instructions:
      - **Visual Suggestions**: images, icons, emojis, or illustrations (describe in detail so they can be easily sourced)
      - **Teacher Notes**: step-by-step instructions, expected answers, tips for pronunciation, common mistakes, and differentiation for weaker/stronger students
    - Highlight **target language points** clearly (vocabulary in bold, grammar with color coding, pronunciation in phonetics).
+   
+   **CRITICAL - RICH CONTENT REQUIREMENTS:**
+   - NEVER create slides with just 1-2 short lines of text
+   - Every slide must utilize space effectively with RICH, DIVERSE CONTENT
+   - Include 3-5 CONCRETE EXAMPLES for each concept or vocabulary item
+   - Use VARIED TEXT LAYOUTS: bullet points, numbered lists, example boxes, comparison tables
+   - For vocabulary slides: show word + definition + 2-3 example sentences + usage notes
+   - For grammar slides: rule + 3-4 examples + common mistakes + practice sentences
+   - For activity slides: clear instructions + multiple examples + student prompts
+   - Organize content in VISUALLY DISTINCT SECTIONS (e.g., "Examples:", "Try It:", "Common Phrases:")
+   - Aim for well-filled slides that give students substantial content to engage with
+   - Think: "How can I make this slide more useful and informative?" before finalizing
 
 3. **Engagement & Interaction**
    - Include **fun, dynamic, and age-appropriate activities**: matching games, fill-in-the-blanks, polls, drawing, acting, or group work.
@@ -131,7 +143,7 @@ Return a JSON object with this structure:
     {
       "slideNumber": "number",
       "title": "string",
-      "content": "string (main slide text - clear, concise, max 6 lines)",
+      "content": "string (RICH, DETAILED CONTENT - Never use single short lines. Include 3-5 examples per concept, use bullet points, numbered lists, example boxes. Fill the space with valuable, diverse content organized in clear sections like 'Examples:', 'Practice:', 'Key Points:')",
       "activityInstructions": "string or JSON string (for interactive activities use JSON format: 
         - Matching: {\"type\": \"matching\", \"pairs\": [{\"left\": \"word1\", \"right\": \"definition1\"}, ...]} 
         - Fill-in-blank: {\"type\": \"fillblank\", \"items\": [{\"text\": \"The cat ___ on the mat.\", \"answer\": \"sits\"}, ...]}
