@@ -10,11 +10,13 @@ import { useToast } from "@/hooks/use-toast";
 import { 
   Save, X, ChevronLeft, ChevronRight, Plus, Trash2, 
   Upload, Image as ImageIcon, Type, ZoomIn, ZoomOut,
-  Move, Maximize2
+  Move, Maximize2, Layout
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
+import { SlideTemplateLibrary } from "./SlideTemplateLibrary";
+import { SlideTemplate } from "@/types/slideTemplate";
 
 interface VisualSlideEditorProps {
   slides: LessonSlide[];
@@ -48,6 +50,7 @@ export const VisualSlideEditor = ({
   const [uploadingImage, setUploadingImage] = useState(false);
   const [fontSize, setFontSize] = useState(16);
   const [contentBoxScale, setContentBoxScale] = useState(100);
+  const [currentTemplateId, setCurrentTemplateId] = useState<string>();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   
@@ -229,6 +232,27 @@ export const VisualSlideEditor = ({
     });
   };
 
+  const handleApplyTemplate = (template: SlideTemplate) => {
+    setCurrentTemplateId(template.id);
+    
+    // Apply template settings
+    if (template.fontSize) setFontSize(template.fontSize);
+    if (template.contentBoxScale) setContentBoxScale(template.contentBoxScale);
+    
+    // Update current slide with template layout info
+    const updatedSlides = [...editedSlides];
+    updatedSlides[currentSlideIndex] = {
+      ...updatedSlides[currentSlideIndex],
+      layout: template.layout,
+    };
+    setEditedSlides(updatedSlides);
+    
+    toast({
+      title: "Template Applied",
+      description: `${template.name} layout applied to slide`,
+    });
+  };
+
   return (
     <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 overflow-y-auto">
       <div className="container max-w-7xl mx-auto py-6 px-4">
@@ -310,7 +334,7 @@ export const VisualSlideEditor = ({
           {/* Editor Panel */}
           <div className="space-y-4">
             <Tabs defaultValue="content" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
+              <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="content">
                   <Type className="w-4 h-4 mr-2" />
                   Content
@@ -318,6 +342,10 @@ export const VisualSlideEditor = ({
                 <TabsTrigger value="image">
                   <ImageIcon className="w-4 h-4 mr-2" />
                   Image
+                </TabsTrigger>
+                <TabsTrigger value="templates">
+                  <Layout className="w-4 h-4 mr-2" />
+                  Templates
                 </TabsTrigger>
                 <TabsTrigger value="settings">
                   <Move className="w-4 h-4 mr-2" />
@@ -443,6 +471,13 @@ export const VisualSlideEditor = ({
                     </div>
                   </CardContent>
                 </Card>
+              </TabsContent>
+
+              <TabsContent value="templates" className="space-y-4">
+                <SlideTemplateLibrary 
+                  onSelectTemplate={handleApplyTemplate}
+                  currentTemplateId={currentTemplateId}
+                />
               </TabsContent>
 
               <TabsContent value="settings" className="space-y-4">
