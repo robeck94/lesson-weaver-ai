@@ -174,15 +174,34 @@ export const LessonPreview = ({ slides }: LessonPreviewProps) => {
                           if (layout === 'example-grid' && !hasInteractiveActivity) {
                             const examples = slide.content.split('\n').filter(line => line.trim());
                             return (
-                              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                                {examples.map((example, idx) => (
-                                  <div key={idx} className="content-box p-3 border border-border/30 rounded-lg hover:border-primary/50 transition-colors">
-                                    <p className={`${getFontSizeClass()} text-sm text-foreground font-medium text-center`}>
-                                      {example}
-                                    </p>
+                              <>
+                                {slide.imageUrl ? (
+                                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                    {examples.map((example, idx) => (
+                                      <div key={idx} className="content-box border border-border/30 rounded-lg hover:border-primary/50 transition-colors overflow-hidden">
+                                        <div className="aspect-square p-3 flex items-center justify-center bg-muted/20">
+                                          <img src={slide.imageUrl} alt={example} className="w-full h-full object-contain" />
+                                        </div>
+                                        <div className="p-3">
+                                          <p className={`${getFontSizeClass()} text-foreground font-semibold text-center`}>
+                                            {example}
+                                          </p>
+                                        </div>
+                                      </div>
+                                    ))}
                                   </div>
-                                ))}
-                              </div>
+                                ) : (
+                                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                    {examples.map((example, idx) => (
+                                      <div key={idx} className="content-box p-3 border border-border/30 rounded-lg hover:border-primary/50 transition-colors">
+                                        <p className={`${getFontSizeClass()} text-sm text-foreground font-medium text-center`}>
+                                          {example}
+                                        </p>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </>
                             );
                           }
                           
