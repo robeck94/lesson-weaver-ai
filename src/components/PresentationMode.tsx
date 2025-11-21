@@ -72,11 +72,17 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
   }, []);
 
   useEffect(() => {
-    setRevealedElements(new Set());
+    // Auto-reveal all elements for slides with minimal content (1-2 lines)
+    const contentParts = slides[currentSlide].content.split('\n').filter(part => part.trim());
+    if (contentParts.length <= 2) {
+      setRevealedElements(new Set(contentParts.map((_, i) => i)));
+    } else {
+      setRevealedElements(new Set());
+    }
     setIsAnimating(true);
     const timer = setTimeout(() => setIsAnimating(false), 600);
     return () => clearTimeout(timer);
-  }, [currentSlide]);
+  }, [currentSlide, slides]);
 
   const nextSlide = () => {
     if (currentSlide < slides.length - 1 && !isAnimating) {
