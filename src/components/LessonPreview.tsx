@@ -2,11 +2,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { Clock, Layers, Maximize2, Edit } from "lucide-react";
+import { Clock, Layers, Maximize2, Edit, Wand2 } from "lucide-react";
 import type { LessonSlide } from "@/pages/Index";
 import { useState } from "react";
 import { PresentationMode } from "./PresentationMode";
 import { SlideEditor } from "./SlideEditor";
+import { VisualSlideEditor } from "./VisualSlideEditor";
 import { MatchingActivity } from "./MatchingActivity";
 import { QuizSlide } from "./QuizSlide";
 import { FillInTheBlankActivity } from "./FillInTheBlankActivity";
@@ -34,12 +35,18 @@ const STAGE_COLORS: Record<string, string> = {
 export const LessonPreview = ({ slides, onSlidesUpdate }: LessonPreviewProps) => {
   const [isPresentationMode, setIsPresentationMode] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isVisualEditMode, setIsVisualEditMode] = useState(false);
   const [editSlideIndex, setEditSlideIndex] = useState(0);
   const { getFontSizeClass } = useSettings();
 
   const handleEditSlide = (index: number) => {
     setEditSlideIndex(index);
     setIsEditMode(true);
+  };
+
+  const handleVisualEdit = (index: number) => {
+    setEditSlideIndex(index);
+    setIsVisualEditMode(true);
   };
 
   const handleSaveSlides = (updatedSlides: LessonSlide[]) => {
@@ -69,6 +76,18 @@ export const LessonPreview = ({ slides, onSlidesUpdate }: LessonPreviewProps) =>
     );
   }
 
+  if (isVisualEditMode) {
+    return (
+      <VisualSlideEditor
+        slides={slides}
+        currentSlideIndex={editSlideIndex}
+        onSave={handleSaveSlides}
+        onClose={() => setIsVisualEditMode(false)}
+        onNavigate={setEditSlideIndex}
+      />
+    );
+  }
+
   return (
     <Card className="shadow-medium border-border/50">
       <CardHeader className="gradient-card border-b border-border/50">
@@ -79,13 +98,22 @@ export const LessonPreview = ({ slides, onSlidesUpdate }: LessonPreviewProps) =>
           </CardTitle>
           <div className="flex gap-2">
             <Button
+              onClick={() => handleVisualEdit(0)}
+              variant="default"
+              size="sm"
+              className="gap-2"
+            >
+              <Wand2 className="w-4 h-4" />
+              Visual Editor
+            </Button>
+            <Button
               onClick={() => handleEditSlide(0)}
               variant="outline"
               size="sm"
               className="gap-2"
             >
               <Edit className="w-4 h-4" />
-              Edit Slides
+              Text Editor
             </Button>
             <Button
               onClick={() => setIsPresentationMode(true)}
@@ -131,15 +159,26 @@ export const LessonPreview = ({ slides, onSlidesUpdate }: LessonPreviewProps) =>
                       </div>
                     </div>
                   </div>
-                  <Button
-                    onClick={() => handleEditSlide(index)}
-                    variant="ghost"
-                    size="sm"
-                    className="gap-2 hover:bg-primary/10"
-                  >
-                    <Edit className="w-4 h-4" />
-                    Edit
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => handleVisualEdit(index)}
+                      variant="ghost"
+                      size="sm"
+                      className="gap-2 hover:bg-primary/10"
+                    >
+                      <Wand2 className="w-4 h-4" />
+                      Visual
+                    </Button>
+                    <Button
+                      onClick={() => handleEditSlide(index)}
+                      variant="ghost"
+                      size="sm"
+                      className="gap-2 hover:bg-secondary/10"
+                    >
+                      <Edit className="w-4 h-4" />
+                      Text
+                    </Button>
+                  </div>
                 </div>
 
                 {/* Slide Content */}
