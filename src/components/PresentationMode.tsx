@@ -424,25 +424,52 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
                 if (layout === 'example-grid' && !isInteractiveSlide) {
                   return (
                     <div className="flex-1 overflow-y-auto pr-2">
-                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                        {contentParts.map((part, index) => {
-                          const isRevealed = revealedElements.has(index);
-                          return (
-                            <div
-                              key={index}
-                              onClick={() => handleCardClick(index)}
-                              className={`${getCardPadding()} bg-gradient-to-br ${theme.gradient.split(' ').map(c => c + '/10').join(' ')} backdrop-blur-sm rounded-xl border-2 ${theme.border} shadow-lg transform transition-all duration-500 cursor-pointer hover:scale-105 ${
-                                isRevealed ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-                              }`}
-                              style={{ transitionDelay: `${index * 100}ms` }}
-                            >
-                              <p className={`${getContentSize()} text-card-foreground font-bold text-center whitespace-pre-wrap`}>
-                                {part}
-                              </p>
-                            </div>
-                          );
-                        })}
-                      </div>
+                      {slide.imageUrl ? (
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                          {contentParts.map((part, index) => {
+                            const isRevealed = revealedElements.has(index);
+                            return (
+                              <div
+                                key={index}
+                                onClick={() => handleCardClick(index)}
+                                className={`bg-gradient-to-br ${theme.gradient.split(' ').map(c => c + '/10').join(' ')} backdrop-blur-sm rounded-xl border-2 ${theme.border} shadow-lg transform transition-all duration-500 cursor-pointer hover:scale-105 ${
+                                  isRevealed ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+                                }`}
+                                style={{ transitionDelay: `${index * 100}ms` }}
+                              >
+                                <div className="aspect-square p-4 flex items-center justify-center">
+                                  <img src={slide.imageUrl} alt={part} className="w-full h-full object-contain rounded-lg" />
+                                </div>
+                                <div className="p-4 pt-2">
+                                  <p className={`text-xl md:text-2xl lg:text-3xl text-card-foreground font-bold text-center whitespace-pre-wrap`}>
+                                    {part}
+                                  </p>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                          {contentParts.map((part, index) => {
+                            const isRevealed = revealedElements.has(index);
+                            return (
+                              <div
+                                key={index}
+                                onClick={() => handleCardClick(index)}
+                                className={`${getCardPadding()} bg-gradient-to-br ${theme.gradient.split(' ').map(c => c + '/10').join(' ')} backdrop-blur-sm rounded-xl border-2 ${theme.border} shadow-lg transform transition-all duration-500 cursor-pointer hover:scale-105 ${
+                                  isRevealed ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+                                }`}
+                                style={{ transitionDelay: `${index * 100}ms` }}
+                              >
+                                <p className={`${getContentSize()} text-card-foreground font-bold text-center whitespace-pre-wrap`}>
+                                  {part}
+                                </p>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
                   );
                 }
