@@ -5,6 +5,3 @@ verify_jwt = false
 
 [functions.generate-slide-image]
 verify_jwt = false
-
-[functions.validate-slide-image]
-verify_jwt = false
