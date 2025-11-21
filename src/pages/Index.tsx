@@ -240,6 +240,20 @@ const Index = () => {
     }
   };
 
+  const handleSlidesUpdate = (updatedSlides: LessonSlide[]) => {
+    if (!generatedLesson) return;
+    
+    setGeneratedLesson({
+      ...generatedLesson,
+      slides: updatedSlides
+    });
+    
+    toast({
+      title: "Slides Updated!",
+      description: "Your changes have been saved successfully.",
+    });
+  };
+
   const handleRemixLesson = async (remixInstruction: string) => {
     if (!generatedLesson) return;
     
@@ -494,7 +508,10 @@ const Index = () => {
 
             <div className="grid lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
-                <LessonPreview slides={generatedLesson.slides} />
+                <LessonPreview 
+                  slides={generatedLesson.slides}
+                  onSlidesUpdate={handleSlidesUpdate}
+                />
               </div>
               <div>
                 <TeacherGuide 
