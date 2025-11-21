@@ -32,6 +32,7 @@ export interface LessonSlide {
   imageUrl?: string;
   interactionPattern?: string;
   imageValidation?: ImageValidation;
+  layout?: string;
 }
 
 export interface GeneratedLesson {
