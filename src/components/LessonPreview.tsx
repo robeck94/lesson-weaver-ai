@@ -2,10 +2,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { Clock, Layers, Maximize2 } from "lucide-react";
+import { Clock, Layers, Maximize2, Edit } from "lucide-react";
 import type { LessonSlide } from "@/pages/Index";
 import { useState } from "react";
 import { PresentationMode } from "./PresentationMode";
+import { SlideEditor } from "./SlideEditor";
 import { MatchingActivity } from "./MatchingActivity";
 import { QuizSlide } from "./QuizSlide";
 import { FillInTheBlankActivity } from "./FillInTheBlankActivity";
@@ -18,6 +19,7 @@ import { useSettings } from "@/contexts/SettingsContext";
 
 interface LessonPreviewProps {
   slides: LessonSlide[];
+  onSlidesUpdate?: (slides: LessonSlide[]) => void;
 }
 
 const STAGE_COLORS: Record<string, string> = {
@@ -29,15 +31,40 @@ const STAGE_COLORS: Record<string, string> = {
   "Assessment": "bg-orange-100 text-orange-700 border-orange-200 dark:bg-orange-900/20 dark:text-orange-300",
 };
 
-export const LessonPreview = ({ slides }: LessonPreviewProps) => {
+export const LessonPreview = ({ slides, onSlidesUpdate }: LessonPreviewProps) => {
   const [isPresentationMode, setIsPresentationMode] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editSlideIndex, setEditSlideIndex] = useState(0);
   const { getFontSizeClass } = useSettings();
+
+  const handleEditSlide = (index: number) => {
+    setEditSlideIndex(index);
+    setIsEditMode(true);
+  };
+
+  const handleSaveSlides = (updatedSlides: LessonSlide[]) => {
+    if (onSlidesUpdate) {
+      onSlidesUpdate(updatedSlides);
+    }
+  };
 
   if (isPresentationMode) {
     return (
       <PresentationMode 
         slides={slides} 
         onClose={() => setIsPresentationMode(false)} 
+      />
+    );
+  }
+
+  if (isEditMode) {
+    return (
+      <SlideEditor
+        slides={slides}
+        currentSlideIndex={editSlideIndex}
+        onSave={handleSaveSlides}
+        onClose={() => setIsEditMode(false)}
+        onNavigate={setEditSlideIndex}
       />
     );
   }
@@ -50,14 +77,25 @@ export const LessonPreview = ({ slides }: LessonPreviewProps) => {
             <Layers className="w-5 h-5 text-primary" />
             Lesson Slides ({slides.length})
           </CardTitle>
-          <Button
-            onClick={() => setIsPresentationMode(true)}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground"
-            size="sm"
-          >
-            <Maximize2 className="w-4 h-4 mr-2" />
-            Present
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => handleEditSlide(0)}
+              variant="outline"
+              size="sm"
+              className="gap-2"
+            >
+              <Edit className="w-4 h-4" />
+              Edit Slides
+            </Button>
+            <Button
+              onClick={() => setIsPresentationMode(true)}
+              className="bg-primary hover:bg-primary/90 text-primary-foreground"
+              size="sm"
+            >
+              <Maximize2 className="w-4 h-4 mr-2" />
+              Present
+            </Button>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="p-0">
@@ -93,6 +131,15 @@ export const LessonPreview = ({ slides }: LessonPreviewProps) => {
                       </div>
                     </div>
                   </div>
+                  <Button
+                    onClick={() => handleEditSlide(index)}
+                    variant="ghost"
+                    size="sm"
+                    className="gap-2 hover:bg-primary/10"
+                  >
+                    <Edit className="w-4 h-4" />
+                    Edit
+                  </Button>
                 </div>
 
                 {/* Slide Content */}
