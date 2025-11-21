@@ -136,16 +136,21 @@ export const LessonPreview = ({ slides }: LessonPreviewProps) => {
                           
                           // Layout: image-focused (large image, minimal text)
                           if (layout === 'image-focused' && !hasInteractiveActivity) {
+                            // For preview, show text below image but styled nicely
                             return (
                               <>
                                 {slide.imageUrl && (
-                                  <div className="rounded-lg overflow-hidden border border-border/50 mb-3">
+                                  <div className="rounded-lg overflow-hidden border border-border/50 mb-3 relative group">
                                     <img src={slide.imageUrl} alt={slide.title} className="w-full h-auto max-h-[400px] object-cover" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                                   </div>
                                 )}
-                                <div className="content-box">
-                                  <p className={`${getFontSizeClass()} text-lg text-foreground leading-relaxed whitespace-pre-wrap font-sans font-bold text-center`}>
+                                <div className="content-box text-center">
+                                  <p className={`${getFontSizeClass()} text-xl md:text-2xl text-foreground leading-relaxed whitespace-pre-wrap font-sans font-bold`}>
                                     {slide.content}
+                                  </p>
+                                  <p className="text-xs text-muted-foreground mt-2 italic">
+                                    💡 Tip: In presentation mode, text will float around the image dynamically!
                                   </p>
                                 </div>
                               </>

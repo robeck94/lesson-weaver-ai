@@ -102,6 +102,50 @@ export default {
             filter: "blur(0)"
           },
         },
+        "float-in-1": {
+          from: { 
+            opacity: "0", 
+            transform: "translate(-30px, -30px) scale(0.8) rotate(-5deg)"
+          },
+          to: { 
+            opacity: "1", 
+            transform: "translate(0, 0) scale(1) rotate(0deg)"
+          },
+        },
+        "float-in-2": {
+          from: { 
+            opacity: "0", 
+            transform: "translate(30px, -30px) scale(0.8) rotate(5deg)"
+          },
+          to: { 
+            opacity: "1", 
+            transform: "translate(0, 0) scale(1) rotate(0deg)"
+          },
+        },
+        "float-in-3": {
+          from: { 
+            opacity: "0", 
+            transform: "translate(-30px, 30px) scale(0.8) rotate(5deg)"
+          },
+          to: { 
+            opacity: "1", 
+            transform: "translate(0, 0) scale(1) rotate(0deg)"
+          },
+        },
+        "float-in-4": {
+          from: { 
+            opacity: "0", 
+            transform: "translate(30px, 30px) scale(0.8) rotate(-5deg)"
+          },
+          to: { 
+            opacity: "1", 
+            transform: "translate(0, 0) scale(1) rotate(0deg)"
+          },
+        },
+        "float-gentle": {
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-10px)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -110,6 +154,11 @@ export default {
         "slide-in-right": "slide-in-right 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
         "scale-in": "scale-in 0.3s ease-out",
         "reveal": "reveal 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
+        "float-in-1": "float-in-1 0.8s cubic-bezier(0.16, 1, 0.3, 1)",
+        "float-in-2": "float-in-2 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both",
+        "float-in-3": "float-in-3 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both",
+        "float-in-4": "float-in-4 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both",
+        "float-gentle": "float-gentle 3s ease-in-out infinite",
       },
     },
   },
