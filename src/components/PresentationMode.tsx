@@ -367,22 +367,52 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
                   );
                 }
                 
-                // Layout: image-focused (large image, brief text)
+                // Layout: image-focused (large image, brief text with floating boxes)
                 if (layout === 'image-focused' && !isInteractiveSlide) {
+                  // Split content into smaller text chunks for floating boxes
+                  const textChunks = contentParts.filter(p => p.trim().length > 0).slice(0, 4);
+                  const floatAnimations = ['animate-float-in-1', 'animate-float-in-2', 'animate-float-in-3', 'animate-float-in-4'];
+                  const positions = [
+                    'top-[10%] left-[5%]',
+                    'top-[10%] right-[5%]',
+                    'bottom-[10%] left-[5%]',
+                    'bottom-[10%] right-[5%]',
+                  ];
+                  
                   return (
-                    <div className="flex-1 flex flex-col gap-4">
+                    <div className="flex-1 relative flex items-center justify-center p-8">
+                      {/* Central Image */}
                       {slide.imageUrl && (
-                        <div className="flex-1 animate-scale-in flex items-center justify-center">
-                          <div className={`max-w-4xl w-full h-full bg-gradient-to-br ${theme.gradient.split(' ').map(c => c + '/5').join(' ')} rounded-xl border-2 ${theme.border} p-4 shadow-xl backdrop-blur-sm flex items-center justify-center`}>
-                            <img src={slide.imageUrl} alt={slide.title} className="max-w-full max-h-full object-contain rounded-lg shadow-2xl" />
+                        <div className="relative z-10 max-w-3xl w-full animate-scale-in">
+                          <div className={`bg-gradient-to-br ${theme.gradient.split(' ').map(c => c + '/5').join(' ')} rounded-2xl border-2 ${theme.border} p-6 shadow-2xl backdrop-blur-sm`}>
+                            <img 
+                              src={slide.imageUrl} 
+                              alt={slide.title} 
+                              className="w-full h-auto max-h-[60vh] object-contain rounded-xl shadow-xl" 
+                            />
                           </div>
                         </div>
                       )}
-                      <div className={`${getCardPadding()} bg-gradient-to-br ${theme.gradient.split(' ').map(c => c + '/10').join(' ')} backdrop-blur-sm rounded-xl border-2 ${theme.border} shadow-lg text-center`}>
-                        <p className={`text-2xl md:text-3xl lg:text-4xl font-bold text-card-foreground whitespace-pre-wrap`}>
-                          {slide.content}
-                        </p>
-                      </div>
+                      
+                      {/* Floating Text Boxes Around Image */}
+                      {textChunks.map((chunk, index) => {
+                        const isRevealed = revealedElements.has(index);
+                        return (
+                          <div
+                            key={index}
+                            onClick={() => handleCardClick(index)}
+                            className={`absolute ${positions[index]} z-20 max-w-xs cursor-pointer transition-all duration-500 ${
+                              isRevealed ? `${floatAnimations[index]} animate-float-gentle` : 'opacity-0'
+                            }`}
+                          >
+                            <div className={`p-4 md:p-5 bg-gradient-to-br ${theme.gradient.split(' ').map(c => c + '/15').join(' ')} backdrop-blur-md rounded-xl border-2 ${theme.border} shadow-2xl hover:scale-105 hover:shadow-float transition-all duration-300`}>
+                              <p className={`text-lg md:text-xl lg:text-2xl font-bold text-card-foreground leading-snug`}>
+                                {chunk}
+                              </p>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   );
                 }
