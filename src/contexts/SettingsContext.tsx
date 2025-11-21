@@ -76,7 +76,7 @@ const THEME_COLORS: Record<PresentationTheme, ThemeColors> = {
 export function SettingsProvider({ children }: { children: ReactNode }) {
   const [fontSize, setFontSizeState] = useState<FontSize>(() => {
     const saved = localStorage.getItem('lesson-font-size');
-    return (saved as FontSize) || 'medium';
+    return (saved as FontSize) || 'large';
   });
 
   const [fontFamily, setFontFamilyState] = useState<FontFamily>(() => {
