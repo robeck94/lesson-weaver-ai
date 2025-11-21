@@ -6,7 +6,6 @@ import { Clock, Layers, Maximize2 } from "lucide-react";
 import type { LessonSlide } from "@/pages/Index";
 import { useState } from "react";
 import { PresentationMode } from "./PresentationMode";
-import { ImageValidationWarning } from "./ImageValidationWarning";
 import { MatchingActivity } from "./MatchingActivity";
 import { QuizSlide } from "./QuizSlide";
 import { FillInTheBlankActivity } from "./FillInTheBlankActivity";
@@ -230,15 +229,6 @@ export const LessonPreview = ({ slides }: LessonPreviewProps) => {
                           
                           return null;
                         })()}
-                        
-                        {/* Image Validation Warning */}
-                        {slide.imageValidation && !hasInteractiveActivity && (
-                          <ImageValidationWarning
-                            validation={slide.imageValidation}
-                            slideNumber={slide.slideNumber}
-                            slideTitle={slide.title}
-                          />
-                        )}
 
                         {/* Visual Description - only show for non-interactive slides */}
                         {slide.visualDescription && !hasInteractiveActivity && (
