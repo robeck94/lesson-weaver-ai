@@ -116,8 +116,16 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
   const lineCount = contentParts.length;
   const avgLineLength = totalChars / Math.max(lineCount, 1);
   
-  // Calculate appropriate text sizes
+  // Calculate appropriate text sizes based on content density
   const getTitleSize = () => {
+    // Very minimal content - make title huge
+    if (totalChars < 100 && lineCount <= 2) {
+      return "text-4xl md:text-5xl lg:text-6xl xl:text-7xl";
+    }
+    // Minimal content
+    if (totalChars < 200 && lineCount <= 3) {
+      return "text-3xl md:text-5xl lg:text-6xl";
+    }
     if (slide.title.length > 80) return "text-2xl md:text-3xl lg:text-4xl";
     if (slide.title.length > 50) return "text-3xl md:text-4xl lg:text-5xl";
     return "text-3xl md:text-4xl lg:text-5xl xl:text-6xl";
@@ -126,7 +134,19 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
   const getContentSize = () => {
     const baseSize = getFontSizeClass();
     
-    // Adjust based on content density and user preference
+    // Very minimal content - make text HUGE for readability
+    if (totalChars < 100 && lineCount <= 2) {
+      return "text-3xl md:text-4xl lg:text-5xl xl:text-6xl";
+    }
+    // Minimal content - very large text
+    if (totalChars < 200 && lineCount <= 3) {
+      return "text-2xl md:text-3xl lg:text-4xl xl:text-5xl";
+    }
+    // Light content - large text
+    if (totalChars < 300 || lineCount <= 4) {
+      return `${baseSize} md:text-2xl lg:text-3xl xl:text-4xl`;
+    }
+    // Medium content
     if (totalChars > 600 || lineCount > 10) {
       // Very dense content
       return baseSize; // Use user's base size
@@ -135,27 +155,32 @@ export const PresentationMode = ({ slides, onClose }: PresentationModeProps) => 
       // Dense content - slightly larger
       return `${baseSize} md:text-lg lg:text-xl`;
     }
-    if (totalChars > 250 || lineCount > 5) {
-      // Medium content
-      return `${baseSize} md:text-xl lg:text-2xl`;
-    }
-    // Light content - maximum visibility
-    return `${baseSize} md:text-2xl lg:text-3xl`;
+    // Medium-light content
+    return `${baseSize} md:text-xl lg:text-2xl`;
   };
 
   const getLineSpacing = () => {
+    // More generous line spacing for minimal content
+    if (lineCount <= 2) return "leading-loose";
+    if (lineCount <= 4) return "leading-relaxed";
     if (lineCount > 8) return "leading-snug";
-    if (lineCount > 5) return "leading-relaxed";
-    return "leading-loose";
+    if (lineCount > 5) return "leading-normal";
+    return "leading-relaxed";
   };
 
   const getCardPadding = () => {
+    // More generous padding for minimal content
+    if (lineCount <= 2) return "p-6 md:p-8 lg:p-10";
+    if (lineCount <= 4) return "p-5 md:p-6 lg:p-8";
     if (lineCount > 8) return "p-3 md:p-4";
     if (lineCount > 5) return "p-4 md:p-5";
     return "p-4 md:p-5 lg:p-6";
   };
 
   const getSpacing = () => {
+    // More generous spacing for minimal content
+    if (lineCount <= 2) return "space-y-6 md:space-y-8";
+    if (lineCount <= 4) return "space-y-4 md:space-y-6";
     if (lineCount > 8) return "space-y-2";
     if (lineCount > 5) return "space-y-2 md:space-y-3";
     return "space-y-3 md:space-y-4";
