@@ -7,11 +7,30 @@ import { ImageGenerator } from "@/components/ImageGenerator";
 import { RemixOptions } from "@/components/RemixOptions";
 import { LessonFeedback } from "@/components/LessonFeedback";
 import { SettingsDialog } from "@/components/SettingsDialog";
+import { ValidationPanel } from "@/components/ValidationPanel";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Sparkles, BookOpen, Gamepad2, Star } from "lucide-react";
 import { PromptTemplate } from "@/types/template";
+
+export interface LessonValidation {
+  overallQuality: 'excellent' | 'good' | 'needs_improvement' | 'poor';
+  qualityScore: number;
+  issues: ValidationIssue[];
+  strengths: string[];
+  recommendations: string[];
+}
+
+export interface ValidationIssue {
+  category: 'collocation' | 'cultural' | 'grammar' | 'cefr' | 'age';
+  severity: 'critical' | 'major' | 'minor';
+  slideNumber: number;
+  issue: string;
+  suggestion: string;
+  example?: string;
+  correction?: string;
+}
 
 export interface ImageValidation {
   isValid: boolean;
@@ -44,11 +63,13 @@ export interface GeneratedLesson {
   stages: string[];
   slides: LessonSlide[];
   teacherNotes: string;
+  validation?: LessonValidation;
 }
 
 const Index = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isRemixing, setIsRemixing] = useState(false);
+  const [isValidating, setIsValidating] = useState(false);
   const [generatedLesson, setGeneratedLesson] = useState<GeneratedLesson | null>(null);
   const [currentTemplateId, setCurrentTemplateId] = useState<string | undefined>();
   const [showFeedback, setShowFeedback] = useState(false);
@@ -250,6 +271,69 @@ const Index = () => {
           title: "Images Ready!",
           description: `${totalImages} images generated (${imagesGenerated} new, ${imagesFromCache} from cache). ${imagesSkipped} activity slides skipped.`,
         });
+
+        // Step 3: Validate content quality
+        setIsValidating(true);
+        toast({
+          title: "Validating Content...",
+          description: "Checking collocations, cultural sensitivity, and grammar accuracy",
+        });
+
+        try {
+          const { data: validationData, error: validationError } = await supabase.functions.invoke('validate-lesson-content', {
+            body: { 
+              lesson: { ...lesson, slides: slidesWithImages },
+              cefrLevel,
+              ageGroup,
+              context
+            }
+          });
+
+          if (!validationError && validationData?.validation) {
+            const validation = validationData.validation;
+            
+            // Update lesson with validation results
+            setGeneratedLesson({ 
+              ...lesson, 
+              slides: slidesWithImages,
+              validation 
+            });
+
+            // Show validation summary
+            const criticalIssues = validation.issues.filter((i: ValidationIssue) => i.severity === 'critical').length;
+            const majorIssues = validation.issues.filter((i: ValidationIssue) => i.severity === 'major').length;
+            
+            if (validation.overallQuality === 'excellent' || validation.overallQuality === 'good') {
+              toast({
+                title: "✅ Content Validated",
+                description: `Quality: ${validation.overallQuality.toUpperCase()} (${validation.qualityScore}/100)${validation.issues.length > 0 ? `. ${validation.issues.length} minor suggestions.` : ''}`,
+              });
+            } else if (criticalIssues > 0) {
+              toast({
+                title: "⚠️ Issues Detected",
+                description: `Found ${criticalIssues} critical and ${majorIssues} major issues. Check the validation panel for details.`,
+                variant: "destructive",
+              });
+            } else {
+              toast({
+                title: "✓ Validation Complete",
+                description: `Quality: ${validation.overallQuality}. ${majorIssues} improvements suggested.`,
+              });
+            }
+          } else {
+            console.error('Validation error:', validationError);
+            // Continue without validation
+            toast({
+              title: "Lesson Ready",
+              description: "Content validation skipped (service unavailable)",
+            });
+          }
+        } catch (validationErr) {
+          console.error('Validation failed:', validationErr);
+          // Continue without validation
+        } finally {
+          setIsValidating(false);
+        }
       }
     } catch (err) {
       console.error('Unexpected error:', err);
@@ -587,11 +671,16 @@ const Index = () => {
             <RemixOptions onRemix={handleRemixLesson} isRemixing={isRemixing} />
 
             <div className="grid lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2">
+              <div className="lg:col-span-2 space-y-6">
                 <LessonPreview 
                   slides={generatedLesson.slides}
                   onSlidesUpdate={handleSlidesUpdate}
                 />
+                
+                {/* Validation Results */}
+                {generatedLesson.validation && (
+                  <ValidationPanel validation={generatedLesson.validation} />
+                )}
               </div>
               <div>
                 <TeacherGuide 
