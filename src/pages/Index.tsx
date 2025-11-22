@@ -8,11 +8,14 @@ import { RemixOptions } from "@/components/RemixOptions";
 import { LessonFeedback } from "@/components/LessonFeedback";
 import { SettingsDialog } from "@/components/SettingsDialog";
 import { ValidationPanel } from "@/components/ValidationPanel";
+import { SavedLessonsList } from "@/components/SavedLessonsList";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useSavedLessons } from "@/hooks/useSavedLessons";
 import { Button } from "@/components/ui/button";
-import { Sparkles, BookOpen, Gamepad2, Star } from "lucide-react";
+import { Sparkles, BookOpen, Gamepad2, Star, Save, Library } from "lucide-react";
 import { PromptTemplate } from "@/types/template";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export interface LessonValidation {
   overallQuality: 'excellent' | 'good' | 'needs_improvement' | 'poor';
@@ -74,12 +77,21 @@ const Index = () => {
   const [currentTemplateId, setCurrentTemplateId] = useState<string | undefined>();
   const [showFeedback, setShowFeedback] = useState(false);
   const [imageQualityScore, setImageQualityScore] = useState<number | undefined>();
+  const [currentLessonMetadata, setCurrentLessonMetadata] = useState<{
+    topic: string;
+    cefrLevel: string;
+    ageGroup: string;
+    context: string;
+  } | null>(null);
+  const [activeTab, setActiveTab] = useState<"generate" | "saved">("generate");
   const { toast } = useToast();
+  const { savedLessons, isLoading: isSavedLessonsLoading, saveLesson, deleteLesson } = useSavedLessons();
 
   const handleGenerateLesson = async (topic: string, cefrLevel: string, ageGroup: string, context: string, template?: PromptTemplate) => {
     setIsGenerating(true);
     setGeneratedLesson(null);
     setCurrentTemplateId(template?.id);
+    setCurrentLessonMetadata({ topic, cefrLevel, ageGroup, context });
 
     try {
       // Step 1: Generate lesson content
@@ -547,6 +559,39 @@ const Index = () => {
     }
   };
 
+  const handleSaveLesson = async () => {
+    if (!generatedLesson || !currentLessonMetadata) return;
+    
+    const title = `${generatedLesson.topic} - ${generatedLesson.cefrLevel}`;
+    await saveLesson(
+      title,
+      currentLessonMetadata.topic,
+      currentLessonMetadata.cefrLevel,
+      currentLessonMetadata.ageGroup,
+      currentLessonMetadata.context,
+      generatedLesson
+    );
+  };
+
+  const handleLoadLesson = async (id: string) => {
+    const lesson = savedLessons.find(l => l.id === id);
+    if (!lesson) return;
+    
+    setGeneratedLesson(lesson.lesson_data);
+    setCurrentLessonMetadata({
+      topic: lesson.topic,
+      cefrLevel: lesson.cefr_level,
+      ageGroup: lesson.age_group || 'adults',
+      context: lesson.context || 'general'
+    });
+    setActiveTab("generate");
+    
+    toast({
+      title: "Lesson Loaded",
+      description: `Loaded "${lesson.title}" successfully`,
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-muted/30 to-background">
       {/* Hero Header */}
@@ -580,26 +625,39 @@ const Index = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8 max-w-7xl">
-        {!generatedLesson ? (
-          <div className="animate-fade-up">
-            {/* Hero Section */}
-            <div className="text-center mb-12 space-y-4">
-              <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent leading-tight">
-                Create Perfect ESL Lessons in Seconds
-              </h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Generate pedagogically sound, visually stunning lesson slides with AI. 
-                Choose a topic, select your level, and watch magic happen.
-              </p>
-            </div>
+        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "generate" | "saved")} className="w-full">
+          <TabsList className="grid w-full max-w-md mx-auto mb-8 grid-cols-2">
+            <TabsTrigger value="generate" className="gap-2">
+              <Sparkles className="w-4 h-4" />
+              Generate New
+            </TabsTrigger>
+            <TabsTrigger value="saved" className="gap-2">
+              <Library className="w-4 h-4" />
+              Saved Lessons
+            </TabsTrigger>
+          </TabsList>
 
-            {/* Input Form */}
-            <div className="max-w-2xl mx-auto">
-              <LessonInputForm 
-                onGenerate={handleGenerateLesson} 
-                isGenerating={isGenerating}
-              />
-            </div>
+          <TabsContent value="generate">
+            {!generatedLesson ? (
+              <div className="animate-fade-up">
+                {/* Hero Section */}
+                <div className="text-center mb-12 space-y-4">
+                  <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent leading-tight">
+                    Create Perfect ESL Lessons in Seconds
+                  </h2>
+                  <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                    Generate pedagogically sound, visually stunning lesson slides with AI. 
+                    Choose a topic, select your level, and watch magic happen.
+                  </p>
+                </div>
+
+                {/* Input Form */}
+                <div className="max-w-2xl mx-auto">
+                  <LessonInputForm 
+                    onGenerate={handleGenerateLesson} 
+                    isGenerating={isGenerating}
+                  />
+                </div>
 
             {/* Features Grid */}
             <div className="mt-16 grid md:grid-cols-3 gap-6">
@@ -630,71 +688,90 @@ const Index = () => {
                 </div>
               ))}
             </div>
-          </div>
-        ) : (
-          <div className="space-y-6 animate-slide-in">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-foreground mb-1">
-                  {generatedLesson.topic}
-                </h2>
-                <p className="text-muted-foreground">
-                  {generatedLesson.lessonType} • {generatedLesson.cefrLevel} • {generatedLesson.totalSlides} slides
-                </p>
               </div>
-              <div className="flex items-center gap-3">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowFeedback(true)}
-                  className="gap-2"
-                >
-                  <Star className="w-4 h-4" />
-                  Rate This Lesson
-                </Button>
-                <ImageGenerator 
-                  slides={generatedLesson.slides}
-                  onImagesGenerated={(slidesWithImages) => {
-                    setGeneratedLesson({ ...generatedLesson, slides: slidesWithImages });
-                  }}
-                />
-                <button
-                  onClick={() => setGeneratedLesson(null)}
-                  className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
-                >
-                  New Lesson
-                </button>
-              </div>
-            </div>
+            ) : (
+              <div className="space-y-6 animate-slide-in">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-2xl font-bold text-foreground mb-1">
+                      {generatedLesson.topic}
+                    </h2>
+                    <p className="text-muted-foreground">
+                      {generatedLesson.lessonType} • {generatedLesson.cefrLevel} • {generatedLesson.totalSlides} slides
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleSaveLesson}
+                      className="gap-2"
+                    >
+                      <Save className="w-4 h-4" />
+                      Save Lesson
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowFeedback(true)}
+                      className="gap-2"
+                    >
+                      <Star className="w-4 h-4" />
+                      Rate
+                    </Button>
+                    <ImageGenerator 
+                      slides={generatedLesson.slides}
+                      onImagesGenerated={(slidesWithImages) => {
+                        setGeneratedLesson({ ...generatedLesson, slides: slidesWithImages });
+                      }}
+                    />
+                    <button
+                      onClick={() => setGeneratedLesson(null)}
+                      className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
+                    >
+                      New Lesson
+                    </button>
+                  </div>
+                </div>
 
-            {/* Remix Options */}
-            <RemixOptions onRemix={handleRemixLesson} isRemixing={isRemixing} />
+                {/* Remix Options */}
+                <RemixOptions onRemix={handleRemixLesson} isRemixing={isRemixing} />
 
-            <div className="grid lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2 space-y-6">
-                <LessonPreview 
-                  slides={generatedLesson.slides}
-                  onSlidesUpdate={handleSlidesUpdate}
-                />
-                
-                {/* Validation Results */}
-                {generatedLesson.validation && (
-                  <ValidationPanel validation={generatedLesson.validation} />
-                )}
+                <div className="grid lg:grid-cols-3 gap-6">
+                  <div className="lg:col-span-2 space-y-6">
+                    <LessonPreview 
+                      slides={generatedLesson.slides}
+                      onSlidesUpdate={handleSlidesUpdate}
+                    />
+                    
+                    {/* Validation Results */}
+                    {generatedLesson.validation && (
+                      <ValidationPanel validation={generatedLesson.validation} />
+                    )}
+                  </div>
+                  <div>
+                    <TeacherGuide 
+                      slides={generatedLesson.slides} 
+                      teacherNotes={generatedLesson.teacherNotes}
+                      lessonType={generatedLesson.lessonType}
+                      framework={generatedLesson.framework}
+                      stages={generatedLesson.stages}
+                    />
+                  </div>
+                </div>
               </div>
-              <div>
-                <TeacherGuide 
-                  slides={generatedLesson.slides} 
-                  teacherNotes={generatedLesson.teacherNotes}
-                  lessonType={generatedLesson.lessonType}
-                  framework={generatedLesson.framework}
-                  stages={generatedLesson.stages}
-                />
-              </div>
-            </div>
-          </div>
-        )}
-        
+            )}
+          </TabsContent>
+
+          <TabsContent value="saved">
+            <SavedLessonsList
+              lessons={savedLessons}
+              onLoad={handleLoadLesson}
+              onDelete={deleteLesson}
+              isLoading={isSavedLessonsLoading}
+            />
+          </TabsContent>
+        </Tabs>
         {/* Feedback Dialog */}
         {generatedLesson && (
           <LessonFeedback

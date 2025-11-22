@@ -98,6 +98,45 @@ export type Database = {
           },
         ]
       }
+      saved_lessons: {
+        Row: {
+          age_group: string | null
+          cefr_level: string
+          context: string | null
+          created_at: string | null
+          id: string
+          lesson_data: Json
+          session_id: string
+          title: string
+          topic: string
+          updated_at: string | null
+        }
+        Insert: {
+          age_group?: string | null
+          cefr_level: string
+          context?: string | null
+          created_at?: string | null
+          id?: string
+          lesson_data: Json
+          session_id: string
+          title: string
+          topic: string
+          updated_at?: string | null
+        }
+        Update: {
+          age_group?: string | null
+          cefr_level?: string
+          context?: string | null
+          created_at?: string | null
+          id?: string
+          lesson_data?: Json
+          session_id?: string
+          title?: string
+          topic?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       templates: {
         Row: {
           activity_preferences: string[] | null
