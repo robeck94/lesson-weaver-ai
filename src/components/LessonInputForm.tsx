@@ -11,7 +11,7 @@ import { PromptTemplate } from "@/types/template";
 import { Badge } from "@/components/ui/badge";
 
 interface LessonInputFormProps {
-  onGenerate: (topic: string, cefrLevel: string, template?: PromptTemplate) => void;
+  onGenerate: (topic: string, cefrLevel: string, ageGroup: string, context: string, template?: PromptTemplate) => void;
   isGenerating: boolean;
 }
 
@@ -241,16 +241,31 @@ const CEFR_LEVELS = [
   { value: "C2", label: "C2 - Proficiency" },
 ];
 
+const AGE_GROUPS = [
+  { value: "kids", label: "Kids (6-12 years)", description: "Simple language, games, colorful visuals" },
+  { value: "teens", label: "Teenagers (13-17 years)", description: "Relatable topics, modern references, peer interaction" },
+  { value: "adults", label: "Adults (18+ years)", description: "Professional contexts, real-world applications" },
+];
+
+const CONTEXTS = [
+  { value: "general", label: "General English", description: "Everyday communication and life skills" },
+  { value: "academic", label: "Academic English", description: "University preparation, essays, lectures" },
+  { value: "business", label: "Business English", description: "Workplace communication, emails, meetings" },
+  { value: "exam", label: "Exam Preparation", description: "IELTS, TOEFL, Cambridge exam strategies" },
+];
+
 export const LessonInputForm = ({ onGenerate, isGenerating }: LessonInputFormProps) => {
   const [topic, setTopic] = useState("");
   const [cefrLevel, setCefrLevel] = useState("B1");
+  const [ageGroup, setAgeGroup] = useState("adults");
+  const [context, setContext] = useState("general");
   const [usePreset, setUsePreset] = useState(true);
   const [selectedTemplate, setSelectedTemplate] = useState<PromptTemplate | undefined>();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (topic.trim() && cefrLevel) {
-      onGenerate(topic, cefrLevel, selectedTemplate);
+      onGenerate(topic, cefrLevel, ageGroup, context, selectedTemplate);
     }
   };
 
@@ -351,8 +366,52 @@ export const LessonInputForm = ({ onGenerate, isGenerating }: LessonInputFormPro
                   </SelectItem>
                 ))}
               </SelectContent>
-          </Select>
-        </div>
+            </Select>
+          </div>
+
+          {/* Age Group */}
+          <div className="space-y-2">
+            <Label htmlFor="ageGroup" className="text-foreground font-medium">
+              Target Age Group
+            </Label>
+            <Select value={ageGroup} onValueChange={setAgeGroup}>
+              <SelectTrigger id="ageGroup" className="bg-background">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {AGE_GROUPS.map((group) => (
+                  <SelectItem key={group.value} value={group.value}>
+                    <div className="flex flex-col items-start">
+                      <span className="font-medium">{group.label}</span>
+                      <span className="text-xs text-muted-foreground">{group.description}</span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Context */}
+          <div className="space-y-2">
+            <Label htmlFor="context" className="text-foreground font-medium">
+              Learning Context
+            </Label>
+            <Select value={context} onValueChange={setContext}>
+              <SelectTrigger id="context" className="bg-background">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {CONTEXTS.map((ctx) => (
+                  <SelectItem key={ctx.value} value={ctx.value}>
+                    <div className="flex flex-col items-start">
+                      <span className="font-medium">{ctx.label}</span>
+                      <span className="text-xs text-muted-foreground">{ctx.description}</span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
         {/* Template Selection */}
         <div className="space-y-2">

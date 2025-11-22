@@ -55,7 +55,7 @@ const Index = () => {
   const [imageQualityScore, setImageQualityScore] = useState<number | undefined>();
   const { toast } = useToast();
 
-  const handleGenerateLesson = async (topic: string, cefrLevel: string, template?: PromptTemplate) => {
+  const handleGenerateLesson = async (topic: string, cefrLevel: string, ageGroup: string, context: string, template?: PromptTemplate) => {
     setIsGenerating(true);
     setGeneratedLesson(null);
     setCurrentTemplateId(template?.id);
@@ -63,7 +63,7 @@ const Index = () => {
     try {
       // Step 1: Generate lesson content
       const { data, error } = await supabase.functions.invoke('generate-lesson', {
-        body: { topic, cefrLevel, template }
+        body: { topic, cefrLevel, ageGroup, context, template }
       });
 
       if (error) {
