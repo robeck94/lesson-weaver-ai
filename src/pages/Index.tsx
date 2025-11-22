@@ -101,16 +101,30 @@ const Index = () => {
           description: `Created a ${lesson.totalSlides}-slide ${lesson.lessonType} lesson. Generating images...`,
         });
 
-        // Step 2: Selective image generation (title + ~40% of content slides for cost savings)
+        // Step 2: Generate images for ALL content slides with aggressive caching
         const slidesWithImages = [...lesson.slides];
         let imagesGenerated = 0;
         let imagesFromCache = 0;
         let imagesSkipped = 0;
 
-        // Helper function to determine if slide should get an image
-        const shouldGenerateImage = (slide: LessonSlide, index: number): boolean => {
-          // Always generate for title slide (first slide)
-          if (index === 0) return true;
+        // Helper: Calculate similarity between two texts (0-1 score)
+        const calculateSimilarity = (text1: string, text2: string): number => {
+          const words1 = text1.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/).filter(w => w.length > 3);
+          const words2 = text2.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/).filter(w => w.length > 3);
+          
+          const set1 = new Set(words1);
+          const set2 = new Set(words2);
+          
+          const intersection = new Set([...set1].filter(x => set2.has(x)));
+          const union = new Set([...set1, ...set2]);
+          
+          return union.size === 0 ? 0 : intersection.size / union.size;
+        };
+
+        // Helper: Check if slide should get an image
+        const shouldGenerateImage = (slide: LessonSlide): boolean => {
+          // Skip slides without visual descriptions
+          if (!slide.visualDescription) return false;
           
           // Skip activity slides (they have interactive elements, don't need images)
           if (slide.activityInstructions) {
@@ -120,61 +134,76 @@ const Index = () => {
                 return false;
               }
             } catch (e) {
-              // If parsing fails, it's regular instructions, consider for image
+              // Not a valid activity JSON, continue with image
             }
           }
           
-          // Skip review/recap/homework slides (common patterns)
-          const lowerTitle = slide.title.toLowerCase();
-          if (lowerTitle.includes('review') || 
-              lowerTitle.includes('recap') || 
-              lowerTitle.includes('homework') ||
-              lowerTitle.includes('practice') ||
-              lowerTitle.includes('extension')) {
-            return false;
-          }
-          
-          // For remaining content slides, generate for ~40% of them
-          // Use deterministic selection based on slide number to be consistent
-          return (index % 3 === 0); // Generates for roughly every 3rd slide = ~33% coverage
+          return true;
         };
 
         for (let i = 0; i < lesson.slides.length; i++) {
           const slide = lesson.slides[i];
           
-          if (slide.visualDescription && shouldGenerateImage(slide, i)) {
+          if (shouldGenerateImage(slide)) {
             try {
-              // Extract keywords from content for better matching
-              const keywords = slide.content.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/).slice(0, 10).join(' ');
+              // Extract comprehensive keywords for matching
+              const allText = `${slide.title} ${slide.content} ${slide.visualDescription}`;
+              const keywords = allText.toLowerCase()
+                .replace(/[^\w\s]/g, '')
+                .split(/\s+/)
+                .filter(w => w.length > 3)
+                .slice(0, 20)
+                .join(' ');
               
-              // Check cache first for similar images
+              // Query cache for potential matches using keyword overlap
+              // Get top 10 candidates for similarity comparison
+              const keywordSample = keywords.split(' ').slice(0, 5).join('|');
               const { data: cachedImages, error: cacheError } = await supabase
                 .from('image_cache')
                 .select('*')
-                .ilike('visual_description', `%${slide.visualDescription.substring(0, 50)}%`)
-                .limit(1);
+                .or(`visual_description.ilike.%${slide.visualDescription.substring(0, 30)}%,content_keywords.ilike.%${keywordSample}%`)
+                .limit(10);
+
+              let bestMatch = null;
+              let bestScore = 0;
 
               if (!cacheError && cachedImages && cachedImages.length > 0) {
-                // Found cached image! Reuse it
-                const cached = cachedImages[0];
-                slidesWithImages[i] = { ...slide, imageUrl: cached.image_url };
+                // Calculate similarity for each candidate
+                for (const cached of cachedImages) {
+                  const descScore = calculateSimilarity(slide.visualDescription, cached.visual_description);
+                  const keywordScore = calculateSimilarity(keywords, cached.content_keywords || '');
+                  const titleScore = calculateSimilarity(slide.title, cached.slide_title || '');
+                  
+                  // Weighted average: visual description most important
+                  const combinedScore = (descScore * 0.6) + (keywordScore * 0.3) + (titleScore * 0.1);
+                  
+                  if (combinedScore > bestScore) {
+                    bestScore = combinedScore;
+                    bestMatch = cached;
+                  }
+                }
+              }
+
+              // 70% similarity threshold for cache reuse
+              if (bestMatch && bestScore >= 0.70) {
+                slidesWithImages[i] = { ...slide, imageUrl: bestMatch.image_url };
                 imagesFromCache++;
                 
                 // Update usage stats
                 await supabase
                   .from('image_cache')
                   .update({ 
-                    usage_count: cached.usage_count + 1,
+                    usage_count: bestMatch.usage_count + 1,
                     last_used_at: new Date().toISOString()
                   })
-                  .eq('id', cached.id);
+                  .eq('id', bestMatch.id);
                 
                 // Update lesson with cached image
                 setGeneratedLesson({ ...lesson, slides: [...slidesWithImages] });
                 
-                console.log(`Reused cached image for slide ${i + 1}`);
+                console.log(`Reused cached image for slide ${i + 1} (similarity: ${(bestScore * 100).toFixed(1)}%)`);
               } else {
-                // No cache hit, generate new image
+                // No good match, generate new image
                 const { data: imageData, error: imageError } = await supabase.functions.invoke('generate-slide-image', {
                   body: {
                     visualDescription: slide.visualDescription,
@@ -207,27 +236,20 @@ const Index = () => {
               console.error(`Error processing image for slide ${i + 1}:`, err);
             }
           } else {
-            // Slide skipped for cost savings
+            // Activity slide, no image needed
             imagesSkipped++;
-            console.log(`Skipped image for slide ${i + 1} (cost optimization)`);
+            console.log(`Skipped image for slide ${i + 1} (activity slide)`);
           }
         }
 
         // Final update with all images
         setGeneratedLesson({ ...lesson, slides: slidesWithImages });
 
-        if (imagesGenerated > 0 || imagesFromCache > 0) {
-          const totalImages = imagesGenerated + imagesFromCache;
-          toast({
-            title: "Images Ready!",
-            description: `${totalImages} images generated (${imagesGenerated} new, ${imagesFromCache} cached). ${imagesSkipped} slides optimized for cost savings (~85% reduction!)`,
-          });
-        } else if (imagesSkipped > 0) {
-          toast({
-            title: "Lesson Ready!",
-            description: `All ${imagesSkipped} slides optimized for maximum cost savings.`,
-          });
-        }
+        const totalImages = imagesGenerated + imagesFromCache;
+        toast({
+          title: "Images Ready!",
+          description: `${totalImages} images generated (${imagesGenerated} new, ${imagesFromCache} from cache). ${imagesSkipped} activity slides skipped.`,
+        });
       }
     } catch (err) {
       console.error('Unexpected error:', err);
@@ -296,72 +318,129 @@ const Index = () => {
           description: `Created enhanced ${lesson.totalSlides}-slide lesson. Generating images...`,
         });
 
-        // Generate images for the remixed lesson (with caching)
+        // Generate images for the remixed lesson (with aggressive caching)
         const slidesWithImages = [...lesson.slides];
         let imagesGenerated = 0;
         let imagesFromCache = 0;
+
+        // Helper: Calculate similarity between two texts (0-1 score)
+        const calculateSimilarity = (text1: string, text2: string): number => {
+          const words1 = text1.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/).filter(w => w.length > 3);
+          const words2 = text2.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/).filter(w => w.length > 3);
+          
+          const set1 = new Set(words1);
+          const set2 = new Set(words2);
+          
+          const intersection = new Set([...set1].filter(x => set2.has(x)));
+          const union = new Set([...set1, ...set2]);
+          
+          return union.size === 0 ? 0 : intersection.size / union.size;
+        };
 
         for (let i = 0; i < lesson.slides.length; i++) {
           const slide = lesson.slides[i];
           
           if (slide.visualDescription) {
-            try {
-              // Extract keywords from content for better matching
-              const keywords = slide.content.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/).slice(0, 10).join(' ');
-              
-              // Check cache first for similar images
-              const { data: cachedImages, error: cacheError } = await supabase
-                .from('image_cache')
-                .select('*')
-                .ilike('visual_description', `%${slide.visualDescription.substring(0, 50)}%`)
-                .limit(1);
-
-              if (!cacheError && cachedImages && cachedImages.length > 0) {
-                // Found cached image! Reuse it
-                const cached = cachedImages[0];
-                slidesWithImages[i] = { ...slide, imageUrl: cached.image_url };
-                imagesFromCache++;
+            // Skip activity slides
+            let isActivity = false;
+            if (slide.activityInstructions) {
+              try {
+                const activityData = JSON.parse(slide.activityInstructions);
+                if (['matching', 'fillblank', 'scramble', 'ordering', 'truefalse', 'dialogue', 'roleplay', 'quiz'].includes(activityData.type)) {
+                  isActivity = true;
+                }
+              } catch (e) {
+                // Not an activity
+              }
+            }
+            
+            if (!isActivity) {
+              try {
+                // Extract comprehensive keywords for matching
+                const allText = `${slide.title} ${slide.content} ${slide.visualDescription}`;
+                const keywords = allText.toLowerCase()
+                  .replace(/[^\w\s]/g, '')
+                  .split(/\s+/)
+                  .filter(w => w.length > 3)
+                  .slice(0, 20)
+                  .join(' ');
                 
-                // Update usage stats
-                await supabase
+                // Query cache for potential matches
+                const keywordSample = keywords.split(' ').slice(0, 5).join('|');
+                const { data: cachedImages, error: cacheError } = await supabase
                   .from('image_cache')
-                  .update({ 
-                    usage_count: cached.usage_count + 1,
-                    last_used_at: new Date().toISOString()
-                  })
-                  .eq('id', cached.id);
-                
-                setGeneratedLesson({ ...lesson, slides: [...slidesWithImages] });
-              } else {
-                // No cache hit, generate new image
-                const { data: imageData, error: imageError } = await supabase.functions.invoke('generate-slide-image', {
-                  body: {
-                    visualDescription: slide.visualDescription,
-                    slideTitle: slide.title,
-                    slideContent: slide.content,
-                    retryAttempt: 0
-                  }
-                });
+                  .select('*')
+                  .or(`visual_description.ilike.%${slide.visualDescription.substring(0, 30)}%,content_keywords.ilike.%${keywordSample}%`)
+                  .limit(10);
 
-                if (!imageError && imageData?.imageUrl) {
-                  slidesWithImages[i] = { ...slide, imageUrl: imageData.imageUrl };
-                  imagesGenerated++;
+                let bestMatch = null;
+                let bestScore = 0;
+
+                if (!cacheError && cachedImages && cachedImages.length > 0) {
+                  // Calculate similarity for each candidate
+                  for (const cached of cachedImages) {
+                    const descScore = calculateSimilarity(slide.visualDescription, cached.visual_description);
+                    const keywordScore = calculateSimilarity(keywords, cached.content_keywords || '');
+                    const titleScore = calculateSimilarity(slide.title, cached.slide_title || '');
+                    
+                    // Weighted average: visual description most important
+                    const combinedScore = (descScore * 0.6) + (keywordScore * 0.3) + (titleScore * 0.1);
+                    
+                    if (combinedScore > bestScore) {
+                      bestScore = combinedScore;
+                      bestMatch = cached;
+                    }
+                  }
+                }
+
+                // 70% similarity threshold for cache reuse
+                if (bestMatch && bestScore >= 0.70) {
+                  slidesWithImages[i] = { ...slide, imageUrl: bestMatch.image_url };
+                  imagesFromCache++;
                   
-                  // Store in cache for future reuse
+                  // Update usage stats
                   await supabase
                     .from('image_cache')
-                    .insert({
-                      image_url: imageData.imageUrl,
-                      visual_description: slide.visualDescription,
-                      slide_title: slide.title,
-                      content_keywords: keywords
-                    });
+                    .update({ 
+                      usage_count: bestMatch.usage_count + 1,
+                      last_used_at: new Date().toISOString()
+                    })
+                    .eq('id', bestMatch.id);
                   
                   setGeneratedLesson({ ...lesson, slides: [...slidesWithImages] });
+                  console.log(`Remix: Reused cached image for slide ${i + 1} (similarity: ${(bestScore * 100).toFixed(1)}%)`);
+                } else {
+                  // No good match, generate new image
+                  const { data: imageData, error: imageError } = await supabase.functions.invoke('generate-slide-image', {
+                    body: {
+                      visualDescription: slide.visualDescription,
+                      slideTitle: slide.title,
+                      slideContent: slide.content,
+                      retryAttempt: 0
+                    }
+                  });
+
+                  if (!imageError && imageData?.imageUrl) {
+                    slidesWithImages[i] = { ...slide, imageUrl: imageData.imageUrl };
+                    imagesGenerated++;
+                    
+                    // Store in cache for future reuse
+                    await supabase
+                      .from('image_cache')
+                      .insert({
+                        image_url: imageData.imageUrl,
+                        visual_description: slide.visualDescription,
+                        slide_title: slide.title,
+                        content_keywords: keywords
+                      });
+                    
+                    setGeneratedLesson({ ...lesson, slides: [...slidesWithImages] });
+                    console.log(`Remix: Generated and cached new image for slide ${i + 1}`);
+                  }
                 }
+              } catch (err) {
+                console.error(`Error processing image for slide ${i + 1}:`, err);
               }
-            } catch (err) {
-              console.error(`Error processing image for slide ${i + 1}:`, err);
             }
           }
         }
