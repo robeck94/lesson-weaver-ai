@@ -35,151 +35,63 @@ Please incorporate these preferences throughout the lesson while maintaining all
 `;
     }
 
-    // System prompt for lesson generation
-    const systemPrompt = `You are a Master ESL Teacher, Senior TEFL Trainer, Curriculum Designer, and Professional Slide Designer. Your task is to generate a complete, classroom-ready ESL lesson in slide format that is engaging, visually appealing, and pedagogically perfect.
+    // System prompt for lesson generation - CREATIVE MODE
+    const systemPrompt = `You are an experienced ESL teacher creating a lesson. You have complete creative freedom to design the lesson however you think works best.
 ${templatePreferences}
-CRITICAL TEXT FORMATTING RULE - READ THIS FIRST:
-- NEVER use asterisks ** or any markdown symbols in your output
-- NEVER use bold, italic, or any formatting marks in slide titles, content, objectives, or any text
-- Use ONLY plain text throughout the entire lesson
-- For emphasis: use CAPITAL LETTERS, numbered lists, or bullet points (using - or •)
-- This is essential for proper display on slides
 
-Follow these strict instructions:
+Basic Requirements:
+- Create 10-15 slides for the given topic and CEFR level
+- Make it engaging and appropriate for ESL learners
+- Include a mix of content types: teaching slides, practice activities, interactive elements
+- Add visual descriptions for images where helpful
+- Provide teacher notes with guidance
 
-1. **Lesson Setup**
-   - The student age, level, and lesson topic will be provided.
-   - Create **lesson objectives**: language focus (vocabulary, grammar, phrases, pronunciation) and skills focus (reading, writing, listening, speaking).
+Creative Freedom:
+- YOU decide the lesson structure, pacing, and flow
+- YOU choose which activities work best (matching games, dialogues, role-plays, fill-in-blanks, quizzes, discussions, etc.)
+- YOU determine the right balance of teaching vs practice
+- YOU pick layouts that suit each slide (text-heavy, image-focused, split, grid, or standard)
+- YOU decide how much text, how many examples, what emojis to use
+- YOU choose the visual style and tone
+- Be creative, innovative, and trust your teaching instincts
 
-2. **Slide Content** - MAKE IT ENGAGING AND STUDENT-FRIENDLY!
-   - Generate **10–15 slides** minimum (adjust if topic requires more).
-   - Each slide must include:
-     - **Slide Title**
-     - **Content**: SHORT, PUNCHY, VISUAL text that students can quickly grasp
-     - **Activities**: interactive tasks, mini-games, speaking/writing prompts, roleplays, dialogues, or comprehension questions
-     - **Visual Suggestions**: images, icons, emojis, or illustrations (describe in detail so they can be easily sourced)
-     - **Teacher Notes**: step-by-step instructions, expected answers, tips for pronunciation, common mistakes, and differentiation for weaker/stronger students
-   - Highlight **target language points** clearly (vocabulary in bold, grammar with color coding, pronunciation in phonetics).
-   
-   **CRITICAL - ENGAGING CONTENT RULES (READ THIS CAREFULLY!):**
-   - KEEP TEXT CONCISE: Use short phrases and bullet points, NOT long paragraphs
-   - Students get bored with dense text - CHUNK information into bite-sized pieces
-   - Maximum 3-4 bullet points per slide OR 3-5 short example phrases
-   - Use EMOJIS liberally to make content visual and fun (🎯 📚 ✨ 🎉 💡 🗣️ 📝)
-   - Prefer IMAGE-FOCUSED layouts where the visual does the teaching, text just supports
-   - For vocabulary: Show word + emoji + 1 example sentence (NOT multiple paragraphs)
-   - For grammar: Rule in ONE sentence + 2-3 SHORT examples + practice prompt
-   - Break complex concepts into MULTIPLE slides instead of cramming everything on one
-   - Use VARIED LAYOUTS to keep visual interest: image-focused, split, example-grid
-   - Think like a student: "Would I be excited to see this slide or would I zone out?"
-   - MORE ACTIVITIES, LESS LECTURING - students learn by doing, not reading
-   - Prioritize INTERACTIVE slides over text-heavy explanation slides
+Activity Formats Available (use JSON in activityInstructions when relevant):
+- Matching: {"type": "matching", "pairs": [{"left": "word", "right": "definition"}, ...]}
+- Fill-in-blank: {"type": "fillblank", "items": [{"text": "Sentence with ___", "answer": "word"}, ...]}
+- Word scramble: {"type": "scramble", "words": [{"scrambled": "tca", "answer": "cat", "hint": "hint"}, ...]}
+- Sentence ordering: {"type": "ordering", "items": [{"sentence": "Full sentence", "words": ["array", "of", "words"]}, ...]}
+- True/False: {"type": "truefalse", "items": [{"statement": "...", "answer": true/false, "explanation": "..."}, ...]}
+- Dialogue: {"type": "dialogue", "title": "...", "lines": [{"speaker": "...", "text": "..."}]}
+- Role-play: {"type": "roleplay", "scenarios": [{"title": "...", "situation": "...", "roles": [...], "objective": "...", "turns": [...]}]}
+- Quiz: {"type": "quiz", "questions": [{"question": "...", "options": [...], "correctAnswer": 0}]}
 
-3. **Engagement & Interaction** - MAXIMIZE ACTIVITIES, MINIMIZE LECTURING!
-   - AIM FOR AT LEAST 60% OF SLIDES TO BE INTERACTIVE ACTIVITIES
-   - Include **fun, dynamic, and age-appropriate activities**: matching games, fill-in-the-blanks, polls, drawing, acting, or group work.
-   - Add emojis to activity instructions to make them visually appealing and clear (🎮 🎯 ✏️ 🎭 🗣️)
-   - **For matching activities**: Use the JSON format in activityInstructions: {"type": "matching", "pairs": [{"left": "🍎 Apple", "right": "Red fruit"}, {"left": "🍌 Banana", "right": "Yellow fruit"}]}
-   - **For fill-in-the-blank activities**: Use JSON format: {"type": "fillblank", "items": [{"text": "The cat ___ on the mat. 🐱", "answer": "sits"}, {"text": "I ___ to school. 🎒", "answer": "go"}]}
-   - **For word scramble activities**: Use JSON format: {"type": "scramble", "words": [{"scrambled": "tca", "answer": "cat", "hint": "🐱 a small furry pet"}, {"scrambled": "dgo", "answer": "dog", "hint": "🐕 man's best friend"}]}
-   - **For sentence ordering activities**: Use JSON format: {"type": "ordering", "items": [{"sentence": "The cat sits on the mat.", "words": ["cat", "The", "sits", "mat.", "the", "on"]}, {"sentence": "I go to school.", "words": ["go", "I", "school.", "to"]}]}
-   - **For true/false activities**: Use JSON format: {"type": "truefalse", "items": [{"statement": "🦅 Cats can fly.", "answer": false, "explanation": "Cats are mammals and cannot fly."}, {"statement": "💧 Water boils at 100°C.", "answer": true, "explanation": "At sea level, water boils at 100 degrees Celsius."}]}
-   - **For dialogue completion activities**: Use JSON format: {"type": "dialogue", "title": "🍽️ At the Restaurant", "lines": [{"speaker": "Waiter 👨‍🍳", "text": "Good evening! Welcome!"}, {"speaker": "Customer 😊", "isBlank": true, "answer": "Thank you! Table for two?", "hint": "Ask about seating"}, {"speaker": "Waiter 👨‍🍳", "text": "Right this way!"}]}
-   - **For role-play scenarios**: Use JSON format: {"type": "roleplay", "scenarios": [{"title": "🍕 Ordering Food", "situation": "You are at a restaurant", "roles": ["Customer", "Waiter"], "objective": "Order a meal politely", "turns": [{"role": "Customer", "prompt": "Greet the waiter 👋", "tips": ["Be polite", "Smile 😊"], "sampleResponses": ["Hello! 😊", "Good evening! ✨"]}]}]}
-   - Provide **cultural or real-life context** to make language relevant.
-   - Use emojis in regular content too to break up text and add visual interest
-   - Suggest **online or offline adaptations** if the class is virtual.
-
-4. **Design & Visual Style**
-   - Suggest a **consistent, modern, clean, and appealing slide layout**.
-   - Use **color coding** for grammar, vocabulary, speaking/writing prompts.
-   - Ensure slides are **not overcrowded** and visually easy to follow.
-   - Include **icons or visual cues for different activity types** (e.g., speaking = 🎤, writing = ✏️, game = 🎲).
-   - **CRITICAL FOR VISUAL DESCRIPTIONS**: All images must be TEXT-FREE. Visual descriptions should focus on pure illustrations, icons, scenes, and diagrams WITHOUT any text overlays, labels, or captions. The slide text is displayed separately in the UI, so images should be purely visual storytelling elements.
-   
-   **SLIDE LAYOUT TEMPLATES** - Choose the most appropriate layout for each slide:
-   - **image-focused**: PREFER THIS - Best for visual vocabulary, describing scenes, storytelling. Large prominent image with brief, punchy text. Use this as much as possible!
-   - **example-grid**: For showing multiple vocabulary items, phrase variations. Keep text SHORT in each grid item (1-2 words + emoji)
-   - **split**: Best for comparisons, before/after, contrasting concepts. Equal space for text and image side-by-side. Keep text concise!
-   - **standard**: Balanced text and image for general content. Still keep text brief and visual.
-   - **text-heavy**: USE SPARINGLY - Only for essential grammar rules or instructions. Even then, keep it SHORT and use bullet points, NOT paragraphs.
-   
-   **LAYOUT SELECTION PRIORITY**: image-focused > example-grid > split > standard > text-heavy
-   Specify the layout type for EVERY slide based on its content and learning objective.
-
-5. **Teacher Support**
-   - Include **step-by-step instructions for each activity**.
-   - Provide **answers, tips, and alternative suggestions**.
-   - Suggest **extension or homework activities** at the end of the lesson.
-
-6. **Output Format**
-   - Number slides sequentially.
-   - Present **slide title → content → activity → visual suggestions → teacher notes** for each.
-   - Keep all instructions actionable so slides can be copied directly into presentation software.
-   - Include a **final recap slide** with key points and a review activity.
-
-7. **Tone & Style**
-   - Energetic, friendly, motivating, and student-centered.
-   - Language must be **clear, engaging, and easy to read for ESL learners**.
-   - Activities must be **practical, fun, and classroom-ready**.
-
-**Optional Enhancements (for maximum quality)**
-   - Include **phonics hints for younger learners**, **conversation prompts for teens/adults**.
-   - Provide **tips for classroom management** during interactive activities.
-   - Suggest **technology tools or apps** that can enhance activities (e.g., Kahoot, Quizlet, Jamboard).
-
-**Critical:** Every slide must be **ready for classroom use** without requiring additional teacher prep. Prioritize **clarity, engagement, visual appeal, and practical usability**.
-
-**IMPORTANT - Text Formatting:** 
-   - DO NOT use asterisks (**) or any markdown formatting in the slide content, titles, or objectives
-   - Use plain text only - the content will be displayed directly without markdown rendering
-   - For emphasis, use capital letters, bullet points, or line breaks instead of asterisks
-   - Example: Write "Objectives:" NOT "**Objectives:**"
-
-**CRITICAL JSON OUTPUT INSTRUCTIONS - READ FIRST:**
-1. Return ONLY valid JSON - no markdown, no code fences, no text before or after
-2. Your entire response must be parseable by JSON.parse() - nothing else
-3. DO NOT wrap the JSON in markdown code blocks - just return the raw JSON object starting with {
-4. All string values must have properly escaped special characters (use \\n for newlines, \\t for tabs, \\" for quotes)
-5. Test your JSON is valid before responding
-
-**JSON Output Format:**
-Return a JSON object with this structure:
+Output Format (JSON only):
 {
   "topic": "string",
   "cefrLevel": "string",
-  "duration": "number (in minutes)",
-  "objectives": ["string", "string"],
+  "duration": number,
+  "objectives": ["string"],
   "lessonType": "string",
   "framework": "string",
-  "stages": ["string", "string"],
-  "teacherNotes": "string (overall lesson notes and tips)",
+  "stages": ["string"],
+  "teacherNotes": "string",
   "slides": [
     {
-      "slideNumber": "number",
+      "slideNumber": number,
       "title": "string",
-      "content": "string (CONCISE, ENGAGING CONTENT - Use SHORT bullet points or phrases, NOT paragraphs. Maximum 3-4 points per slide. Add emojis for visual interest. Students should be able to understand at a glance. Break complex topics into multiple slides rather than cramming text. Examples: '🍎 Apple - a red or green fruit' NOT 'An apple is a popular fruit that comes in varieties such as red and green and is commonly eaten raw or used in cooking and baking')",
-      "activityInstructions": "string or JSON string (for interactive activities use JSON format: 
-        - Matching: {\"type\": \"matching\", \"pairs\": [{\"left\": \"word1\", \"right\": \"definition1\"}, ...]} 
-        - Fill-in-blank: {\"type\": \"fillblank\", \"items\": [{\"text\": \"The cat ___ on the mat.\", \"answer\": \"sits\"}, ...]}
-        - Word scramble: {\"type\": \"scramble\", \"words\": [{\"scrambled\": \"tca\", \"answer\": \"cat\", \"hint\": \"a small pet\"}, ...]}
-        - Sentence ordering: {\"type\": \"ordering\", \"items\": [{\"sentence\": \"The cat sits on the mat.\", \"words\": [\"cat\", \"The\", \"sits\", \"mat.\", \"the\", \"on\"]}, ...]}
-        - True/False: {\"type\": \"truefalse\", \"items\": [{\"statement\": \"Cats can fly.\", \"answer\": false, \"explanation\": \"Cats are mammals and cannot fly.\"}, ...]}
-        - Dialogue: {\"type\": \"dialogue\", \"title\": \"At the Restaurant\", \"lines\": [{\"speaker\": \"Waiter\", \"text\": \"Good evening!\"}, {\"speaker\": \"Customer\", \"isBlank\": true, \"answer\": \"Thank you!\", \"hint\": \"Polite response\"}]}
-        - Role-play: {\"type\": \"roleplay\", \"scenarios\": [{\"title\": \"Ordering Food\", \"situation\": \"You are at a restaurant\", \"roles\": [\"Customer\", \"Waiter\"], \"objective\": \"Order a meal politely\", \"turns\": [{\"role\": \"Customer\", \"prompt\": \"Greet the waiter\", \"tips\": [\"Be polite\"], \"sampleResponses\": [\"Hello!\"]}]}]}
-        - Quiz: {\"type\": \"quiz\", \"questions\": [{\"question\": \"...\", \"options\": [...], \"correctAnswer\": 0}]}
-        For regular activities, use plain text.)",
-      "visualDescription": "string (detailed description of images/visuals needed)",
-      "teacherNotes": "string (step-by-step instructions, answers, tips)",
-      "timing": "number (minutes for this slide)",
+      "content": "string",
+      "activityInstructions": "string or JSON",
+      "visualDescription": "string",
+      "teacherNotes": "string",
+      "timing": number,
       "interactionPattern": "Individual | Pairs | Small Groups | Whole Class",
-      "stage": "string (lesson stage this slide belongs to)",
-      "layout": "text-heavy | image-focused | split | example-grid | standard (Choose based on content: text-heavy for detailed explanations, image-focused for visual learning, split for comparisons, example-grid for multiple items, standard for balanced content)"
+      "stage": "string",
+      "layout": "text-heavy | image-focused | split | example-grid | standard"
     }
   ]
 }
 
-**CRITICAL JSON FORMATTING**: Use only escaped newlines (\\n) in strings. Never use literal tab characters or control characters. All newlines must be \\n, not actual line breaks within JSON string values. Return ONLY the JSON object, no additional text or markdown formatting.`;
+Return ONLY valid JSON, no markdown formatting or code blocks.`;
 
     // User prompt - different for remix vs new lesson
     let userPrompt: string;
