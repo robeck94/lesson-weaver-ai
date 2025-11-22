@@ -11,12 +11,110 @@ serve(async (req) => {
   }
 
   try {
-    const { topic, cefrLevel, remixInstruction, currentLesson, template } = await req.json();
-    console.log('Generating lesson for:', { topic, cefrLevel, isRemix: !!remixInstruction, hasTemplate: !!template });
+    const { topic, cefrLevel, ageGroup, context, remixInstruction, currentLesson, template } = await req.json();
+    console.log('Generating lesson for:', { topic, cefrLevel, ageGroup, context, isRemix: !!remixInstruction, hasTemplate: !!template });
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY is not configured');
+    }
+
+    // Build age/context customizations
+    let ageContextGuidance = '';
+    
+    // Age-specific guidance
+    if (ageGroup === 'kids') {
+      ageContextGuidance += `\nAGE GROUP: KIDS (6-12 years old)
+- Use simple, concrete vocabulary (avoid abstract concepts)
+- Short sentences (5-8 words maximum)
+- Include games, songs, and movement activities
+- Use colorful visuals, cartoon characters, and fun illustrations
+- Topics should relate to their world (family, school, toys, animals, food)
+- Add TPR (Total Physical Response) activities
+- Praise and encouragement throughout
+- Include storytelling and picture-based activities
+- Use repetition and drilling in a playful way
+- Avoid complex grammar explanations, focus on patterns and examples
+`;
+    } else if (ageGroup === 'teens') {
+      ageContextGuidance += `\nAGE GROUP: TEENAGERS (13-17 years old)
+- Topics must be relevant to teenage life (social media, school, friendships, music, sports, identity)
+- Use modern references, pop culture, memes where appropriate
+- Include peer interaction and collaboration (pair/group work essential)
+- Encourage self-expression and personal opinions
+- Mix structured and creative tasks
+- Use authentic materials (YouTube videos, song lyrics, social media posts)
+- Avoid being patronizing or overly childish
+- Include debates, discussions, and problem-solving
+- Use technology and digital tools where possible
+- Respect their emerging adult identities
+`;
+    } else {
+      ageContextGuidance += `\nAGE GROUP: ADULTS (18+ years old)
+- Professional and real-world contexts (work, travel, relationships, current affairs)
+- More complex topics and abstract concepts allowed
+- Formal and informal register awareness
+- Include authentic materials (news articles, business emails, podcasts)
+- Tasks should be practical and immediately applicable
+- Respect their life experience and prior knowledge
+- Include critical thinking and analysis tasks
+- Mix accuracy and fluency activities
+- Provide clear rationale for learning objectives
+- Allow autonomy and choice in activities
+`;
+    }
+    
+    // Context-specific guidance
+    if (context === 'academic') {
+      ageContextGuidance += `\nLEARNING CONTEXT: ACADEMIC ENGLISH
+- Focus on academic vocabulary and formal register
+- Include essay writing, note-taking, lecture comprehension skills
+- Use academic texts (research articles, textbook excerpts, academic journals)
+- Teach citation and referencing skills
+- Include critical reading and analysis
+- Focus on argumentation and academic discourse
+- Prepare for university-level tasks (presentations, seminars, essays)
+- Use disciplinary examples (science, humanities, social sciences)
+- Teach paraphrasing, summarizing, and synthesizing information
+- Include exam strategies for IELTS Academic, TOEFL
+`;
+    } else if (context === 'business') {
+      ageContextGuidance += `\nLEARNING CONTEXT: BUSINESS ENGLISH
+- Professional vocabulary and workplace terminology
+- Focus on emails, reports, presentations, meetings, negotiations
+- Include telephone skills and conference call etiquette
+- Use authentic business materials (contracts, proposals, corporate communications)
+- Teach formal and diplomatic language
+- Include networking and small talk skills
+- Focus on clarity, concision, and professionalism
+- Use case studies and real business scenarios
+- Include cultural awareness for international business
+- Prepare for business presentations and pitches
+`;
+    } else if (context === 'exam') {
+      ageContextGuidance += `\nLEARNING CONTEXT: EXAM PREPARATION (IELTS, TOEFL, Cambridge)
+- Teach exam strategies and time management
+- Include practice with exam task types
+- Focus on both accuracy and exam technique
+- Use authentic exam materials and formats
+- Teach marking criteria and what examiners look for
+- Include timed practice and realistic conditions
+- Focus on common exam topics and question patterns
+- Teach how to structure answers effectively
+- Include rubrics and self-assessment
+- Provide tips for each exam section (reading, writing, listening, speaking)
+- Address common mistakes and how to avoid them
+`;
+    } else {
+      ageContextGuidance += `\nLEARNING CONTEXT: GENERAL ENGLISH
+- Balance of all four skills (reading, writing, listening, speaking)
+- Everyday situations and practical communication
+- Mix of topics from daily life, travel, work, hobbies, relationships
+- Include functional language (making requests, giving opinions, describing, narrating)
+- Cultural awareness and intercultural communication
+- Real-world tasks that learners can use immediately
+- Balance accuracy (grammar/vocabulary) and fluency (natural communication)
+`;
     }
 
     // Build template preferences text if a template is provided
@@ -37,6 +135,7 @@ Please incorporate these preferences throughout the lesson while maintaining all
 
     // System prompt for lesson generation - COMPREHENSIVE PEDAGOGICAL MODE
     const systemPrompt = `You are a Master ESL Teacher, Senior TEFL Trainer, Curriculum Designer, and Professional Slide Designer with 20+ years of experience creating world-class language lessons.
+${ageContextGuidance}
 ${templatePreferences}
 
 ═══════════════════════════════════════════════════════════════════
@@ -445,6 +544,8 @@ Generate the COMPLETE enhanced lesson following all the instructions in the syst
       userPrompt = `Create a complete ESL lesson for:
 Topic: ${topic}
 CEFR Level: ${cefrLevel}
+Age Group: ${ageGroup}
+Learning Context: ${context}
 
 Generate a classroom-ready lesson following all the instructions provided in the system prompt.`;
     }
