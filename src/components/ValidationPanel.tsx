@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { CheckCircle2, AlertTriangle, XCircle, Info, Sparkles } from "lucide-react";
-import { LessonValidation, ValidationIssue } from "@/pages/Index";
+import { LessonValidation, ValidationIssue } from "@/pages/Generator";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 interface ValidationPanelProps {

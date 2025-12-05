@@ -3,7 +3,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Download, FileText, Users, User, UserCircle2, Users2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { LessonSlide } from "@/pages/Index";
+import type { LessonSlide } from "@/pages/Generator";
 import { useSettings } from "@/contexts/SettingsContext";
 
 interface TeacherGuideProps {

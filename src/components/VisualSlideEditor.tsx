@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { LessonSlide } from "@/pages/Index";
+import { LessonSlide } from "@/pages/Generator";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
