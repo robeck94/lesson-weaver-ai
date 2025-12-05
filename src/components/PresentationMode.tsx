@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { X, ChevronLeft, ChevronRight, Sparkles, Clock } from "lucide-react";
-import type { LessonSlide } from "@/pages/Index";
+import type { LessonSlide } from "@/pages/Generator";
 import { QuizSlide } from "./QuizSlide";
 import { MatchingActivity } from "./MatchingActivity";
 import { FillInTheBlankActivity } from "./FillInTheBlankActivity";

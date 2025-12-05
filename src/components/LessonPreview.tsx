@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Clock, Layers, Maximize2, Edit, Wand2 } from "lucide-react";
-import type { LessonSlide } from "@/pages/Index";
+import type { LessonSlide } from "@/pages/Generator";
 import { useState } from "react";
 import { PresentationMode } from "./PresentationMode";
 import { SlideEditor } from "./SlideEditor";

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Wand2, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import type { LessonSlide } from "@/pages/Index";
+import type { LessonSlide } from "@/pages/Generator";
 
 interface ImageGeneratorProps {
   slides: LessonSlide[];
